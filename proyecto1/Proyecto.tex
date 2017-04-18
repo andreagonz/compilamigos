@@ -57,14 +57,15 @@ P = \{}
     Entero $\to$ Digito | Digito Entero \\
     Digito $\to$ 0 | 1 | 2 | ... | 9 \\
     Ebool $\to$ ...
-    Asig $\to$ var Var = Expr | Var = Expr \\
+    Asig $\to$ Tipo Var = Expr | Var = Expr \\
     Var  $\to$ Letra Pos \\
     Pos  $\to$ Var | $\varepsilon$ \\
     Letra $\to$ \_ | a | b | ... | z | A | B | ... | Z \\
     Cond $\to$ cond Expr : Bloq Sig \\
     Bloq $\to$ Expr ; Bloq'\\
     Bloq' $\to$ Bloq | $\varepsilon$\\ 
-    Sig $\to$ ! Expr : Bloq Sig | $\varepsilon$ \\ 
+    Sig $\to$ ! Expr : Bloq Sig | $\varepsilon$ \\
+    Tipo $\to$ int | float | bool
     \}
 }
  
