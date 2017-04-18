@@ -1,0 +1,77 @@
+%Especificacion
+\documentclass[12pt]{article}
+
+%Paquetes
+\usepackage[left=2cm,right=2cm,top=3cm,bottom=3cm,letterpaper]{geometry}
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish,activeacute]{babel}
+\usepackage{mathtools}
+\usepackage{amssymb}
+\usepackage{enumerate}
+%\usepackage{tabularx}
+%\usepackage{wasysym}
+\usepackage{graphicx}
+%\graphicspath { {media/} }
+%\usepackage{pifont}
+%Preambulo
+\title{Compiladores\\ Proyecto 1}
+\author{Carlos Acosta \qquad Karla Esquivel \\ Yuan Yuan \qquad Luis Mayo \\ Andrea González}
+\date{Facultad de Ciencias UNAM \\ 2017-2}
+\setlength\parindent{0pt}
+
+\begin{document}
+\maketitle
+\section*{Gramática}
+\subsubsection*{1. Definición de la gramática}
+
+Sea $G$ nuestra gramática de expresiones aritméticas. Definiremos $G$, como la 4-tupla: $G = (N,T,P,S)$, con $N,T,P$ conjuntos y $S$ el símbolo de la producción inicial.
+A continuación, se muestran los conjuntos que la conforman:\\
+
+\noindent
+\noindent
+\texttt{
+  \noindent
+N = \{Expr, Expr', Asig, Term, Term', Factor, Num, Entero, Decimal, Digito, Var \}\\
+T = \{., :, ;, +, -, /, *, =, var, cond, !, 0, 1,..., 9, a, ..., z, A, ..., Z\}\\ \\ 
+P = \{}
+\begin{quote}
+  \texttt{
+    S $\to$ Prog\\
+    Prog $\to$ Prog Fundef | Prog Pcont | Pcont | Fundef\\
+    Pcont $\to$ Inst; | Fun; | Cond | While | Pcont Inst; | Pcont Fun; | Pcont Cond | Pcont While\\
+    Inst $\to$ Expr | Asig\\
+    Fundef $\to$ fun Fnom (Fdparams) Tipo = Pcont $\sim$fun\\
+    While $\to$ while Ebool : Pcont $\sim$while\\    
+    Fun $\to$ Fnom (Fparams)\\
+    Fdparams $\to$ Tipo Var | Params, Tipo Var\\
+    Fparams $\to$ Var | Fparams, Var | Fun | Fparams, Fun\\
+    Expr  $\to$ Term Expr' | Ebool \\
+    Expr' $\to$ + Term Expr' | - Term Expr' | $\varepsilon$ \\
+    Term  $\to$ Factor Term' \\
+    Term' $\to$ * Factor Term' | / Factor Term'| $\varepsilon$ \\
+    Factor $\to$ Num | var | (Expr) | - Expr \\
+    Num $\to$ Entero Decimal \\
+    Decimal $\to$ . Entero | $\varepsilon$ \\
+    Entero $\to$ Digito | Digito Entero \\
+    Digito $\to$ 0 | 1 | 2 | ... | 9 \\
+    Ebool $\to$ ...
+    Asig $\to$ var Var = Expr | Var = Expr \\
+    Var  $\to$ Letra Pos \\
+    Pos  $\to$ Var | $\varepsilon$ \\
+    Letra $\to$ \_ | a | b | ... | z | A | B | ... | Z \\
+    Cond $\to$ cond Expr : Bloq Sig \\
+    Bloq $\to$ Expr ; Bloq'\\
+    Bloq' $\to$ Bloq | $\varepsilon$\\ 
+    Sig $\to$ ! Expr : Bloq Sig | $\varepsilon$ \\ 
+    \}
+}
+ 
+\end{quote}
+
+\subsubsection*{Identificar las categorías sintácticas y definir los tokens}
+
+\section{Implementación}
+\subsubsection*{2. Implementación del analizador sintáctico \textit{Bottom-Up}}
+\end{document}
