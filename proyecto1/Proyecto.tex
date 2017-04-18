@@ -45,7 +45,7 @@ P = \{}
     Fundef $\to$ fun Fnom (Fdparams) Tipo : Pcont $\sim$fun\\
     While $\to$ while Ebool : Pcont $\sim$while\\    
     Fun $\to$ Fnom (Fparams)\\
-    Fdparams $\to$ Tipo Var | Params, Tipo Var\\
+    Fdparams $\to$ Tipo Var | Fdparams, Tipo Var\\
     Fparams $\to$ Var | Fparams, Var | Fun | Fparams, Fun\\
     Expr  $\to$ Term Expr' | Ebool \\
     Expr' $\to$ + Term Expr' | - Term Expr' | $\varepsilon$ \\
