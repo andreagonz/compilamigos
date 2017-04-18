@@ -42,7 +42,7 @@ P = \{}
     Prog $\to$ Prog Fundef | Prog Pcont | Pcont | Fundef\\
     Pcont $\to$ Inst; | Fun; | Cond | While | Pcont Inst; | Pcont Fun; | Pcont Cond | Pcont While\\
     Inst $\to$ Expr | Asig\\
-    Fundef $\to$ fun Fnom (Fdparams) Tipo = Pcont $\sim$fun\\
+    Fundef $\to$ fun Fnom (Fdparams) Tipo : Pcont $\sim$fun\\
     While $\to$ while Ebool : Pcont $\sim$while\\    
     Fun $\to$ Fnom (Fparams)\\
     Fdparams $\to$ Tipo Var | Params, Tipo Var\\
@@ -56,7 +56,7 @@ P = \{}
     Decimal $\to$ . Entero | $\varepsilon$ \\
     Entero $\to$ Digito | Digito Entero \\
     Digito $\to$ 0 | 1 | 2 | ... | 9 \\
-    Ebool $\to$ ...
+    Ebool $\to$ ... \\
     Asig $\to$ Tipo Var = Expr | Var = Expr \\
     Var  $\to$ Letra Pos \\
     Pos  $\to$ Var | $\varepsilon$ \\
@@ -65,7 +65,7 @@ P = \{}
     Bloq $\to$ Expr ; Bloq'\\
     Bloq' $\to$ Bloq | $\varepsilon$\\ 
     Sig $\to$ ! Expr : Bloq Sig | $\varepsilon$ \\
-    Tipo $\to$ int | float | bool
+    Tipo $\to$ int | float | bool \\
     \}
 }
  
