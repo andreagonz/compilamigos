@@ -38,15 +38,17 @@ T = \{., :, ;, +, -, /, *, =, \_, $\sim$, var, cond, !, 0, 1,..., 9, a, ..., z, 
 P = \{}
 \begin{quote}
   \texttt{
-    S $\to$ Prog\\
-    Prog $\to$ Prog Fundef | Prog Pcont | Pcont | Fundef\\
-    Pcont $\to$ Inst; | Fun; | Cond | While | Pcont Inst; | Pcont Fun; | Pcont Cond | Pcont While\\
+    S $\to$ Fprog\\
+    Fprog $\to$ Fprog Fundef | Fprog Prog | Prog | Fundef\\
+    Prog $\to$ Inst; | Fun; | Cond | While | Prog Inst; | Prog Fun; | Prog Cond | Prog While\\
     Inst $\to$ Expr | Asig\\
-    Fundef $\to$ fun Fnom (Fdparams) Tipo : Pcont $\sim$fun\\
-    While $\to$ while Ebool : Pcont $\sim$while\\    
-    Fun $\to$ Fnom (Fparams)\\
-    Fdparams $\to$ Tipo Var | Fdparams, Tipo Var\\
-    Fparams $\to$ Var | Fparams, Var | Fun | Fparams, Fun\\
+    Fundef $\to$ fun Fnom (Fdparams) Tipo : Prog $\sim$fun\\
+    While $\to$ while Ebool : Prog $\sim$while\\    
+    Fun $\to$ Id (Fparams)\\
+    Fdparams $\to$ Tipo Id | Fdparams, Tipo Id\\
+    Fparams $\to$ Id | Fparams, Id | Fun | Fparams, Fun\\
+    Cond $\to$ cond Ebool : Sig $\sim$cond \\
+    Sig $\to$ Prog | Prog ! Ebool : Sig | Prog ! default : Prog \\
     Expr  $\to$ Term Expr' | Ebool \\
     Expr' $\to$ + Term Expr' | - Term Expr' | $\varepsilon$ \\
     Term  $\to$ Factor Term' \\
@@ -57,14 +59,11 @@ P = \{}
     Entero $\to$ Digito | Digito Entero \\
     Digito $\to$ 0 | 1 | 2 | ... | 9 \\
     Ebool $\to$ ... \\
-    Asig $\to$ Tipo Var = Expr | Var = Expr \\
-    Var  $\to$ Letra Pos \\
-    Pos  $\to$ Var | $\varepsilon$ \\
-    Letra $\to$ \_ | a | b | ... | z | A | B | ... | Z \\
-    Cond $\to$ cond Expr : Bloq Sig \\
-    Bloq $\to$ Expr ; Bloq'\\
-    Bloq' $\to$ Bloq | $\varepsilon$\\ 
-    Sig $\to$ ! Expr : Bloq Sig | $\varepsilon$ \\
+    Asig $\to$ Tipo Id = Expr | Id = Expr \\
+    Id  $\to$ Letra Pos | Letra \\
+    Pos  $\to$ Pos Carac | Carac \\
+    Carac $\to$ Letra | \_ | Digito
+    Letra $\to$ a | b | ... | z | A | B | ... | Z \\
     Tipo $\to$ int | float | bool \\
     \}
 }
