@@ -48,12 +48,11 @@ P = \{}
     Fdparams $\to$ Tipo Id | Fdparams, Tipo Id\\
     Fparams $\to$ Id | Fparams, Id | Fun | Fparams, Fun\\
     Cond $\to$ cond Ebool : Sig $\sim$cond \\
-    Sig $\to$ Prog | Prog ! Ebool : Sig | Prog ! default : Prog \\
-    Expr  $\to$ Term Expr' | Ebool \\
-    Expr' $\to$ + Term Expr' | - Term Expr' | $\varepsilon$ \\
-    Term  $\to$ Factor Term' \\
-    Term' $\to$ * Factor Term' | / Factor Term'| $\varepsilon$ \\
-    Factor $\to$ Num | var | (Expr) | - Expr \\
+    Sig $\to$ Prog | Prog ! Ebool : Sig | Prog ! default : Prog \\    
+    Expr $\to$ Ebool | Expr'  \\
+    Expr' $\to$ Expr' + Term | Expr' - Term | Term \\
+    Term $\to$ Term * Factor | Term / Factor | Factor \\
+    Factor $\to$ Id | Num | (Expr') | - Factor | Fun \\
     Num $\to$ Entero Decimal \\
     Decimal $\to$ . Entero | $\varepsilon$ \\
     Entero $\to$ Digito | Digito Entero \\
