@@ -6,15 +6,15 @@ SRC=$(wildcard *.cpp *.cc)
 OBJ=$(SRC:%.cpp=%.o)
 
 all: $(OBJ)
-$(CXX) -g -std=c++11 -o $(BIN) $^ -lfl
+	$(CXX) -g -std=c++11 -o $(BIN) $^ -lfl
 
 %.o: %.c
-$(CXX) $@ -c $<
+	$(CXX) $@ -c $<
 
 .PHONY: clean
 clean :
-rm -f kyc-ip *.o
+	rm -f $(BIN) *.o
 
 .PHONY: flex
 flex:
-flex++ lexer.lex
+	flex++ lexer.lex

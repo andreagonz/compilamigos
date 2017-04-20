@@ -4,8 +4,7 @@
 #include <fstream>
 #include <queue>
 #include <string>
-#include "Nodo"
-#include "Token"
+#include "nodo.h"
     
 using namespace std;
 int linea = 1;
@@ -16,17 +15,14 @@ queue<Nodo*> * nodos = new queue<Nodo*>;
 						
 num	[0-9]+|[0-9]+\.[0-9]+
 id	[a-zA-Z][a-zA-Z0-9_]*
-tipo	bool|int|float
+tipo	["bool""int""float"]
 		       			
 %%
-{id}	{
-	    col++;            
-	}
-{num}	{
+{tipo}	{
 	    col++;            
 	}
 
-{var}	{
+{num}	{
 	    col++;            
 	}
 
@@ -64,19 +60,21 @@ tipo	bool|int|float
 
 "~fun"	{
 	    col++;            
-}
+	}
 
 "~cond"	{
 	    col++;            
-}
+	}
 
 "~while"	{
 	    col++;            
-}
+	}
+
 
 "fun"	{
 	    col++;            
 }
+
 
 "cond"	{
 	    col++;            
@@ -92,15 +90,11 @@ tipo	bool|int|float
 
 "|"	{
 	    col++;            
-}
+	}
 
-"true"	{
+{id}	{
 	    col++;            
-}
-
-"false"	{
-	    col++;            
-}
+	}
 
 [ \t\r]	{
 	    col++;
@@ -113,7 +107,7 @@ tipo	bool|int|float
 
 .	{
 	    cout << "Carácter no reconocido en línea " << linea << ", columna " << col << ": " <<  yytext[0] << "\n";
-            clear(tokens, nodos);
+            /* clear(tokens, nodos); */
 	    exit(1);
 	}
 %%
