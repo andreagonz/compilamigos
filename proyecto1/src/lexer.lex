@@ -12,89 +12,138 @@ int col = 1;
 
 queue<Nodo*> * nodos = new queue<Nodo*>;
 %}
-						
+
 num	[0-9]+|[0-9]+\.[0-9]+
 id	[a-zA-Z][a-zA-Z0-9_]*
 tipo	["bool""int""float"]
-		       			
+
 %%
 {tipo}	{
 	    col++;            
 	}
 
 {num}	{
-	    col++;            
+	    col++;    
+      return INT;
 	}
 
 "+"	{
-	    col++;            
+	    col++;    
+      return PLUS;
 	}
 
 "-"	{
-	    col++;            
+	    col++;     
+      return MINUS;
 	}
 
 "*"	{
-	    col++;            
+	    col++;      
+      return MULT;
 	}
 
 "/"	{
-	    col++;            
+	    col++;  
+      return DIV;
 	}
 
 "("	{
-	    col++;            
+	    col++;    
+      return LPAR;
 	}
 
 ")"	{
-	    col++;            
+	    col++;
+      return RPAR;
 	}
 
 ";"	{
-	    col++;            
+	    col++; 
+      return SEMIC;
 	}
 
 "="	{
-	    col++;            
+	    col++; 
+      return ASIG;
 	}
 
 "~fun"	{
-	    col++;            
+	    col++;    
+      return ENDFUN;
 	}
 
 "~cond"	{
-	    col++;            
+	    col++;  
+      return ENDCOND;
 	}
 
 "~while"	{
-	    col++;            
+	    col++;     
+      return ENDWHILE;
 	}
 
 
 "fun"	{
-	    col++;            
+	    col++;    
+      return FUN;
 }
 
 
 "cond"	{
-	    col++;            
+	    col++;      
+      return COND;
 }
 
 "while"	{
-	    col++;            
+	    col++;     
+      return WHILE;
 }
 
 ":"	{
-	    col++;            
+	    col++; 
+      return DOTDOT;
 }
 
 "|"	{
-	    col++;            
+	    col++; 
+      return PIPE;
 	}
 
 {id}	{
-	    col++;            
+	    col++;     
+      return ID;
 	}
+
+"==" {
+      col++;
+      return EQ;
+}
+
+
+"!=" {
+    col++;
+    return NEQ;
+}
+
+"<" {
+      col++;
+      return LESS;
+}
+
+">" {
+      col++;
+      return GREAT;
+}
+
+"<=" {
+      col++;
+      return LESSEQ;
+}
+
+">=" {
+      col++;
+      return GREATEQ;
+}
 
 [ \t\r]	{
 	    col++;
@@ -105,11 +154,15 @@ tipo	["bool""int""float"]
 	    col = 1;
 	}
 
+<<EOF>> {
+          return 0;
+      	}
 .	{
 	    cout << "Carácter no reconocido en línea " << linea << ", columna " << col << ": " <<  yytext[0] << "\n";
             /* clear(tokens, nodos); */
 	    exit(1);
 	}
+
 %%
 
 int main( int argc, char **argv ) {
