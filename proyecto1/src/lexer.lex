@@ -29,22 +29,22 @@ tipo	["bool""int""float"]
 
 "+"	{
 	    col++;    
-      return PLUS;
+      return '+';
 	}
 
 "-"	{
 	    col++;     
-      return MINUS;
+      return '-';
 	}
 
 "*"	{
 	    col++;      
-      return MULT;
+      return '*';
 	}
 
 "/"	{
 	    col++;  
-      return DIV;
+      return '/';
 	}
 
 "("	{
