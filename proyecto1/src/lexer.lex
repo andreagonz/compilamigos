@@ -2,7 +2,6 @@
 
 %{
 #include <fstream>
-#include <queue>
 #include <string>
 #include "nodo.h"
     
@@ -10,7 +9,6 @@ using namespace std;
 int linea = 1;
 int col = 1;
 
-queue<Nodo*> * nodos = new queue<Nodo*>;
 %}
 
 num	[0-9]+|[0-9]+\.[0-9]+
@@ -19,68 +17,68 @@ tipo	["bool""int""float"]
 
 %%
 {tipo}	{
-	    col++;            
-	}
+          col++;            
+}
 
 {num}	{
-	    col++;    
-      return INT;
-	}
+        col++;    
+        return INT;
+ }
 
 "+"	{
-	    col++;    
+      col++;    
       return '+';
-	}
+}
 
 "-"	{
-	    col++;     
-      return '-';
-	}
+        col++;     
+        return '-';
+}
 
 "*"	{
-	    col++;      
-      return '*';
-	}
+        col++;      
+        return '*';
+}
 
 "/"	{
 	    col++;  
       return '/';
-	}
+}
 
 "("	{
 	    col++;    
       return LPAR;
-	}
+}
 
 ")"	{
 	    col++;
       return RPAR;
-	}
+}
 
 ";"	{
 	    col++; 
       return SEMIC;
-	}
+}
 
 "="	{
 	    col++; 
       return ASIG;
-	}
+}
 
 "~fun"	{
 	    col++;    
       return ENDFUN;
-	}
+}
 
 "~cond"	{
 	    col++;  
       return ENDCOND;
-	}
+}
 
 "~while"	{
 	    col++;     
       return ENDWHILE;
-	}
+}
 
 
 "fun"	{
@@ -107,12 +105,12 @@ tipo	["bool""int""float"]
 "|"	{
 	    col++; 
       return PIPE;
-	}
+}
 
 {id}	{
 	    col++;     
       return ID;
-	}
+}
 
 "==" {
       col++;
@@ -136,13 +134,23 @@ tipo	["bool""int""float"]
 }
 
 "<=" {
-      col++;
-      return LESSEQ;
+        col++;
+        return LESSEQ;
 }
 
 ">=" {
-      col++;
-      return GREATEQ;
+        col++;
+        return GREATEQ;
+}
+
+"&&" {
+        col++;
+        return AND;
+}
+
+"||" { 
+        col++;
+        return OR;
 }
 
 [ \t\r]	{
