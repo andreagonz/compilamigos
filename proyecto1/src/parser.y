@@ -6,12 +6,17 @@ int yyerror(char *err);
 
 %}
 
-%token INT FLOAT BOOL ID 
-%token EQ NEQ LESS GREAT LESSEQ GREATEQ NEG AND OR
-%token LPAR RPAR SEMIC ASIG FUN ENDFUN COND ENDCOND WHILE ENDWHILE DOTDOT PIPE
-%left '+' '-'
-%left '*' '/'
-%left NEG
+%union {
+  int val; 
+  char sym;
+};
+
+%token <val> INT FLOAT 
+%token <sym> BOOL ID 
+%token <sym> EQ NEQ LESS GREAT LESSEQ GREATEQ NEG AND OR
+%token <sym> LPAR RPAR SEMIC ASIG FUN ENDFUN COND ENDCOND WHILE ENDWHILE DOTDOT PIPE
+%left <sym> '+' '-'
+%left <sym> '*' '/'
 
 %%
 

@@ -4,6 +4,7 @@
 #include <fstream>
 #include <string>
 #include "nodo.h"
+
     
 using namespace std;
 int linea = 1;
@@ -11,7 +12,8 @@ int col = 1;
 
 %}
 
-num	[0-9]+|[0-9]+\.[0-9]+
+int	[0-9]+
+float   [0-9]+\.[0-9]+
 id	[a-zA-Z][a-zA-Z0-9_]*
 tipo	["bool""int""float"]
 
@@ -20,10 +22,16 @@ tipo	["bool""int""float"]
           col++;            
 }
 
-{num}	{
+{int}	{
         col++;    
         return INT;
  }
+
+{float}	{
+        col++;    
+        return INT;
+ }
+
 
 "+"	{
       col++;    
