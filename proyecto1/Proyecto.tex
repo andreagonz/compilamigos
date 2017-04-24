@@ -10,6 +10,7 @@
 \usepackage{mathtools}
 \usepackage{amssymb}
 \usepackage{enumerate}
+\usepackage{scrextend}
 %\usepackage{tabularx}
 %\usepackage{wasysym}
 \usepackage{graphicx}
@@ -27,17 +28,16 @@
 \subsubsection*{1. Definición de la gramática}
 
 Sea $G$ nuestra gramática de expresiones aritméticas. Definiremos $G$, como la 4-tupla: $G = (N,T,P,S)$, con $N,T,P$ conjuntos y $S$ el símbolo de la producción inicial.
-A continuación, se muestran los conjuntos que la conforman:\\
-
-\noindent
-\noindent
+A continuación, se muestran los conjuntos que la conforman:\\ \\
+\texttt{ 
+N = \{Expr, Expr', Asig, Term, Term', Factor, Num, Entero, Decimal, Digito, Var \}
+}\\
 \texttt{
-  \noindent
-N = \{Expr, Expr', Asig, Term, Term', Factor, Num, Entero, Decimal, Digito, Var \}\\
-T = \{., :, ;, +, -, /, *, =, \_, $\sim$, var, cond, !, 0, 1,..., 9, a, ..., z, A, ..., Z\}\\ \\ 
-P = \{}
-\begin{quote}
-  \texttt{
+T = \{., :, ;, +, -, /, *, =, \_, $\sim$, var, cond, !, 0, 1,..., 9, a, ..., z, A, ..., Z\}
+}\\
+\texttt{
+P = \{
+\begin{addmargin}[2.5em]{0em}
     S $\to$ Fprog\\
     Fprog $\to$ Fprog Fprog' | Fprog' \\
     Fprog' $\to$ Asig'; | Fundef \\
@@ -49,9 +49,9 @@ P = \{}
     Fun $\to$ Id (Fparams)\\
     Fdparams $\to$ Fdparams, Tipo Id | Tipo Id \\
     Fparams $\to$ Fparams, Param | Param  \\
-    Param $\to$ Fun | Id | Num
+    Param $\to$ Fun | Id | Num \\
     Cond $\to$ cond Expr : Sig $\sim$cond \\
-    Sig $\to$ Prog ! Expr : Sig | Prog ! default : Prog | Prog \\        
+    Sig $\to$ Prog ! Expr : Sig | Prog ! default : Prog | Prog \\
     Expr $\to$ Bexp \\ 
     Bexp $\to$ Bexp or Bterm | Bterm \\ 
     Bterm $\to$ Bterm and Beq | Beq \\ 
@@ -65,18 +65,18 @@ P = \{}
     Decimal $\to$ . Entero | $\varepsilon$ \\
     Entero $\to$ Digito | Digito Entero \\
     Digito $\to$ 0 | 1 | 2 | ... | 9 \\
-    Asig $\to$  Easig | Asig'
+    Asig $\to$  Easig | Asig' \\
     Asig' $\to$ Tipo Easig \\
-    Easig $\to$ Id = Expr | Id = Fun
+    Easig $\to$ Id = Expr | Id = Fun \\
     Id  $\to$ Letra Pos | Letra \\
     Pos  $\to$ Pos Carac | Carac \\
-    Carac $\to$ Letra | \_ | Digito
+    Carac $\to$ Letra | \_ | Digito \\
     Letra $\to$ a | b | ... | z | A | B | ... | Z \\
     Tipo $\to$ int | float | bool \\
-    \}
+\end{addmargin}
+\}
 }
 
-\end{quote}
 
 \subsubsection*{Identificar las categorías sintácticas y definir los tokens}
 
