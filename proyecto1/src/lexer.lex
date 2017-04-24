@@ -25,13 +25,17 @@ tipo	["bool""int""float"]
 {int}	{
         col++;    
         return INT;
- }
+}
 
 {float}	{
         col++;    
         return INT;
- }
+}
 
+"," {
+      col++;
+      return COMMA;
+}
 
 "+"	{
       col++;    
@@ -125,7 +129,6 @@ tipo	["bool""int""float"]
       return EQ;
 }
 
-
 "!=" {
     col++;
     return NEQ;
@@ -161,23 +164,44 @@ tipo	["bool""int""float"]
         return OR;
 }
 
+"!" {
+        col++;
+        return NOT;
+}
+
+"true" {
+        col++;
+        return TRUE;
+}
+
+"false" {
+        col++;
+        return FALSE;
+}
+
+"default" {
+        col++;
+        return DEFAULT;
+}
+
 [ \t\r]	{
 	    col++;
-	}
+}
 
 [\n]	{
 	    linea++;
 	    col = 1;
-	}
+}
 
 <<EOF>> {
           return 0;
-      	}
+}
+
 .	{
 	    cout << "Carácter no reconocido en línea " << linea << ", columna " << col << ": " <<  yytext[0] << "\n";
             /* clear(tokens, nodos); */
 	    exit(1);
-	}
+}
 
 %%
 
