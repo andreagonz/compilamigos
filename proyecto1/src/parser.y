@@ -32,22 +32,23 @@ Fprog' :  Asig'SEMIC | Fundef
 ;
 Prog :  Prog Prog' | Prog' 
 ;
-Prog' :  COND | WHILE | InstSEMIC | FUNSEMIC 
+Prog' :  Conditional | Whileloop | InstSEMIC | FunctionSEMIC 
 ;
 Inst :  Expr | Asig
 ;
 Fundef :  FUN ID LPAR Fdparams RPAR Tipo DOTDOT Prog ENDFUN
 ;
-WHILE :  WHILE Expr DOTDOT Prog ENDWHILE 
+Whileloop :  WHILE Expr DOTDOT Prog ENDWHILE 
 ;    
-FUN :  ID LPAR Fparams RPAR
+Function :  ID LPAR Fparams RPAR
 ;
 Fdparams :  FdparamsCOMMA Tipo ID | Tipo ID 
 ;
 Fparams :  FparamsCOMMA Param | Param  
-;Param :  FUN | ID | Num 
 ;
-COND :  COND Expr DOTDOT Sig ENDCOND
+Param :  Function | ID | Num 
+;
+Conditional :  COND Expr DOTDOT Sig ENDCOND
 ;
 Sig :  Prog PIPE Expr DOTDOT Sig | Prog PIPE DEFAULT DOTDOT Prog | Prog 
 ;
@@ -73,7 +74,7 @@ Asig :   Easig | Asig'
 ;
 Asig' :  Tipo Easig 
 ;
-Easig :  ID ASIG Expr | ID ASIG FUN
+Easig :  ID ASIG Expr | ID ASIG Function
 ;
 Num: float | int
 ;
