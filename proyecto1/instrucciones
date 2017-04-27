@@ -1,3 +1,5 @@
+Instrucciones
+
 
 --Para compilar el archivo de bison
 bison -d parser.y
