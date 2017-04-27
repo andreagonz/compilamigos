@@ -18,8 +18,24 @@ id	[a-zA-Z][a-zA-Z0-9_]*
 tipo	["bool""int""float"]
 
 %%
+"true" {
+        col++;
+        return TRUE;
+}
+
+"false" {
+        col++;
+        return FALSE;
+}
+
+"default" {
+        col++;
+        return DEFAULT;
+}
+
 {tipo}	{
-          col++;            
+          col++;
+          return Tipo;           
 }
 
 {int}	{
@@ -29,7 +45,7 @@ tipo	["bool""int""float"]
 
 {float}	{
         col++;    
-        return INT;
+        return FLOAT;
 }
 
 "," {
@@ -72,7 +88,7 @@ tipo	["bool""int""float"]
       return SEMIC;
 }
 
-"="	{
+":="	{
 	    col++; 
       return ASIG;
 }
@@ -166,22 +182,7 @@ tipo	["bool""int""float"]
 
 "!" {
         col++;
-        return NOT;
-}
-
-"true" {
-        col++;
-        return TRUE;
-}
-
-"false" {
-        col++;
-        return FALSE;
-}
-
-"default" {
-        col++;
-        return DEFAULT;
+        return '!';
 }
 
 [ \t\r]	{

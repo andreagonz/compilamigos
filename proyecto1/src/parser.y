@@ -1,38 +1,74 @@
 %{
 
 /*cosas de c++. prologo*/
+#include <cstring>
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
 int yylex(void);
 int yyerror(char *err);
+
 
 %}
 
 /* bison declarations */
 
 %union {
-  int val; 
-  char* sym; // $$ can either be an int or a string
+  int ival;
+  float fval; 
+  char *sym; // $$ can either be an int or a string
 };
 
-%token <val> INT FLOAT 
-%token <sym> BOOL ID
-%token <sym> EQ NEQ LESS GREAT LESSEQ GREATEQ NEG AND OR
-%token <sym> LPAR RPAR SEMIC ASIG FUN ENDFUN COND ENDCOND WHILE ENDWHILE DOTDOT PIPE
-%left <sym> '+' '-'
-%left <sym> '*' '/'
+%token <ival> INT 
+%token <fval> FLOAT 
+%token <sym> BOOL 
+%token <sym> ID
+%token <sym> EQ 
+%token <sym> NEQ
+%token <sym> LESS
+%token <sym> GREAT
+%token <sym> LESSEQ
+%token <sym> GREATEQ
+%token <sym> NOT
+%token <sym> AND
+%token <sym> OR
+%token <sym> LPAR
+%token <sym> RPAR
+%token <sym> ASIG
+%token <sym> FUN
+%token <sym> Tipo
+%token <sym> ENDFUN
+%token <sym> COND
+%token <sym> ENDCOND
+%token <sym> WHILE
+%token <sym> ENDWHILE
+%token <sym> DEFAULT
+%token <sym> DOTDOT
+%token <sym> PIPE
+%token <sym> TRUE
+%token <sym> FALSE
+%token <sym> COMMA
+%left <sym> '+' 
+%left <sym> '-'
+%left <sym> '*' 
+%left <sym> '/'
+%token <sym> SEMIC
+
 
 %%
 
 /*gramática*/
 
+/*Cambie todas las ' por la letra a*/
 S :  Fprog
 ;
-Fprog :  Fprog Fprog' | Fprog' 
+Fprog :  Fprog Fproga | Fproga 
 ;
-Fprog' :  Asig'SEMIC | Fundef 
+Fproga :  Asiga SEMIC | Fundef 
 ;
-Prog :  Prog Prog' | Prog' 
+Prog :  Prog Proga | Proga 
 ;
-Prog' :  Conditional | Whileloop | InstSEMIC | FunctionSEMIC 
+Proga :  Conditional | Whileloop | Inst SEMIC | Function SEMIC 
 ;
 Inst :  Expr | Asig
 ;
@@ -42,9 +78,9 @@ Whileloop :  WHILE Expr DOTDOT Prog ENDWHILE
 ;    
 Function :  ID LPAR Fparams RPAR
 ;
-Fdparams :  FdparamsCOMMA Tipo ID | Tipo ID 
+Fdparams :  Fdparams COMMA Tipo ID | Tipo ID 
 ;
-Fparams :  FparamsCOMMA Param | Param  
+Fparams :  Fparams  Param | Param  
 ;
 Param :  Function | ID | Num 
 ;
@@ -60,28 +96,28 @@ Bterm :  Bterm AND Beq | Beq
 ; 
 Beq :  Beq EQ Bcomp | Beq NEQ Bcomp | Bcomp 
 ;
-Bcomp :  Bcomp LESS Expr' | Bcomp GREAT Expr' | Bcomp LESSEQ Expr' | Bcomp GREATEQ Expr' | Expr' 
+Bcomp :  Bcomp LESS Expra | Bcomp GREAT Expra | Bcomp LESSEQ Expra | Bcomp GREATEQ Expra | Expra 
 ; 
-Expr' :  Expr' '+' Term | Expr' '-' Term | Term 
+Expra :  Expra '+' Term | Expra '-' Term | Term 
 ;
 Term :  Term '*' Factor | Term '/' Factor | Factor 
 ;    
-Factor :  ID | Num | LPAR Expr RPAR | '-' Factor | NOTFactor | Bool 
+Factor :  ID | Num | LPAR Expr RPAR | '-' Factor | NOT Factor | Bool 
 ;
 Bool :  TRUE | FALSE 
 ;
-Asig :   Easig | Asig' 
+Asig :   Easig | Asiga 
 ;
-Asig' :  Tipo Easig 
+Asiga :  Tipo Easig 
 ;
 Easig :  ID ASIG Expr | ID ASIG Function
 ;
-Num: float | int
+Num: FLOAT | INT
 ;
 %%
 
 /* epilogo */
 
-int main(){
+int main() {
     yyparse();
 }
