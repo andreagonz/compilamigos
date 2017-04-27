@@ -1,14 +1,17 @@
 %{
+#include <cstdio>
+#include <iostream>
+using namespace std;
 
-/*cosas de c++. prologo*/
-#include <cstring>
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-int yylex(void);
-int yyerror(char *err);
+// stuff from flex that bison needs to know about:
+extern "C" int yylex();
+extern "C" int yyparse();
+extern "C" FILE *yyin;
 
-
+extern int linea;
+extern int col;
+ 
+void yyerror(const char *s);
 %}
 
 /* bison declarations */
@@ -16,59 +19,35 @@ int yyerror(char *err);
 %union {
   int ival;
   float fval; 
-  char *sym; // $$ can either be an int or a string
-};
+  char* sval; // $$ can either be an int or a string
+}
+
+
+
+%token TRUE FALSE DEFAULT ENTERO FLOTANTE BOOLEANO
+%token EQ NEQ LESS GREAT LESSEQ GREATEQ NOT AND OR
+%token LPAR RPAR SEMIC ASIG FUN ENDFUN COND ENDCOND WHILE ENDWHILE DOTDOT COMMA EXCLAMA
+%left  PLUS MINUS
+%left  MULT DIV
+
 
 %token <ival> INT 
 %token <fval> FLOAT 
-%token <sym> BOOL 
-%token <sym> ID
-%token <sym> EQ 
-%token <sym> NEQ
-%token <sym> LESS
-%token <sym> GREAT
-%token <sym> LESSEQ
-%token <sym> GREATEQ
-%token <sym> NOT
-%token <sym> AND
-%token <sym> OR
-%token <sym> LPAR
-%token <sym> RPAR
-%token <sym> ASIG
-%token <sym> FUN
-%token <sym> Tipo
-%token <sym> ENDFUN
-%token <sym> COND
-%token <sym> ENDCOND
-%token <sym> WHILE
-%token <sym> ENDWHILE
-%token <sym> DEFAULT
-%token <sym> DOTDOT
-%token <sym> PIPE
-%token <sym> TRUE
-%token <sym> FALSE
-%token <sym> COMMA
-%left <sym> '+' 
-%left <sym> '-'
-%left <sym> '*' 
-%left <sym> '/'
-%token <sym> SEMIC
-
+%token <sval> ID
 
 %%
 
 /*gramática*/
 
-/*Cambie todas las ' por la letra a*/
 S :  Fprog
 ;
-Fprog :  Fprog Fproga | Fproga 
+Fprog :  Fprog FprogPrim | FprogPrim 
 ;
-Fproga :  Asiga SEMIC | Fundef 
+FprogPrim :  AsigPrim SEMIC | Fundef 
 ;
-Prog :  Prog Proga | Proga 
+Prog :  Prog ProgPrim | ProgPrim 
 ;
-Proga :  Conditional | Whileloop | Inst SEMIC | Function SEMIC 
+ProgPrim :  Conditional | Whileloop | Inst SEMIC | Function SEMIC 
 ;
 Inst :  Expr | Asig
 ;
@@ -80,13 +59,13 @@ Function :  ID LPAR Fparams RPAR
 ;
 Fdparams :  Fdparams COMMA Tipo ID | Tipo ID 
 ;
-Fparams :  Fparams  Param | Param  
+Fparams :  Fparams COMMA Param | Param  
 ;
 Param :  Function | ID | Num 
 ;
 Conditional :  COND Expr DOTDOT Sig ENDCOND
 ;
-Sig :  Prog PIPE Expr DOTDOT Sig | Prog PIPE DEFAULT DOTDOT Prog | Prog 
+Sig :  Prog EXCLAMA Expr DOTDOT Sig | Prog EXCLAMA DEFAULT DOTDOT Prog | Prog 
 ;
 Expr :  Bexp
 ;
@@ -96,28 +75,52 @@ Bterm :  Bterm AND Beq | Beq
 ; 
 Beq :  Beq EQ Bcomp | Beq NEQ Bcomp | Bcomp 
 ;
-Bcomp :  Bcomp LESS Expra | Bcomp GREAT Expra | Bcomp LESSEQ Expra | Bcomp GREATEQ Expra | Expra 
+Bcomp :  Bcomp LESS ExprPrim | Bcomp GREAT ExprPrim | Bcomp LESSEQ ExprPrim | Bcomp GREATEQ ExprPrim | ExprPrim 
 ; 
-Expra :  Expra '+' Term | Expra '-' Term | Term 
+ExprPrim :  ExprPrim PLUS Term | ExprPrim MINUS Term | Term 
 ;
-Term :  Term '*' Factor | Term '/' Factor | Factor 
+Term :  Term MULT Factor | Term DIV Factor | Factor 
 ;    
-Factor :  ID | Num | LPAR Expr RPAR | '-' Factor | NOT Factor | Bool 
+Factor :  ID | Num | LPAR Expr RPAR | MINUS Factor | NOT Factor | Bool 
 ;
 Bool :  TRUE | FALSE 
 ;
-Asig :   Easig | Asiga 
+Asig :   Easig | AsigPrim 
 ;
-Asiga :  Tipo Easig 
+AsigPrim :  Tipo Easig 
 ;
 Easig :  ID ASIG Expr | ID ASIG Function
 ;
 Num: FLOAT | INT
 ;
+
+Tipo: ENTERO | FLOTANTE | BOOLEANO
+;
 %%
 
 /* epilogo */
 
-int main() {
-    yyparse();
+int main(int, char**) {
+	// open a file handle to a particular file:
+	FILE *myfile = fopen("in.parser", "r");
+	// make sure it's valid:
+	if (!myfile) {
+		cout << "I can't open a.parser.file!" << endl;
+		return -1;
+	}
+	// set flex to read from it instead of defaulting to STDIN:
+	yyin = myfile;
+
+	// parse through the input until there is no more:
+	do {
+		yyparse();
+	} while (!feof(yyin));
+	
+}
+
+void yyerror(const char *s) {
+	cout << "EEK, parse error! en línea " << linea << ", columna " << col << "  Message: " << s << endl;
+
+	// might as well halt now:
+	exit(-1);
 }

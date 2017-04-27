@@ -1,12 +1,10 @@
-%option C++ noyywrap
-
 %{
-#include <fstream>
-#include <string>
-#include "nodo.h"
 
-    
+
+#include <iostream>
+#include "parser.tab.h"
 using namespace std;
+#define YY_DECL extern "C" int yylex()
 int linea = 1;
 int col = 1;
 
@@ -15,187 +13,236 @@ int col = 1;
 int	[0-9]+
 float   [0-9]+\.[0-9]+
 id	[a-zA-Z][a-zA-Z0-9_]*
-tipo	["bool""int""float"]
 
 %%
-"true" {
-        col++;
-        return TRUE;
-}
-
-"false" {
-        col++;
-        return FALSE;
-}
-
-"default" {
-        col++;
-        return DEFAULT;
-}
-
-{tipo}	{
-          col++;
-          return Tipo;           
-}
 
 {int}	{
+	cout << "Encontre un entero:" << yytext << endl;
+        //yylval.ival = atoi(yytext);
         col++;    
         return INT;
 }
 
 {float}	{
+	cout << "Encontre un flotante:" << yytext << endl;
+        //yylval.fval = atof(yytext);
         col++;    
         return FLOAT;
 }
 
-"," {
-      col++;
-      return COMMA;
+"and" {
+        cout << "Encontre un and:" << yytext << endl;
+        col = col + 3;
+        return AND;
 }
 
-"+"	{
-      col++;    
-      return '+';
+"or" { 
+        cout << "Encontre un or:" << yytext << endl;
+        col = col + 2;
+        return OR;
 }
 
-"-"	{
-        col++;     
-        return '-';
+"not" { 
+        cout << "Encontre un not:" << yytext << endl;
+        col = col + 3;
+        return NOT;
 }
 
-"*"	{
-        col++;      
-        return '*';
+"bool" {
+        cout << "Encontre un bool:" << yytext << endl;
+        col = col + 4;
+        return BOOLEANO;
 }
 
-"/"	{
-	    col++;  
-      return '/';
+"int" {
+        cout << "Encontre un int:" << yytext << endl;
+        col = col + 3;
+        return ENTERO;
 }
 
-"("	{
-	    col++;    
-      return LPAR;
+"float" {
+        cout << "Encontre un float:" << yytext << endl;
+        col = col + 5;
+        return FLOTANTE;
 }
 
-")"	{
-	    col++;
-      return RPAR;
+	
+"true" {
+        cout << "Encontre un true:" << yytext << endl;
+        col = col + 4;
+        return TRUE;
 }
 
-";"	{
-	    col++; 
-      return SEMIC;
+"false" {
+        cout << "Encontre un false:" << yytext << endl;
+        col = col + 5;
+        return FALSE;
 }
 
-":="	{
-	    col++; 
-      return ASIG;
+"default" {
+        cout << "Encontre un default:" << yytext << endl;
+        col = col + 7;
+        return DEFAULT;
 }
-
-"~fun"	{
-	    col++;    
-      return ENDFUN;
-}
-
-"~cond"	{
-	    col++;  
-      return ENDCOND;
-}
-
-"~while"	{
-	    col++;     
-      return ENDWHILE;
-}
-
 
 "fun"	{
-	    col++;    
+        cout << "Encontre un fun:" << yytext << endl;
+        col = col + 3;
       return FUN;
 }
 
 
 "cond"	{
-	    col++;      
+        cout << "Encontre un cond:" << yytext << endl;
+        col = col + 4;
       return COND;
 }
 
 "while"	{
-	    col++;     
+        cout << "Encontre un while:" << yytext << endl;
+        col = col + 5;
       return WHILE;
 }
 
+"," {
+        cout << "Encontre un ,:" << yytext << endl;
+        col = col + 1;
+      return COMMA;
+}
+
+"+"	{
+        cout << "Encontre un +:" << yytext << endl;
+        col = col + 1;
+      return PLUS;
+}
+
+"-"	{
+        cout << "Encontre un -:" << yytext << endl;
+        col = col + 1;
+        return MINUS;
+}
+
+"*"	{
+        cout << "Encontre un *:" << yytext << endl;
+        col = col + 1;
+        return MULT;
+}
+
+"/"	{
+        cout << "Encontre un /:" << yytext << endl;
+        col = col + 1;
+      return DIV;
+}
+
+"("	{
+        cout << "Encontre un ( :" << yytext << endl;
+        col = col + 1;
+      return LPAR;
+}
+
+")"	{
+        cout << "Encontre un ):" << yytext << endl;
+        col = col + 1;
+      return RPAR;
+}
+
+";"	{
+        cout << "Encontre un ; :" << yytext << endl;
+        col = col + 1;
+      return SEMIC;
+}
+
+"="	{
+        cout << "Encontre un = :" << yytext << endl;
+        col = col + 1;
+      return ASIG;
+}
+
+"~fun"	{
+        cout << "Encontre un ~fun:" << yytext << endl;
+        col = col + 4;
+      return ENDFUN;
+}
+
+"~cond"	{
+        cout << "Encontre un ~cond:" << yytext << endl;
+        col = col + 5;
+      return ENDCOND;
+}
+
+"~while"	{
+        cout << "Encontre un ~while:" << yytext << endl;
+        col = col + 6;
+      return ENDWHILE;
+}
+
+
 ":"	{
-	    col++; 
+        cout << "Encontre un : :" << yytext << endl;
+        col = col + 1;
       return DOTDOT;
 }
 
-"|"	{
-	    col++; 
-      return PIPE;
-}
 
 {id}	{
+        cout << "Encontre un ID :" << yytext << endl;
+        //yylval.sval = strdup(yytext);
 	    col++;     
       return ID;
 }
 
 "==" {
-      col++;
+        cout << "Encontre un == :" << yytext << endl;
+        col = col + 2;
       return EQ;
 }
 
 "!=" {
-    col++;
+        cout << "Encontre un != :" << yytext << endl;
+        col = col + 2;
     return NEQ;
 }
 
 "<" {
-      col++;
+        cout << "Encontre un < :" << yytext << endl;
+        col = col + 1;
       return LESS;
 }
 
 ">" {
-      col++;
+        cout << "Encontre un >:" << yytext << endl;
+        col = col + 1;
       return GREAT;
 }
 
 "<=" {
-        col++;
+        cout << "Encontre un <= :" << yytext << endl;
+        col = col + 2;
         return LESSEQ;
 }
 
 ">=" {
-        col++;
+        cout << "Encontre un >= :" << yytext << endl;
+        col = col + 2;
         return GREATEQ;
 }
 
-"&&" {
-        col++;
-        return AND;
-}
-
-"||" { 
-        col++;
-        return OR;
-}
 
 "!" {
-        col++;
-        return '!';
+        cout << "Encontre un ! :" << yytext << endl;
+        col = col + 1;
+        return EXCLAMA;
 }
 
+
 [ \t\r]	{
-	    col++;
+
+        col = col + 1;
 }
 
 [\n]	{
 	    linea++;
 	    col = 1;
-}
-
-<<EOF>> {
-          return 0;
 }
 
 .	{
@@ -206,21 +253,3 @@ tipo	["bool""int""float"]
 
 %%
 
-int main( int argc, char **argv ) {
-    ifstream in(argv[1]);
-    if(argc < 2) {
-        cout << "Uso: ./kyc-ip <archivo.txt>" << endl;
-        return 1;
-    }
-        
-    if(!in.is_open()) {
-        cout << "Archivo inválido" << endl;
-        return 1;
-    }
-    
-    FlexLexer* lexer = new yyFlexLexer(in, cout);
-    lexer->yylex();
-    in.close();
- 
-    return 0;
-}
