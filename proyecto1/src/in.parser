@@ -1,24 +1,25 @@
-fun hola ( int perro ) int : 
-    ( 1 + 1 );
-    cond hola:
-         1 + 2;
-         int c = 6 + (2 + 9) * adios666;
-         c * c;
-         perro = x;
-         | gato:
-               hola;
+fun hola ( int angel ) int : 
+    angel = ( angel + 56 / 89.098 );
+    bool adan = true or false and true;
+    bool armando = false or var1;
+    cond adan and armando:
+         float c = 1 + 2 / (3.20 * 92);
+         | (adan == armando) or (angel > 98.98):
+               int x = 98.9;
                9 + 9;
-
           | default:
-                hola;
-                x = fu(x , f , d + k);            
+                x = f(adan , armando or true , angel + 98.09);            
     ~cond
     while true:
-          x;
-          x = fu(x , f , d + k);            
+          int x = f2(angel, angel * (0.982 + 2.2) / -89);            
     ~while
-        
+    return 0;
 ~fun
 
-int x = fu(x , f , d + k);            
-int c = hola(8 + 8, (k));
+fun adios() void :
+    9 + 9;
+    f(x);
+~fun
+
+int x = f(a, b, c + d);
+bool b = false;
