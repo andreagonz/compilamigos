@@ -22,14 +22,11 @@ void yyerror(const char *s);
   char* sval; // $$ can either be an int or a string
 }
 
-
-
 %token TRUE FALSE DEFAULT ENTERO FLOTANTE BOOLEANO
 %token EQ NEQ LESS GREAT LESSEQ GREATEQ NOT AND OR
-%token LPAR RPAR SEMIC ASIG FUN ENDFUN COND ENDCOND WHILE ENDWHILE DOTDOT COMMA EXCLAMA
+%token LPAR RPAR SEMIC ASIG FUN ENDFUN COND ENDCOND WHILE ENDWHILE DOTDOT COMMA PIPE
 %left  PLUS MINUS
 %left  MULT DIV
-
 
 %token <ival> INT 
 %token <fval> FLOAT 
@@ -61,11 +58,11 @@ Fdparams :  Fdparams COMMA Tipo ID | Tipo ID
 ;
 Fparams :  Fparams COMMA Param | Param  
 ;
-Param :  Function | ID | Num 
+Param :  Expr
 ;
 Conditional :  COND Expr DOTDOT Sig ENDCOND
 ;
-Sig :  Prog EXCLAMA Expr DOTDOT Sig | Prog EXCLAMA DEFAULT DOTDOT Prog | Prog 
+Sig :  Prog PIPE Expr DOTDOT Sig | Prog PIPE DEFAULT DOTDOT Prog | Prog 
 ;
 Expr :  Bexp
 ;
@@ -81,7 +78,7 @@ ExprPrim :  ExprPrim PLUS Term | ExprPrim MINUS Term | Term
 ;
 Term :  Term MULT Factor | Term DIV Factor | Factor 
 ;    
-Factor :  ID | Num | LPAR Expr RPAR | MINUS Factor | NOT Factor | Bool 
+Factor :  ID | Num | LPAR Expr RPAR | MINUS Factor | NOT Factor | Bool
 ;
 Bool :  TRUE | FALSE 
 ;
@@ -93,34 +90,30 @@ Easig :  ID ASIG Expr | ID ASIG Function
 ;
 Num: FLOAT | INT
 ;
-
 Tipo: ENTERO | FLOTANTE | BOOLEANO
 ;
 %%
 
 /* epilogo */
 
-int main(int, char**) {
-	// open a file handle to a particular file:
-	FILE *myfile = fopen("in.parser", "r");
-	// make sure it's valid:
+int main(int argc, char* argv[]) {
+	if(argc < 2) {
+		cout << "Uso: ./kyc-ip <archivo>" << endl;
+		return -1;
+ 	}
+	FILE *myfile = fopen(argv[1], "r");
 	if (!myfile) {
-		cout << "I can't open a.parser.file!" << endl;
+		cout << "Error al abrir archivo!" << endl;
 		return -1;
 	}
-	// set flex to read from it instead of defaulting to STDIN:
 	yyin = myfile;
 
-	// parse through the input until there is no more:
 	do {
 		yyparse();
 	} while (!feof(yyin));
-	
 }
 
 void yyerror(const char *s) {
-	cout << "EEK, parse error! en línea " << linea << ", columna " << col << "  Message: " << s << endl;
-
-	// might as well halt now:
+	cout << "Error! en línea " << linea << ", columna " << col << "  Mensaje: " << s << endl;
 	exit(-1);
 }

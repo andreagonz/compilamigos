@@ -1,3 +1,24 @@
 fun hola ( int perro ) int : 
-( 1 + 1 ); 
+    ( 1 + 1 );
+    cond hola:
+         1 + 2;
+         int c = 6 + (2 + 9) * adios666;
+         c * c;
+         perro = x;
+         | gato:
+               hola;
+               9 + 9;
+
+          | default:
+                hola;
+                x = fu(x , f , d + k);            
+    ~cond
+    while true:
+          x;
+          x = fu(x , f , d + k);            
+    ~while
+        
 ~fun
+
+int x = fu(x , f , d + k);            
+int c = hola(8 + 8, (k));

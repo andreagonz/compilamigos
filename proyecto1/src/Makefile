@@ -2,10 +2,12 @@ CXX=g++
 CXXFLAGS=-g -std=c++11
 BIN=kyc-ip
 
-SRC=$(wildcard *.cpp *.cc)
+SRC=$(wildcard *.cpp *.c)
 OBJ=$(SRC:%.cpp=%.o)
 
-all: $(OBJ)
+all: flex bison fin
+
+fin: $(OBJ)
 	$(CXX) -g -std=c++11 -o $(BIN) $^ -lfl
 
 %.o: %.c
@@ -17,4 +19,8 @@ clean :
 
 .PHONY: flex
 flex:
-	flex++ lexer.lex
+	flex lexer.lex
+
+.PHONY: bison
+bison:
+	bison -d parser.y
