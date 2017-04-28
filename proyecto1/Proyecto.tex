@@ -27,11 +27,13 @@
 Sea $G$ nuestra gramática de expresiones aritméticas. Definiremos $G$, como la 4-tupla: $G = (N,T,P,S)$, con $N,T,P$ conjuntos y $S$ el símbolo de la producción inicial.
 A continuación, se muestran los conjuntos que la conforman:\\ \\
 \texttt{ 
-N = \{Expr, Expr', Asig, Term, Term', Factor, Num, Entero, Decimal, Digito, Var \}
+N = \{S, Fprog, Fprog', Prog, Prog', Inst, Fundef, Fundef', Return, While, Fun, Fdparams, Fparams, Param, Cond, Sig, Expr, Bexp, Bterm, Beq, Bcom, Expr', Term, Factor, Bool, Num, Decimal, Entero, Digito, Asig, Asig', Easig, Id, pos, Carac, Letra, Tipo\}
 }\\
+
 \texttt{
-T = \{., :, ;, +, -, /, *, =, \_, $\sim$, var, cond, !, 0, 1,..., 9, a, ..., z, A, ..., Z\}
+T = \{., :, ;, +, -, /, *, =, \_, ==, >, <, >=, <=, and, or, not, (, ), fun, while, cond, $\sim$fun, $\sim$while, $\sim$cond, int, float, bool, void, |, 0, 1,..., 9, a, ..., z, A, ..., Z\}  \footnote{En la gramática utilizaremos ``!'' para representar a ``|'' con el propósito de no confundir el símbolo terminal ``|'' con la separación de producciones}
 }\\
+
 \texttt{
 P = \{
 \begin{addmargin}[2.5em]{0em}
@@ -41,9 +43,11 @@ P = \{
     Prog $\to$ Prog Prog' | Prog' \\
     Prog' $\to$ Cond | While | Inst; | Fun; \\
     Inst $\to$ Expr | Asig\\
-    Fundef $\to$ fun Id (Fdparams) Tipo : Prog $\sim$fun\\
+    Fundef $\to$ fun Id (Fdparams) Fundef' | fun Id ( ) Fundef' \\
+    Fundef' $\to$ Tipo : Prog Return; $\sim$fun | void : Prog $\sim$fun \\
+    Return $\to$ return Expr | return Fun \\
     While $\to$ while Expr : Prog $\sim$while\\    
-    Fun $\to$ Id (Fparams)\\
+    Fun $\to$ Id (Fparams) | Id ( )\\
     Fdparams $\to$ Fdparams, Tipo Id | Tipo Id \\
     Fparams $\to$ Fparams, Param | Param  \\
     Param $\to$ Expr \\
@@ -126,7 +130,6 @@ Para más información sobre la implementación del analizador léxico con \text
 Se utilizó la versión 3.0.4 del generador de analizadores sintácticos \textit{GNU Bison} para C++. \\
 Dicha implementación está en el archivo \texttt{parser.y} del directorio \texttt{src}
 
-
 \subsection*{Razonamiento para la gramática}
 \subsubsection*{Categorias sintácticas}
 Ver número 2 arriba.
@@ -145,7 +148,11 @@ En cualquier sistema operativo basado en Unix basta con ejecutar \texttt{make} e
 
 \subsubsection*{Para ejecutarlo:} 
 
-\texttt{./kyc-ip <archivo>}
+\begin{verbatim}
+    ./kyc-ip <archivo>
+\end{verbatim}
+Donde \texttt{<archivo>} es el archivo con el código de entrada.
+
 \subsubsection*{Ejemplo de salida}
 \begin{verbatim}
 fun hola ( int angel ) int : 
@@ -163,6 +170,12 @@ fun hola ( int angel ) int :
     while true:
           int x = f2(angel, angel * (0.982 + 2.2) / -89);            
     ~while
+    return 0;
+~fun
+
+fun adios() void :
+    9 + 9;
+    f(x);
 ~fun
 
 int x = f(a, b, c + d);
