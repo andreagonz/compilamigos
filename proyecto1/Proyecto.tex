@@ -79,18 +79,12 @@ P = \{
 A continuación se describen las categorías sintácticas identificadas en la grámatica y los tokens que la componen:\\
 \textbf{Nota:} Por convención, los identificadores de los tokens (átomos) están escritos exclusivamente en mayúsculas 
 \begin{outline}
-<<<<<<< HEAD
 \1 \textbf{Valores:}
 	\2 ENTERO, números enteros.
-=======
-\1 Valores:
-    \2 ENTERO, números enteros.
->>>>>>> 205b72a0f27f13a6959b80e614ebff4e824c6b95
     \2 FLOTANTE, números de punto flotante.
     \2 BOOLEANO, define un valor booleano.
     \3 TRUE, valor booleano de verdadero.
     \3 FALSE, valor booleano de falso.
-<<<<<<< HEAD
     \3 ID, identificadores de variables y funciones.
 \1 \textbf{Operadores:}
 	\2 \textbf{Operadores binarios:}
@@ -124,27 +118,6 @@ A continuación se describen las categorías sintácticas identificadas en la gr
     \2 DOTDOT, dos puntos para señalar el inicio de un bloque.
     \2 COMMA, coma para separar los parametros de una función y añadir legibilidad.
     \2 PIPE, señala la declaración de un caso en el bloque de condicionales.
-=======
-\1 Operadores:
-    \2 \textbf{Operadores binarios:}
-        \3 PLUS, suma para expresiones aritméticas
-        \3 MINUS, resta para expresiones aritméticas.
-        \3 MULT, producto para expresiones aritméticas.
-        \3 DIV, división para expresionesaritméticas.
-        \3 EQ, igualdad de dos expresiones.
-        \3 NEG, desigualdad de dos expresiones.
-        \3 AND, operador lógico 'And' para expresiones booleanas.
-        \3 OR, operador lógico 'Or' para expresiones booleanas.
-        \3 GREAT, operador $\land$ para expresiones.
-        \3 LESS, operador $\lor$ para expresiones.
-        \3 GREATEQ, operador $\geq$ para expresiones.
-        \3 LESSEQ, operador $\leq$ para expresiones.
-        \3 ASIG, asignación de un valor a una variable.
-    \2 \textbf{Operadores unarios:}
-        \3 NOT, negación de un valor
- \1 Estructuras:
-    \2 COND, declara
->>>>>>> 205b72a0f27f13a6959b80e614ebff4e824c6b95
 \end{outline}
 \subsubsection*{3. Implementación del analizador léxico}
 Se usó el generador de analizadores léxicos \textit{Flex} en su versión 2.6.3 para C++. \\
@@ -158,16 +131,11 @@ Dicha implementación está en el archivo \texttt{parser.y} del directorio \text
 \subsubsection*{Categorias sintácticas}
 Ver número 2 arriba.
 \subsubsection*{Tokens y la gramática}
-<<<<<<< HEAD
 Definimos el gramática con mucha inspiración de los lenguajes que conocemos. La base de nuestra gramática era del programa de la calculadora que vimos en clase y lo que hicimos para la última tarea. Agregamos posteriormente definiciones de funciones y algunas estructuras de flujo de control. Este proceso nos hizo pensar críticamente sobre lo que era realmente necesario para la funcionalidad de un lenguaje. Una cosa que fue difícil para nosotros fue cómo distinguir el final de las funciones porque no usamos corchetes. Así que uno de los tokens importantes era para terminar una estructuras de control, y tomamos inspiración del lenguaje moderno de PHP, y usamos el "$\sim$" para indicar la terminación. \\
-=======
-Definimos el gramática con mucho inspiración de los lenguajes que conocemos. La base de nuestra gramática era del programa de la calculadora que vimos en clase y lo que hicimos para la última tarea. Agregamos posteriormente definiciones de funciones y algunas estructuras de flujo de control. Este proceso nos hizo pensar críticamente sobre lo que era realmente necesario para la funcionalidad de un lenguaje. Una cosa que fue difícil para nosotros fue cómo distinguir el final de las funciones porque no usamos corchetes. Así que una de las tokens importantes era para terminar una estructuras de control, y tomamos inspiración del lenguaje moderno de PHP, y usamos el "$\sim$" para indicar la terminación. \\
->>>>>>> 205b72a0f27f13a6959b80e614ebff4e824c6b95
 
 Elegir los restos de los tokens no fue difícil. Era sólo una cuestión de cubrir todas las entradas posibles que nuestro programa aceptaría, y cual podría ser cada símbolo. Los números eran una opción obvia por la calculadora (lo que elegimos representar por un flotante y entero para soportar todas las posibilidades, como decimales). Además de eso, incluimos cadenas, así como varios otros símbolos comunes en las lenguas modernas como $\leq$
 
 \subsubsection*{Instrucciones para ejecutar y compilar el código}
-<<<<<<< HEAD
 
 \textbf{\textit{Para compilarlo:}}\\
 
@@ -197,44 +165,5 @@ fun hola ( int angel ) int :
 
 int x = f(a, b, c + d);
 bool b = false;
-=======
-\begin{outline}
- \1  Para compilar el archivo de bison
-   \2 bison -d parser.y
- \1 Para compilar el archivo de flex
-    \2 flex lexer.lex
- \1 Para flex y bison en conjunto
-    \2 g++ parser.tab.c lex.yy.c -lfl -o salida
- \1 Para correrlo (por default jala el archivo in.parser)
-    \2 ./salida
-\end{outline}
-Se puede lograr todo arriba con "make".
-
-\subsubsection*{Ejemplo de salida}
-\begin{verbatim}
-fun hola ( int angel ) int : 
-    angel = ( angel + 56 / 89.098 );
-    bool adan = true or false and true;
-    bool armando = false or var1;
-    cond adan and armando:
-         float c = 1 + 2 / (3.20 * 92);
-         | adan or armando:
-               int x = ;
-               9 + 9;
-
-          | default:
-                hola;
-                x = fu(x , f , d + k);            
-    ~cond
-    while true:
-          x;
-          x = fu(x , f , d + k);            
-    ~while
-        
-~fun
-
-int x = fu(x , f , d + k);            
-int c = hola(8 + 8, (k));
->>>>>>> 205b72a0f27f13a6959b80e614ebff4e824c6b95
 \end{verbatim}
 \end{document}
