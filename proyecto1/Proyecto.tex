@@ -77,7 +77,7 @@ P = \{
 %razomiento para gramática va aquí 
 \subsubsection*{2. Identificar las categorías sintácticas y definir los tokens}
 A continuación se describen las categorías sintácticas identificadas en la grámatica y los tokens que la componen:\\
-\textbf{Nota:} Por convención, los identificadores de los tokens (átomos) están escritos exclusivamente en mayúsculas 
+\textbf{Nota:} Por convención, los identificadores de los tokens (átomos) están escritos exclusivamente en mayúsculas. 
 \begin{outline}
 \1 \textbf{Valores:}
 	\2 ENTERO, números enteros.
@@ -88,7 +88,7 @@ A continuación se describen las categorías sintácticas identificadas en la gr
     \3 ID, identificadores de variables y funciones.
 \1 \textbf{Operadores:}
 	\2 \textbf{Operadores binarios:}
-		\3 PLUS, suma para expresiones aritméticas
+		\3 PLUS, suma para expresiones aritméticas.	
     	\3 MINUS, resta para expresiones aritméticas.
     	\3 MULT, producto para expresiones aritméticas.
     	\3 DIV, división para expresiones aritméticas.
@@ -123,7 +123,7 @@ A continuación se describen las categorías sintácticas identificadas en la gr
 Se usó el generador de analizadores léxicos \textit{Flex} en su versión 2.6.3 para C++. \\
 Para más información sobre la implementación del analizador léxico con \textit{Flex} se puede ver el archivo \texttt{lexer.lex} del directorio \texttt{src}.\\
 \subsubsection*{4. Implementación del analizador sintáctico \textit{Bottom-Up}}
-Se utilizó la versión 3.0.4 del generador de analizadores sintácticos GNU Bison para C++. \\
+Se utilizó la versión 3.0.4 del generador de analizadores sintácticos \textit{GNU Bison} para C++. \\
 Dicha implementación está en el archivo \texttt{parser.y} del directorio \texttt{src}
 
 
@@ -131,17 +131,19 @@ Dicha implementación está en el archivo \texttt{parser.y} del directorio \text
 \subsubsection*{Categorias sintácticas}
 Ver número 2 arriba.
 \subsubsection*{Tokens y la gramática}
-Definimos el gramática con mucha inspiración de los lenguajes que conocemos. La base de nuestra gramática era del programa de la calculadora que vimos en clase y lo que hicimos para la última tarea. Agregamos posteriormente definiciones de funciones y algunas estructuras de flujo de control. Este proceso nos hizo pensar críticamente sobre lo que era realmente necesario para la funcionalidad de un lenguaje. Una cosa que fue difícil para nosotros fue cómo distinguir el final de las funciones porque no usamos corchetes. Así que uno de los tokens importantes era para terminar una estructuras de control, y tomamos inspiración del lenguaje moderno de PHP, y usamos el "$\sim$" para indicar la terminación. \\
+Definimos la gramática de nuestro lenguaje con mucha inspiración de los lenguajes que ya conocíamos, tratando de tomar aspectos de la sintaxis de estos, pero con nuestras propias propuestas también. La base de nuestra gramática era del programa de la calculadora que vimos en clase y la grámatica del analizador sintáctico de descenso recursivo de la tarea. Agregamos posteriormente definiciones de funciones y algunas estructuras de control de flujo, además de expresiones booleanas. Este proceso nos llevó a pensar en las cuáles eran las funcionalidades mínimas que tendría nuestro lenguaje. \\
 
-Elegir los restos de los tokens no fue difícil. Era sólo una cuestión de cubrir todas las entradas posibles que nuestro programa aceptaría, y cual podría ser cada símbolo. Los números eran una opción obvia por la calculadora (lo que elegimos representar por un flotante y entero para soportar todas las posibilidades, como decimales). Además de eso, incluimos cadenas, así como varios otros símbolos comunes en las lenguas modernas como $\leq$
+Por otro lado, una decisión que nos resultó difícil tomar fue cómo distinguir el final de las estructuras de control y funciones, debido a que no queríamos usar corchetes. Así que uno de los tokens importantes era para terminar una estructuras de control y, tomando inspiración del lenguaje moderno de PHP, terminamos eligiendo el símbolo "$\sim$" junto al nombre de la estructura para indicar la terminación de ésta. \\
 
-\subsubsection*{Instrucciones para ejecutar y compilar el código}
+Elegir el resto de los tokens no fue difícil. Era sólo una cuestión de cubrir todas las entradas posibles que nuestro programa aceptaría, y cual podría ser cada símbolo. Los números eran una opción obvia por la calculadora (lo que elegimos representar por un flotante y entero para soportar todas las posibilidades, como decimales). Además de eso, incluimos cadenas, así como varios otros símbolos comunes en las lenguas modernas como $\leq$
 
-\textbf{\textit{Para compilarlo:}}\\
+\subsection*{Instrucciones para ejecutar y compilar el código}
 
-En cualquier sistema operativo basado en Unix basta con ejecutar \texttt{make} en el directorio \texttt{src} desde línea de comandos. \\
+\subsubsection*{Para compilarlo:}
 
-\textbf{\textit{Para ejecutarlo:}} \\
+En cualquier sistema operativo basado en Unix basta con ejecutar \texttt{make} en el directorio \texttt{src} desde línea de comandos. 
+
+\subsubsection*{Para ejecutarlo:} 
 
 \texttt{./kyc-ip <archivo>}
 \subsubsection*{Ejemplo de salida}
