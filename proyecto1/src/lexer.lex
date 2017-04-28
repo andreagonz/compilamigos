@@ -103,6 +103,16 @@ id	[a-zA-Z][a-zA-Z0-9_]*
       return WHILE;
 }
 
+"return"	{
+        col = col + 6;
+      return RETURN;
+}
+
+"void"	{
+        col = col + 4;
+      return VOID;
+}
+
 "," {
         //cout << "Encontre un ,:" << yytext << endl;
         col = col + 1;

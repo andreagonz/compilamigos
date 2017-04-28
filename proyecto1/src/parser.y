@@ -24,7 +24,7 @@ void yyerror(const char *s);
 
 %token TRUE FALSE DEFAULT ENTERO FLOTANTE BOOLEANO
 %token EQ NEQ LESS GREAT LESSEQ GREATEQ NOT AND OR
-%token LPAR RPAR SEMIC ASIG FUN ENDFUN COND ENDCOND WHILE ENDWHILE DOTDOT COMMA PIPE
+%token LPAR RPAR SEMIC ASIG FUN ENDFUN COND ENDCOND WHILE ENDWHILE DOTDOT COMMA PIPE RETURN VOID
 %left  PLUS MINUS
 %left  MULT DIV
 
@@ -48,11 +48,15 @@ ProgPrim :  Conditional | Whileloop | Inst SEMIC | Function SEMIC
 ;
 Inst :  Expr | Asig
 ;
-Fundef :  FUN ID LPAR Fdparams RPAR Tipo DOTDOT Prog ENDFUN
+Fundef :  FUN ID LPAR Fdparams RPAR FundefPrim | FUN ID LPAR RPAR FundefPrim
+;
+FundefPrim:  Tipo DOTDOT Prog Return SEMIC ENDFUN | VOID DOTDOT Prog ENDFUN
+;
+Return: RETURN Expr | RETURN Function
 ;
 Whileloop :  WHILE Expr DOTDOT Prog ENDWHILE 
 ;    
-Function :  ID LPAR Fparams RPAR
+Function :  ID LPAR Fparams RPAR | ID LPAR RPAR
 ;
 Fdparams :  Fdparams COMMA Tipo ID | Tipo ID 
 ;

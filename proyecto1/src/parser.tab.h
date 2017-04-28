@@ -73,13 +73,15 @@ extern int yydebug;
     DOTDOT = 283,
     COMMA = 284,
     PIPE = 285,
-    PLUS = 286,
-    MINUS = 287,
-    MULT = 288,
-    DIV = 289,
-    INT = 290,
-    FLOAT = 291,
-    ID = 292
+    RETURN = 286,
+    VOID = 287,
+    PLUS = 288,
+    MINUS = 289,
+    MULT = 290,
+    DIV = 291,
+    INT = 292,
+    FLOAT = 293,
+    ID = 294
   };
 #endif
 
@@ -94,7 +96,7 @@ union YYSTYPE
   float fval; 
   char* sval; // $$ can either be an int or a string
 
-#line 98 "parser.tab.h" /* yacc.c:1909  */
+#line 100 "parser.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;
