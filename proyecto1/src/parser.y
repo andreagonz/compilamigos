@@ -42,7 +42,7 @@ queue<Nodo*> * nodos = new queue<Nodo*>();
 
 /*gramática*/
 
-S :  Fprog { }
+S :  Fprog
 ;
 Fprog :  Fprog FprogPrim | FprogPrim 
 ;
@@ -118,11 +118,13 @@ void clear() {
 int main(int argc, char* argv[]) {
 	if(argc < 2) {
 		cout << "Uso: ./kyc-ip <archivo>" << endl;
+                clear();
 		return -1;
  	}
 	FILE *myfile = fopen(argv[1], "r");
 	if (!myfile) {
 		cout << "Error al abrir archivo!" << endl;
+                clear();
 		return -1;
 	}
 	yyin = myfile;
