@@ -29,8 +29,8 @@ queue<Nodo*> * nodos = new queue<Nodo*>();
   Nodo *nval;
 }
 
-%token <sval> TRUE FALSE DEFAULT ENTERO FLOTANTE BOOLEANO
-%token <sval> LPAR RPAR SEMIC ASIG FUN ENDFUN COND ENDCOND WHILE ENDWHILE DOTDOT COMMA PIPE RETURN VOID
+%token <sval> TRUE FALSE DEFAULT ENTERO FLOTANTE BOOLEANO VOID
+%token <sval> LPAR RPAR SEMIC ASIG FUN ENDFUN COND ENDCOND WHILE ENDWHILE DOTDOT COMMA PIPE RETURN
 %token <sval> EQ NEQ LESS GREAT LESSEQ GREATEQ AND OR NOT
 %token <sval> PLUS MINUS MULT DIV
 %left EQ NEQ LESS GREAT LESSEQ GREATEQ AND OR
@@ -42,16 +42,26 @@ queue<Nodo*> * nodos = new queue<Nodo*>();
 %token <sval> FLOAT 
 %token <sval> ID
 
-%type <nval> Num Factor Bool Fprog Prog FprogPrim AsigPrim Term ExprPrim Easig Expr Function Id
-  
+%type <nval> Num Factor Bool Fprog Prog FprogPrim AsigPrim Term ExprPrim Easig Expr Function Id Bcomp
+%type <nval> Beq Bterm Bexp Param Whileloop Tipo Fparams Fdparams Return Fundef FundefPrim Inst Asig 
+%type <nval> ProgPrim Conditional S
 
 %%
 
 /*gramática*/
 
-S :  Fprog 
+S :  Fprog {
+  $$ = $1;
+  //aqui un cout << $1 << endl; o algo con el nodo jijijii
+ } 
 ;
-Fprog :  Fprog FprogPrim | FprogPrim 
+
+Fprog :
+Fprog FprogPrim {
+  $2->add($1);
+  $$ = $2;
+}
+| FprogPrim { $$ = $1; } 
 ;
 
 FprogPrim :
@@ -62,43 +72,215 @@ AsigPrim SEMIC {
   $$ = n; 
 }
 |
-Fundef 
+Fundef { $$ = $1; }
 ;
-Prog :  Prog ProgPrim | ProgPrim 
+
+// considerar un nodo bloque
+Prog :  Prog ProgPrim {
+  $1->add($2);
+  $$ = $1;
+}
+| ProgPrim { $$ = $1; }
 ;
-ProgPrim :  Conditional | Whileloop | Inst SEMIC | Function SEMIC 
+ProgPrim :
+Conditional { $$ = $1; }
+| Whileloop { $$ = $1; }
+| Inst SEMIC { $$ = $1; }
+| Function SEMIC { $$ = $1; }
 ;
-Inst :  Expr | Asig
+Inst :
+Expr { $$ = $1; }  
+| Asig { $$ = $1; }
 ;
-Fundef :  FUN Id LPAR Fdparams RPAR FundefPrim | FUN Id LPAR RPAR FundefPrim
+
+Fundef :
+FUN Id LPAR Fdparams RPAR FundefPrim {
+  /*issues inexplicables, dice que $1 es null
+cout << "entro" << endl;
+  Nodo * n = new NodoFunDef($1);
+  cout << "paso" << endl;
+  nodos->push(n);
+  n->add($2);
+  n->add($4);
+  n->add($6);
+  $$ = n;*/
+}
+| FUN Id LPAR RPAR FundefPrim {
+  Nodo * n = new NodoFunDef($1);
+  nodos->push(n);
+  n->add($2);
+  n->add($5);
+  $$ = n;
+}
 ;
-FundefPrim:  Tipo DOTDOT Prog Return SEMIC ENDFUN | VOID DOTDOT Prog ENDFUN
+
+// aqui es necesario poner un nodo de secuenciacion para semic??
+FundefPrim:  Tipo DOTDOT Prog Return SEMIC ENDFUN {
+  Nodo * n = new NodoCuerpo("cuerpo");
+  nodos->push(n);
+  n->add($1);
+  n->add($3);
+  n->add($4);
+  $$ = n;
+}
+| VOID DOTDOT Prog ENDFUN {
+  Nodo * n = new NodoCuerpo("cuerpo");
+  Nodo * v = new NodoCuerpo($1);
+  nodos->push(n);
+  nodos->push(v);
+
+  n->add(v);
+  n->add($3);
+  $$ = n;
+}
 ;
-Return: RETURN Expr | RETURN Function
+Return:
+RETURN Expr {
+  Nodo * n = new NodoReturn($1);
+  nodos->push(n);
+  n->add($2);
+  $$ = n;
+}
+| RETURN Function {
+  Nodo * n = new NodoReturn($1);
+  nodos->push(n);
+  n->add($2);
+  $$ = n;
+}
 ;
-Whileloop :  WHILE Expr DOTDOT Prog ENDWHILE 
+Whileloop :
+WHILE Expr DOTDOT Prog ENDWHILE {
+  Nodo * n = new NodoWhile($1);
+  nodos->push(n);
+  n->add($2);
+  n->add($4);
+  $$ = n;
+}
 ;    
-Function :  Id LPAR Fparams RPAR | Id LPAR RPAR
+Function :
+Id LPAR Fparams RPAR {
+  Nodo * n = new NodoFun("funcall");
+  nodos->push(n);
+  n->add($1);
+  n->add($3);
+  $$ = n;
+}
+| Id LPAR RPAR {
+  Nodo * n = new NodoFun("funcall");
+  nodos->push(n);
+  n->add($1);
+  $$ = n;
+}
 ;
-Fdparams :  Fdparams COMMA Tipo Id | Tipo Id 
+Fdparams :
+Fdparams COMMA Tipo Id {
+  Nodo * n = new NodoComa($2);
+  nodos->push(n);
+  $3->add($4);
+  n->add($1);
+  n->add($3);
+  $$ = n;
+}
+| Tipo Id {
+  $1->add($2);
+  $$ = $1;
+} 
 ;
-Fparams :  Fparams COMMA Param | Param  
+Fparams :
+Fparams COMMA Param {
+  Nodo * n = new NodoComa($2);
+  nodos->push(n);
+  n->add($1);
+  n->add($3);
+  $$ = n;
+}
+| Param { $$ = $1; }
 ;
-Param :  Expr
+Param :  Expr { $$ = $1; }
 ;
-Conditional :  COND Expr DOTDOT Sig ENDCOND
+
+
+
+
+Conditional :
+COND Expr DOTDOT Sig ENDCOND {
+  
+}
 ;
 Sig :  Prog PIPE Expr DOTDOT Sig | Prog PIPE DEFAULT DOTDOT Prog | Prog 
 ;
-Expr :  Bexp
+
+
+
+
+Expr :  Bexp { $$ = $1; }
 ;
-Bexp :  Bexp OR Bterm | Bterm 
+Bexp :
+Bexp OR Bterm {
+  Nodo * n = new NodoOr($2);
+  nodos->push(n);
+  n->add($1);
+  n->add($3);
+  $$ = n;
+}
+| Bterm { $$ = $1; }
 ; 
-Bterm :  Bterm AND Beq | Beq 
+Bterm :
+Bterm AND Beq {
+  Nodo * n = new NodoAnd($2);
+  nodos->push(n);
+  n->add($1);
+  n->add($3);
+  $$ = n;
+}
+| Beq { $$ = $1;  } 
 ; 
-Beq :  Beq EQ Bcomp | Beq NEQ Bcomp | Bcomp 
+Beq :  Beq EQ Bcomp {
+  Nodo * n = new NodoEq($2);
+  nodos->push(n);
+  n->add($1);
+  n->add($3);
+  $$ = n;
+}
+| Beq NEQ Bcomp {
+  Nodo * n = new NodoNeq($2);
+  nodos->push(n);
+  n->add($1);
+  n->add($3);
+  $$ = n;
+}
+| Bcomp { $$ = $1; }
 ;
-Bcomp :  Bcomp LESS ExprPrim | Bcomp GREAT ExprPrim | Bcomp LESSEQ ExprPrim | Bcomp GREATEQ ExprPrim | ExprPrim 
+Bcomp :
+Bcomp LESS ExprPrim {
+  Nodo * n = new NodoLess($2);
+  nodos->push(n);
+  n->add($1);
+  n->add($3);
+  $$ = n;
+}
+| Bcomp GREAT ExprPrim {
+  Nodo * n = new NodoGreat($2);
+  nodos->push(n);
+  n->add($1);
+  n->add($3);
+  $$ = n;
+}
+| Bcomp LESSEQ ExprPrim {
+  Nodo * n = new NodoLessEq($2);
+  nodos->push(n);
+  n->add($1);
+  n->add($3);
+  $$ = n;
+}
+| Bcomp GREATEQ ExprPrim {
+  Nodo * n = new NodoGreatEq($2);
+  nodos->push(n);
+  n->add($1);
+  n->add($3);
+  $$ = n;
+}
+| ExprPrim { $$ = $1; } 
 ; 
 ExprPrim :
 ExprPrim PLUS Term {
@@ -138,11 +320,11 @@ Factor {
 } 
 ;    
 Factor :
-Id{
+Id {
   $$ = $1;
 }
 |
-Num{
+Num {
   $$ = $1;
 }
 |
@@ -184,9 +366,17 @@ FALSE {
   $$ = n;
 } 
 ;
-Asig :   Easig | AsigPrim 
+Asig :
+Easig { $$ = $1; }
+| AsigPrim { $$ = $1; } 
 ;
-AsigPrim :  Tipo Easig 
+
+//considerar un nodo de declaracion de variable
+AsigPrim :
+Tipo Easig {
+  $1->add($2);
+  $$ = $1;
+} 
 ;
 Easig :
 Id ASIG Expr {
@@ -228,7 +418,22 @@ INT {
   $$ = n;
 }
 ;
-Tipo: ENTERO | FLOTANTE | BOOLEANO
+Tipo:
+ENTERO {
+  Nodo * n = new NodoTipo($1);
+  nodos->push(n);
+  $$ = n;
+}
+| FLOTANTE {
+  Nodo * n = new NodoTipo($1);
+  nodos->push(n);
+  $$ = n;
+  }
+| BOOLEANO {
+  Nodo * n = new NodoTipo($1);
+  nodos->push(n);
+  $$ = n;
+  }
 ;
 %%
 

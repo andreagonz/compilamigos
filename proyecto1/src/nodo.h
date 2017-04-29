@@ -120,10 +120,22 @@ class NodoNot: public Nodo {
 /** TERMINA SECCION DE SIMBOLOS DE OPERACIONES */
 
 
+
+/**
+ * Seccion variables
+ */
+
 class NodoId: public Nodo {
  public:
  NodoId(std::string v): Nodo(v) {}
 };
+
+class NodoTipo: public Nodo {
+ public:
+ NodoTipo(std::string v): Nodo(v) {}
+};
+
+/** TERMINA SECCION DE SIMBOLOS DE OPERACIONES */
 
 
 /**
@@ -150,10 +162,16 @@ class NodoCond: public Nodo {
  NodoCond(std::string v): Nodo(v) {}
 };
 
+class NodoCuerpo: public Nodo {
+ public:
+ NodoCuerpo(std::string v): Nodo(v) {}
+};
+
+
 /** TERMINA SECCION DE BLOQUES */
 
 /**
- * Caracteres regidores
+ *  regidores
  */
 class NodoComa: public Nodo {
  public:
@@ -164,6 +182,12 @@ class NodoSeq: public Nodo {
  public:
  NodoSeq(std::string v): Nodo(v) {}
 };
+
+class NodoReturn: public Nodo {
+ public:
+ NodoReturn(std::string v): Nodo(v) {}
+};
+
 
 /** TERMINA SECCION DE REGIDORES */
 
