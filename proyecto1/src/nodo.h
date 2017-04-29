@@ -5,13 +5,16 @@
 
 class Nodo {
  protected:
-  std::vector<Nodo> hijos(2); //al menos tendra dos hijos
+  std::vector<Nodo*> hijos;
   std::string valor;
  public:
- Nodo(std::string v): valor(v) {}
+ Nodo(std::string v): valor(v) {
+    hijos.reserve(2); // al menos tendra dos hijos
+  }
   Nodo * get(int i);
   std::string get_valor(void);
   void set(int i, Nodo *n);
+  void add(Nodo *n);
   std::string str(void);
 };
 

@@ -4,11 +4,15 @@
 using namespace std;
 
 Nodo * Nodo::get(int i) {
-  return &hijos[i];
+  return hijos[i];
 }
 
-void Nodo::set(int i, Nodo * n){
-  hijos[i] = *n;
+void Nodo::set(int i, Nodo * n) {
+  hijos[i] = n;
+}
+
+void Nodo::add(Nodo * n) {
+  hijos.push_back(n);
 }
 
 string Nodo::str() {

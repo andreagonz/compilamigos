@@ -1,5 +1,6 @@
 %{
-
+#include "nodo.h"
+#include <string>
 #include <iostream>
 #include "parser.tab.h"
 using namespace std;
@@ -17,14 +18,14 @@ id	[a-zA-Z][a-zA-Z0-9_]*
 
 {int}	{
 	//cout << "Encontre un entero:" << yytext << endl;
-        //yylval.ival = atoi(yytext);
+        yylval.sval = yytext;
         col++;    
         return INT;
 }
 
 {float}	{
 	//cout << "Encontre un flotante:" << yytext << endl;
-        //yylval.fval = atof(yytext);
+        yylval.sval = yytext;
         col++;    
         return FLOAT;
 }
@@ -195,9 +196,9 @@ id	[a-zA-Z][a-zA-Z0-9_]*
 
 {id}	{
         //cout << "Encontre un ID :" << yytext << endl;
-        //yylval.sval = strdup(yytext);
-	    col++;     
-      return ID;
+        yylval.sval = strdup(yytext);
+	col++;     
+        return ID;
 }
 
 "==" {
