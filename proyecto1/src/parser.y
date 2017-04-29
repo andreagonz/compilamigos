@@ -1,6 +1,9 @@
 %{
 #include <cstdio>
 #include <iostream>
+#include <queue>
+#include "nodo.h"
+    
 using namespace std;
 
 // stuff from flex that bison needs to know about:
@@ -12,6 +15,8 @@ extern int linea;
 extern int col;
  
 void yyerror(const char *s);
+queue<Nodo*> * nodos = new queue<Nodo*>();
+    
 %}
 
 /* bison declarations */
@@ -23,10 +28,11 @@ void yyerror(const char *s);
 }
 
 %token TRUE FALSE DEFAULT ENTERO FLOTANTE BOOLEANO
-%token EQ NEQ LESS GREAT LESSEQ GREATEQ NOT AND OR
 %token LPAR RPAR SEMIC ASIG FUN ENDFUN COND ENDCOND WHILE ENDWHILE DOTDOT COMMA PIPE RETURN VOID
+%left EQ NEQ LESS GREAT LESSEQ GREATEQ AND OR
 %left  PLUS MINUS
 %left  MULT DIV
+%right NOT
 
 %token <ival> INT 
 %token <fval> FLOAT 
@@ -36,7 +42,7 @@ void yyerror(const char *s);
 
 /*gramática*/
 
-S :  Fprog
+S :  Fprog { }
 ;
 Fprog :  Fprog FprogPrim | FprogPrim 
 ;
@@ -99,6 +105,15 @@ Tipo: ENTERO | FLOTANTE | BOOLEANO
 %%
 
 /* epilogo */
+    
+void clear() {
+    while(!nodos->empty()) {
+        Nodo *n = nodos->front();
+        nodos->pop();
+        delete n;
+    }
+    delete nodos;
+}
 
 int main(int argc, char* argv[]) {
 	if(argc < 2) {
@@ -115,9 +130,11 @@ int main(int argc, char* argv[]) {
 	do {
 		yyparse();
 	} while (!feof(yyin));
+        clear();
 }
 
 void yyerror(const char *s) {
 	cout << "Error! en línea " << linea << ", columna " << col << "  Mensaje: " << s << endl;
+        clear();
 	exit(-1);
 }
