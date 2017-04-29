@@ -1,22 +1,14 @@
-#include"nodo.h"
-#include<string>
+#include "nodo.h"
+#include <string>
 
 using namespace std;
 
-Nodo * Nodo::get_izq() {
-    return izq;
+Nodo * Nodo::get(int i) {
+  return &hijos[i];
 }
 
-Nodo * Nodo::get_der() {
-    return der;
-}
-
-void Nodo::set_izq(Nodo * n) {    
-    izq = n;
-}
-
-void Nodo::set_der(Nodo * n){
-    der = n;
+void Nodo::set(int i, Nodo * n){
+  hijos[i] = *n;
 }
 
 string Nodo::str() {
@@ -27,6 +19,7 @@ string Nodo::get_valor() {
     return valor;
 }
 
+/*
 string str(Nodo * n) {
     int p = profundidad(n) + 1;
     bool rama[p];
@@ -84,3 +77,4 @@ int profundidad(Nodo * v){
         return izq + 1;
     return der + 1;
 }
+*/
