@@ -18,7 +18,9 @@ extern int col;
  
 void yyerror(const char *s);
 queue<Nodo*> * nodos = new queue<Nodo*>();
-    
+// ancho y alto del arbol (si son -1 se usa medidas por defecto)
+int width = -1;
+int height = -1;
 %}
 
 /* bison declarations */
@@ -56,7 +58,7 @@ S :  Fprog {
   cout << str($$) << endl;
   ofstream arbol;
   arbol.open ("arbol.svg");
-  arbol << str_svg($$);
+  arbol << str_svg($$, width, height);
   arbol.close();
   //aqui un cout << $1 << endl; o algo con el nodo jijijii
  } 
@@ -493,10 +495,18 @@ void clear() {
 
 int main(int argc, char* argv[]) {
 	if(argc < 2) {
-		cout << "Uso: ./kyc-ip <archivo>" << endl;
+            // -w y -h son para las medidas del arbol (son opcionales)
+		cout << "Uso: ./kyc-ip <archivo> [-w ancho] [-h alto]" << endl;
                 clear();
 		return -1;
  	}
+        for(int i = 1; i < argc; i++) {
+            if(string(argv[i]) == "-w") {
+                width = stoi(argv[i + 1]);
+            }
+            if(string(argv[i]) == "-h")
+                height = stoi(argv[i + 1]);
+        }
 	FILE *myfile = fopen(argv[1], "r");
 	if (!myfile) {
 		cout << "Error al abrir archivo!" << endl;

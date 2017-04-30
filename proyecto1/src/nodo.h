@@ -210,7 +210,7 @@ std::string circulos(Nodo * n, double x, double y, double h, std::string s);
 
 std::string lineas(Nodo * n, double x, double y, double h, std::string s);
 
-std::string str_svg(Nodo * n);
+std::string str_svg(Nodo * n, int w, int h);
 
 void transfer(Nodo *n, Nodo *m, int i);
 

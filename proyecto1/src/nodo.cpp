@@ -181,17 +181,21 @@ string lineas(Nodo * n, double x, double y, double h, string s) {
     return s;
 }
 
-string str_svg(Nodo * n) {
+string str_svg(Nodo * n, int width, int height) {
     if(!n)
         return vacio();
     int p = profundidad(n);
     double h = (p * 80) + 15.495;
-    double w = (pow(2, p) - 1) * 20;
+    if(height > 0)
+        h = height;
+    double w = (pow(2, p) - 1) * 15;
+    if(width > 0)
+        w = width / 2;
     string s = string("<?xml version='1.0' encoding='UTF-8' ?>")
         + "\n<svg width='" + to_string(w * 2) + "' height='" + to_string(h) + "'>"
         + "\n  <g>";
-    s += lineas(n, w, 7.6, w / n->num_hijos(), "");
-    s += circulos(n, w, 7.6, w / n->num_hijos(), crea_circ(n, w, 7.6));
+    s += lineas(n, w, 7.6, (w * 2) / n->num_hijos(), "");
+    s += circulos(n, w, 7.6, (w * 2) / n->num_hijos(), crea_circ(n, w, 7.6));
     s += "\n  </g>\n</svg>";
     return s;
 }
