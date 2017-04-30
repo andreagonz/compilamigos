@@ -55,10 +55,14 @@ int height = -1;
 
 S :  Fprog {
   $$ = $1;
-  cout << str($$) << endl;
+  /* cout << str($$) << endl; */
+  ofstream svg;
+  svg.open ("arbol.svg");
+  svg << str_svg($$, width, height);
+  svg.close();
   ofstream arbol;
-  arbol.open ("arbol.svg");
-  arbol << str_svg($$, width, height);
+  arbol.open ("arbol.txt");
+  arbol << str($$);
   arbol.close();
   //aqui un cout << $1 << endl; o algo con el nodo jijijii
  } 
