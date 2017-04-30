@@ -27,11 +27,11 @@
 
 \section{Preliminares}
 \subsection{El lenguaje}
-Definimos la gramática de nuestro lenguaje con mucha inspiración de los lenguajes que ya conocíamos, tratando de tomar aspectos de la sintaxis de estos, pero con nuestras propias propuestas también. La base de nuestra gramática era del programa de la calculadora que vimos en clase y la grámatica del analizador sintáctico de descenso recursivo de la tarea. Agregamos posteriormente definiciones de funciones y algunas estructuras de control de flujo, además de expresiones booleanas. Este proceso nos llevó a pensar en las cuáles eran las funcionalidades mínimas que tendría nuestro lenguaje. \\
+Definimos la gramática de nuestro lenguaje con mucha inspiración de los lenguajes que ya conocíamos, tratando de tomar aspectos de la sintaxis de estos, pero con nuestras propias propuestas también. La base de nuestra gramática era del programa de la calculadora que vimos en clase y la grámatica del analizador sintáctico de descenso recursivo de la tarea. Agregamos posteriormente definiciones de funciones y algunas estructuras de control de flujo, además de expresiones booleanas. Este proceso nos llevó a pensar en cuáles eran las funcionalidades mínimas que tendría nuestro lenguaje. \\
 
-Por otro lado, una decisión que nos resultó difícil tomar fue cómo distinguir el final de las estructuras de control y funciones, debido a que no queríamos usar corchetes. Así que uno de los tokens importantes era para terminar una estructuras de control y, tomando inspiración del lenguaje moderno de PHP, terminamos eligiendo el símbolo "$\sim$" junto al nombre de la estructura para indicar la terminación de ésta. \\
+Una decisión que nos resultó difícil tomar fue cómo distinguir el final de las estructuras de control y funciones, debido a que no estaba en nuestras intenciones utilizar corchetes. Así que uno de los tokens importantes era para terminar una estructuras de control y, tomando inspiración de lenguajes que determinan el final de un bloque con un un lexema similar al del inicio del bloque como bash, terminamos eligiendo el símbolo `$\sim$'\; junto al nombre de la estructura para indicar la terminación de ésta. \\
 
-Elegir el resto de los tokens no fue difícil. Era sólo una cuestión de cubrir todas las entradas posibles que nuestro programa aceptaría, y cual podría ser cada símbolo. Los números eran una opción obvia por la calculadora (lo que elegimos representar por un flotante y entero para soportar todas las posibilidades, como decimales). Además de eso, incluimos cadenas, así como varios otros símbolos comunes en las lenguas modernas como $\leq$.
+Elegir el resto de los tokens no fue difícil. Era sólo una cuestión de cubrir todas las entradas posibles que nuestro programa aceptaría, y cual podría ser cada símbolo. Los números eran una opción obvia por la calculadora (lo que elegimos representar por un flotante y entero para soportar todas las posibilidades, como decimales). Además de eso, incluimos cadenas, así como varios otros símbolos comunes en lenguajes actuales como \texttt{<=}.
 
 \subsection {La gramática}
 \subsection{Categorias sintácticas y tokens}
@@ -98,52 +98,58 @@ P = \{
 \section{Categorías sintácticas y definición de tokens}
 A continuación se describen las categorías sintácticas identificadas en la grámatica y los tokens\footnote{Por convención, los identificadores de los tokens (átomos) están escritos exclusivamente en mayúsculas.} que la componen:\\
 \subsection{Valores:}
-\begin{outline}
-  \2 ENTERO, números enteros.
-    \2 FLOTANTE, números de punto flotante.
-    \2 BOOLEANO, define un valor booleano.
-    \3 TRUE, valor booleano de verdadero.
-    \3 FALSE, valor booleano de falso.
-    \3 ID, identificadores de variables y funciones.
-\end{outline}
+\begin{itemize}
+  \item ENTERO, números enteros.
+    \item FLOTANTE, números de punto flotante.
+    \item BOOLEANO, define un valor booleano.
+      \begin{itemize}
+      \item TRUE, valor booleano de verdadero.
+      \item FALSE, valor booleano de falso.
+      \item ID, identificadores de variables y funciones.
+      \end{itemize}
+\end{itemize}
 \subsection{Operadores:}
-\begin{outline}
-	\2 \textbf{Operadores binarios:}
-		\3 PLUS, suma para expresiones aritméticas.	
-    	\3 MINUS, resta para expresiones aritméticas.
-    	\3 MULT, producto para expresiones aritméticas.
-    	\3 DIV, división para expresiones aritméticas.
-    	\3 EQ, igualdad de dos expresiones.
-        \3 NEG, desigualdad de dos expresiones.
-    	\3 AND, operador lógico $\land$ para expresiones booleanas.
-    	\3 OR, operador lógico $\lor$ para expresiones booleanas.
-    	\3 GREAT, operador $>$  para expresiones.
-    	\3 LESS, operador $<$ para expresiones.
-    	\3 GREATEQ, operador $\geq$ para expresiones.
-        \3 LESSEQ, operador $\leq$ para expresiones.
-        \3 ASIG, asignación de un valor a una variable.
- 	\2 \textbf{Operadores unarios:}
-    	\3 NOT, negación de un valor.
-\end{outline}
+\begin{itemize}
+  \item \textbf{Operadores binarios:}
+  \begin{itemize}
+  \item PLUS, suma para expresiones aritméticas.	
+  \item MINUS, resta para expresiones aritméticas.
+  \item MULT, producto para expresiones aritméticas.
+  \item DIV, división para expresiones aritméticas.
+  \item EQ, igualdad de dos expresiones.
+  \item NEG, desigualdad de dos expresiones.
+  \item AND, operador lógico $\land$ para expresiones booleanas.
+  \item OR, operador lógico $\lor$ para expresiones booleanas.
+  \item GREAT, operador $>$  para expresiones.
+  \item LESS, operador $<$ para expresiones.
+  \item GREATEQ, operador $\geq$ para expresiones.
+  \item LESSEQ, operador $\leq$ para expresiones.
+  \item ASIG, asignación de un valor a una variable.
+  \end{itemize}
+\item \textbf{Operadores unarios:}
+  \begin{itemize}
+  \item NOT, negación de un valor.
+  \end{itemize}
+\end{itemize}
 \subsection{Estructuras de control:}
-\begin{outline}
- 	\2 COND, establece el inicio de un bloque de condicionales.
-    \2 ENDCOND, establece el final de un bloque de condicionales.
-    \2 DEFAULT, caso por defecto del bloque de condicionales, en caso de no cumplir con ninguna condición dada.
-    \2 WHILE, establece el inicio de un bloque de ciclo while.
-    \2 ENDWHILE, establece el final de un bloque de ciclo while.
-    \2 FUN, establece el inicio de un bloque de función.
-    \2 ENDFUN, establece el final de un bloque de función.
-\end{outline}
+\begin{itemize}
+ 	\item COND, establece el inicio de un bloque de condicionales.
+    \item ENDCOND, establece el final de un bloque de condicionales.
+    \item DEFAULT, caso por defecto del bloque de condicionales, en caso de no cumplir con ninguna condición dada.
+    \item WHILE, establece el inicio de un bloque de ciclo while.
+    \item ENDWHILE, establece el final de un bloque de ciclo while.
+    \item FUN, establece el inicio de un bloque de función.
+    \item ENDFUN, establece el final de un bloque de función.
+\end{itemize}
     \subsection{Conectores:}
-    \begin{outline}
- 	\2 LPAR, paréntesis izquierdo.
-    \2 RPAR, paréntesis derecho.
-    \2 SEMIC, punto y coma para señalar el final de cada sentencia.
-    \2 DOTDOT, dos puntos para señalar el inicio de un bloque.
-    \2 COMMA, coma para separar los parametros de una función y añadir legibilidad.
-    \2 PIPE, señala la declaración de un caso en el bloque de condicionales.
-\end{outline}
+    \begin{itemize}
+ 	\item LPAR, paréntesis izquierdo.
+    \item RPAR, paréntesis derecho.
+    \item SEMIC, punto y coma para señalar el final de cada sentencia.
+    \item DOTDOT, dos puntos para señalar el inicio de un bloque.
+    \item COMMA, coma para separar los parametros de una función y añadir legibilidad.
+    \item PIPE, señala la declaración de un caso en el bloque de condicionales.
+\end{itemize}
 
 
 \section{Implementación del analizador léxico}
