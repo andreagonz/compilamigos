@@ -118,31 +118,23 @@ string vacio(){
 string circulos(Nodo * n, double x, double y, double h, string s) {
     if(n->num_hijos() == 0)
         return s;
-    if(n->num_hijos() == 1) 
-        s += circulos(n->get(0), x, y + 80, h / n->num_hijos(),
+    if(n->num_hijos() == 1)  {
+        int nhijos = n->get(0)->num_hijos();
+        if(nhijos == 0)
+            nhijos = 1;
+        s += circulos(n->get(0), x, y + 80, h / nhijos,
                       crea_circ(n->get(0), x, y + 80));
-    else if(n->num_hijos() % 2 == 0) {
-        cout << "x: " << x << endl;
-        cout << "h: " << h << endl;        
-        int init = x - (h / n->num_hijos()) * (n->num_hijos() / 2);
-        cout << "init: " << init << endl;
-        for(int i = 0; i < n->num_hijos(); i++) {
-            s += circulos(n->get(i), init, y + 80, h / n->num_hijos(),
-                          crea_circ(n->get(i), init, y + 80));
-            init += h / n->num_hijos();
-            if(i == (n->num_hijos() / 2) - 1)
-                init += h / n->num_hijos();
-        }
     }
     else {
-        cout << "x: " << x << endl;
-        cout << "h: " << h << endl;        
-        int init = x - (h / n->num_hijos()) * (n->num_hijos() / 2);
-        cout << "init: " << init << endl;
+        if(n->num_hijos() % 2 == 0)
+            h = h / 1.1;
+        int init = x - h * (n->num_hijos() / 2);
         for(int i = 0; i < n->num_hijos(); i++) {
-            s += circulos(n->get(i), init, y + 80, h / n->num_hijos(),
+            s += circulos(n->get(i), init, y + 80, h / n->get(i)->num_hijos(),
                           crea_circ(n->get(i), init, y + 80));
-            init += h / n->num_hijos();
+            init += h;
+            if(i == (n->num_hijos() / 2) - 1 && n->num_hijos() % 2 == 0)
+                init += h;
         }
     }
     return s;
@@ -151,31 +143,23 @@ string circulos(Nodo * n, double x, double y, double h, string s) {
 string lineas(Nodo * n, double x, double y, double h, string s) {
     if(n->num_hijos() == 0)
         return s;
-    if(n->num_hijos() == 1)
-        s += lineas(n->get(0), x, y + 80, h / n->num_hijos(),
+    if(n->num_hijos() == 1) {
+        int nhijos = n->get(0)->num_hijos();
+        if(nhijos == 0)
+            nhijos = 1;
+        s += lineas(n->get(0), x, y + 80, h / nhijos,
 		    crea_lin(x, y, x, y + 80));
-    else if(n->num_hijos() % 2 == 0) {
-        cout << "x: " << x << endl;
-        cout << "h: " << h << endl;        
-        int init = x - (h / n->num_hijos()) * (n->num_hijos() / 2);
-        cout << "init: " << init << endl;
-        for(int i = 0; i < n->num_hijos(); i++) {
-            s += lineas(n->get(i), init, y + 80, h / n->num_hijos(),
-                        crea_lin(x, y, init, y + 80));
-            init += h / n->num_hijos();
-            if(i == (n->num_hijos() / 2) - 1)
-                init += h / n->num_hijos();
-        }
     }
     else {
-        cout << "x: " << x << endl;
-        cout << "h: " << h << endl;        
-        int init = x - (h / n->num_hijos()) * (n->num_hijos() / 2);
-        cout << "init: " << init << endl;
+        if(n->num_hijos() % 2 == 0)
+            h = h / 1.1;
+        int init = x - h * (n->num_hijos() / 2);
         for(int i = 0; i < n->num_hijos(); i++) {
-            s += lineas(n->get(i), init, y + 80, h / n->num_hijos(),
+            s += lineas(n->get(i), init, y + 80, h / n->get(i)->num_hijos(),
                         crea_lin(x, y, init, y + 80));
-            init += h / n->num_hijos();
+            init += h;
+            if(i == (n->num_hijos() / 2) - 1 && n->num_hijos() % 2 == 0)
+                init += h;
         }
     }
     return s;
