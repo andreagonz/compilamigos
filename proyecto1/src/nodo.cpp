@@ -29,12 +29,12 @@ int Nodo::num_hijos() {
     return hijos.size();
 }
 
-
 Nodo * Nodo::pop_back() {
   Nodo * t = hijos.back();
   hijos.pop_back();
   return  t;
 }
+
 void transfer(Nodo *n, Nodo *m, int i) {
   if(m->num_hijos() == 0)
     return;
@@ -48,6 +48,7 @@ void transfer(Nodo *n, Nodo *m, int i) {
   n->add(m->pop_back());
   transfer(n,m->get(0), i+1);
 }
+
 string str(Nodo * n) {
     int p = profundidad(n) + 1;
     bool rama[p];
@@ -62,12 +63,14 @@ string aCadena(Nodo * vertice, int nivel, bool rama[]) {
     rama[nivel] = true;
     for(int i = 0; i < vertice->num_hijos(); i++) {
         s += espacios(nivel, rama);
+        rama[nivel] = true;
         if(i < vertice->num_hijos() - 1)
             s += "├─›";
-        else
-            s += "└─»";
+        else {
+            s += "└─›";
+            rama[nivel] = false;
+        }
         s += aCadena(vertice->get(i), nivel + 1, rama);
-        rama[nivel] = false;
     }
     return s;
 }
