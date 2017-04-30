@@ -15,6 +15,7 @@ class Nodo {
   void add(Nodo *n);
   std::string str(void);
   int num_hijos();
+  Nodo * pop_back();
 };
 
 /**
@@ -198,5 +199,7 @@ std::string aCadena(Nodo * vertice, int nivel, bool rama[]);
 std::string espacios(int n, bool rama[]);
 
 int profundidad(Nodo * v);
+
+void transfer(Nodo *n, Nodo *m, int i);
 
 #endif

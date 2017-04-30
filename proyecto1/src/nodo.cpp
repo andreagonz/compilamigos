@@ -28,6 +28,25 @@ int Nodo::num_hijos() {
     return hijos.size();
 }
 
+
+Nodo * Nodo::pop_back() {
+  Nodo * t = hijos.back();
+  hijos.pop_back();
+  return  t;
+}
+void transfer(Nodo *n, Nodo *m, int i) {
+  if(m->num_hijos() == 0)
+    return;
+  if(m->num_hijos() == 1) {
+    n->get(i)->add(m->pop_back());
+    if(m->num_hijos() > 0)
+      n->add(m->pop_back());
+    return;
+  }
+  n->get(i)->add(m->pop_back());
+  n->add(m->pop_back());
+  transfer(n,m->get(0), i+1);
+}
 string str(Nodo * n) {
     int p = profundidad(n) + 1;
     bool rama[p];

@@ -44,7 +44,7 @@ queue<Nodo*> * nodos = new queue<Nodo*>();
 
 %type <nval> Num Factor Bool Fprog Prog FprogPrim AsigPrim Term ExprPrim Easig Expr Function Id Bcomp
 %type <nval> Beq Bterm Bexp Param Whileloop Tipo Fparams Fdparams Return Fundef FundefPrim Inst Asig 
-%type <nval> ProgPrim Conditional S
+%type <nval> ProgPrim Conditional Sig S
 
 %%
 
@@ -108,7 +108,7 @@ Expr { $$ = $1; }
 
 Fundef :
 FUN Id LPAR Fdparams RPAR FundefPrim {
-cout << "entro" << endl;
+  cout << "entro" << endl;
   Nodo * n = new NodoFunDef("fundef");
   cout << "paso" << endl;
   nodos->push(n);
@@ -213,14 +213,36 @@ Param :  Expr { $$ = $1; }
 ;
 
 
-
-
 Conditional :
 COND Expr DOTDOT Sig ENDCOND {
-  
+  Nodo *n = new Nodo("cond");
+  nodos->push(n);
+  n->add($2);
+  transfer(n,$4,0);
+  cout << n->num_hijos() << endl;
+  $$ = n;
 }
 ;
-Sig :  Prog PIPE Expr DOTDOT Sig | Prog PIPE DEFAULT DOTDOT Prog | Prog 
+Sig :
+Prog PIPE Expr DOTDOT Sig {
+  Nodo *n = new Nodo("pipe");
+  n->add($5);
+  n->add($3);
+  n->add($1);
+  nodos->push(n);
+  $$ = n;
+}
+| Prog PIPE DEFAULT DOTDOT Prog {
+  Nodo *n = new Nodo("pipe");
+  Nodo *d = new Nodo("default");
+  nodos->push(n);
+  nodos->push(d);
+  n->add($5);
+  n->add(d);
+  n->add($1);
+  $$ = n;
+}
+| Prog { $$ = $1; } 
 ;
 
 
@@ -338,7 +360,7 @@ Id {
 }
 |
 Num {
-    cout << "Num" << endl;
+  cout << "Num" << endl;
   $$ = $1;
 }
 |
@@ -360,9 +382,7 @@ NOT Factor {
   $$ = n;
 }
 |
-Bool {
-  $$ = $1;
-}
+Bool { $$ = $1; }
 ;
 
 Bool :
@@ -382,10 +402,8 @@ FALSE {
 ;
 
 Asig :
-Easig {
-    $$ = $1; }
-| AsigPrim {
-    $$ = $1; } 
+Easig { $$ = $1; }
+| AsigPrim { $$ = $1; } 
 ;
 
 //considerar un nodo de declaracion de variable
