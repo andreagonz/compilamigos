@@ -15,6 +15,7 @@ class Nodo {
   void add(Nodo *n);
   std::string str(void);
   int num_hijos();
+  Nodo * pop_back();
 };
 
 /**
@@ -210,5 +211,7 @@ std::string circulos(Nodo * n, double x, double y, double h, std::string s);
 std::string lineas(Nodo * n, double x, double y, double h, std::string s);
 
 std::string str_svg(Nodo * n);
+
+void transfer(Nodo *n, Nodo *m, int i);
 
 #endif

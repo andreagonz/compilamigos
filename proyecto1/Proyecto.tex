@@ -2,7 +2,7 @@
 \documentclass[12pt]{article}
 
 %Paquetes
-\usepackage[left=2cm,right=2cm,top=3cm,bottom=3cm,letterpaper]{geometry}
+\usepackage[left=2.5cm,right=2.5cm,top=3cm,bottom=3cm,letterpaper]{geometry}
 \usepackage{lmodern}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
@@ -22,16 +22,32 @@
 
 \begin{document}
 \maketitle
-\subsubsection*{1. Definición de la gramática}
+\tableofcontents
+\newpage
 
-Sea $G$ nuestra gramática de expresiones aritméticas. Definiremos $G$, como la 4-tupla: $G = (N,T,P,S)$, con $N,T,P$ conjuntos y $S$ el símbolo de la producción inicial.
+\section{Preliminares}
+\subsection{El lenguaje}
+Definimos la gramática de nuestro lenguaje con mucha inspiración de los lenguajes que ya conocíamos, tratando de tomar aspectos de la sintaxis de estos, pero con nuestras propias propuestas también. La base de nuestra gramática era del programa de la calculadora que vimos en clase y la grámatica del analizador sintáctico de descenso recursivo de la tarea. Agregamos posteriormente definiciones de funciones y algunas estructuras de control de flujo, además de expresiones booleanas. Este proceso nos llevó a pensar en las cuáles eran las funcionalidades mínimas que tendría nuestro lenguaje. \\
+
+Por otro lado, una decisión que nos resultó difícil tomar fue cómo distinguir el final de las estructuras de control y funciones, debido a que no queríamos usar corchetes. Así que uno de los tokens importantes era para terminar una estructuras de control y, tomando inspiración del lenguaje moderno de PHP, terminamos eligiendo el símbolo "$\sim$" junto al nombre de la estructura para indicar la terminación de ésta. \\
+
+Elegir el resto de los tokens no fue difícil. Era sólo una cuestión de cubrir todas las entradas posibles que nuestro programa aceptaría, y cual podría ser cada símbolo. Los números eran una opción obvia por la calculadora (lo que elegimos representar por un flotante y entero para soportar todas las posibilidades, como decimales). Además de eso, incluimos cadenas, así como varios otros símbolos comunes en las lenguas modernas como $\leq$.
+
+\subsection {La gramática}
+\subsection{Categorias sintácticas y tokens}
+Ver número 2.
+
+
+\section{Definición de la gramática formal}
+
+Sea $G$ nuestra gramática de expresiones aritméticas. Definiremos $G$, como la 4-tupla: $G = (N,T,P,S)$, con $N,T,P$ conjuntos y $S \in N$ el símbolo de la producción inicial.
 A continuación, se muestran los conjuntos que la conforman:\\ \\
 \texttt{ 
 N = \{S, Fprog, Fprog', Prog, Prog', Inst, Fundef, Fundef', Return, While, Fun, Fdparams, Fparams, Param, Cond, Sig, Expr, Bexp, Bterm, Beq, Bcom, Expr', Term, Factor, Bool, Num, Decimal, Entero, Digito, Asig, Asig', Easig, Id, pos, Carac, Letra, Tipo\}
 }\\
 
 \texttt{
-T = \{., :, ;, +, -, /, *, =, \_, ==, >, <, >=, <=, and, or, not, (, ), fun, while, cond, $\sim$fun, $\sim$while, $\sim$cond, int, float, bool, void, |, 0, 1,..., 9, a, ..., z, A, ..., Z\}  \footnote{En la gramática utilizaremos ``!'' para representar a ``|'' con el propósito de no confundir el símbolo terminal ``|'' con la separación de producciones}
+T = \{., :, ;, +, -, /, *, =, \_, ==, >, <, >=, <=, and, or, not, (, ), fun, while, cond, $\sim$fun, $\sim$while, $\sim$cond, int, float, bool, void, |, 0, 1,..., 9, a, ..., z, A, ..., Z\}  \footnote{En la gramática utilizaremos ``!'' para representar a ``|'' con el propósito de no confundir el símbolo terminal ``|'' con la separación las ramificaciones en las producciones.}
 }\\
 
 \texttt{
@@ -79,18 +95,19 @@ P = \{
 }
 
 %razomiento para gramática va aquí 
-\subsubsection*{2. Identificar las categorías sintácticas y definir los tokens}
-A continuación se describen las categorías sintácticas identificadas en la grámatica y los tokens que la componen:\\
-\textbf{Nota:} Por convención, los identificadores de los tokens (átomos) están escritos exclusivamente en mayúsculas. 
+\section{Categorías sintácticas y definición de tokens}
+A continuación se describen las categorías sintácticas identificadas en la grámatica y los tokens\footnote{Por convención, los identificadores de los tokens (átomos) están escritos exclusivamente en mayúsculas.} que la componen:\\
+\subsection{Valores:}
 \begin{outline}
-\1 \textbf{Valores:}
-	\2 ENTERO, números enteros.
+  \2 ENTERO, números enteros.
     \2 FLOTANTE, números de punto flotante.
     \2 BOOLEANO, define un valor booleano.
     \3 TRUE, valor booleano de verdadero.
     \3 FALSE, valor booleano de falso.
     \3 ID, identificadores de variables y funciones.
-\1 \textbf{Operadores:}
+\end{outline}
+\subsection{Operadores:}
+\begin{outline}
 	\2 \textbf{Operadores binarios:}
 		\3 PLUS, suma para expresiones aritméticas.	
     	\3 MINUS, resta para expresiones aritméticas.
@@ -107,7 +124,9 @@ A continuación se describen las categorías sintácticas identificadas en la gr
         \3 ASIG, asignación de un valor a una variable.
  	\2 \textbf{Operadores unarios:}
     	\3 NOT, negación de un valor.
- \1 \textbf{Estructuras:}
+\end{outline}
+\subsection{Estructuras de control:}
+\begin{outline}
  	\2 COND, establece el inicio de un bloque de condicionales.
     \2 ENDCOND, establece el final de un bloque de condicionales.
     \2 DEFAULT, caso por defecto del bloque de condicionales, en caso de no cumplir con ninguna condición dada.
@@ -115,7 +134,9 @@ A continuación se describen las categorías sintácticas identificadas en la gr
     \2 ENDWHILE, establece el final de un bloque de ciclo while.
     \2 FUN, establece el inicio de un bloque de función.
     \2 ENDFUN, establece el final de un bloque de función.
- \1 \textbf{Conectores:}
+\end{outline}
+    \subsection{Conectores:}
+    \begin{outline}
  	\2 LPAR, paréntesis izquierdo.
     \2 RPAR, paréntesis derecho.
     \2 SEMIC, punto y coma para señalar el final de cada sentencia.
@@ -123,22 +144,16 @@ A continuación se describen las categorías sintácticas identificadas en la gr
     \2 COMMA, coma para separar los parametros de una función y añadir legibilidad.
     \2 PIPE, señala la declaración de un caso en el bloque de condicionales.
 \end{outline}
-\subsubsection*{3. Implementación del analizador léxico}
+
+
+\section{Implementación del analizador léxico}
 Se usó el generador de analizadores léxicos \textit{Flex} en su versión 2.6.3 para C++. \\
 Para más información sobre la implementación del analizador léxico con \textit{Flex} se puede ver el archivo \texttt{lexer.lex} del directorio \texttt{src}.\\
-\subsubsection*{4. Implementación del analizador sintáctico \textit{Bottom-Up}}
+\section{Implementación del analizador sintáctico \textit{Bottom-Up}}
 Se utilizó la versión 3.0.4 del generador de analizadores sintácticos \textit{GNU Bison} para C++. \\
-Dicha implementación está en el archivo \texttt{parser.y} del directorio \texttt{src}
+Dicha implementación está en el archivo \texttt{parser.y} del directorio \texttt{src/}
 
-\subsection*{Razonamiento para la gramática}
-\subsubsection*{Categorias sintácticas}
-Ver número 2 arriba.
-\subsubsection*{Tokens y la gramática}
-Definimos la gramática de nuestro lenguaje con mucha inspiración de los lenguajes que ya conocíamos, tratando de tomar aspectos de la sintaxis de estos, pero con nuestras propias propuestas también. La base de nuestra gramática era del programa de la calculadora que vimos en clase y la grámatica del analizador sintáctico de descenso recursivo de la tarea. Agregamos posteriormente definiciones de funciones y algunas estructuras de control de flujo, además de expresiones booleanas. Este proceso nos llevó a pensar en las cuáles eran las funcionalidades mínimas que tendría nuestro lenguaje. \\
 
-Por otro lado, una decisión que nos resultó difícil tomar fue cómo distinguir el final de las estructuras de control y funciones, debido a que no queríamos usar corchetes. Así que uno de los tokens importantes era para terminar una estructuras de control y, tomando inspiración del lenguaje moderno de PHP, terminamos eligiendo el símbolo "$\sim$" junto al nombre de la estructura para indicar la terminación de ésta. \\
-
-Elegir el resto de los tokens no fue difícil. Era sólo una cuestión de cubrir todas las entradas posibles que nuestro programa aceptaría, y cual podría ser cada símbolo. Los números eran una opción obvia por la calculadora (lo que elegimos representar por un flotante y entero para soportar todas las posibilidades, como decimales). Además de eso, incluimos cadenas, así como varios otros símbolos comunes en las lenguas modernas como $\leq$
 
 \subsection*{Instrucciones para ejecutar y compilar el código}
 
@@ -153,7 +168,7 @@ En cualquier sistema operativo basado en Unix basta con ejecutar \texttt{make} e
 \end{verbatim}
 Donde \texttt{<archivo>} es el archivo con el código de entrada.
 
-\subsubsection*{Ejemplo de salida}
+\subsubsection*{Ejemplo de entrada\footnote{El archivo de entrada que contiene este ejemplo se encuentra ubicado en la raíz del proyecto con el nombre de \textbf{\textit{ejemplo.kyc}}. }:}
 \begin{verbatim}
 fun hola ( int angel ) int : 
     angel = ( angel + 56 / 89.098 );
