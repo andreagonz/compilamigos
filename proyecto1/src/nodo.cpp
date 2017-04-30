@@ -1,6 +1,7 @@
 #include "nodo.h"
 #include <string>
 #include <iostream>
+#include <math.h>
 
 using namespace std;
 
@@ -70,4 +71,108 @@ int profundidad(Nodo * v){
             max = p;
     }    
     return max + 1;
+}
+
+string crea_circ(Nodo * n, double x, double y){
+    return string("\n    <circle cx='") + to_string(x) + "' cy='" + to_string(y) + "' r='7' "
+        + "style='fill:white;stroke:black;stroke-width:1' />"
+        + "\n    <text fill='black' font-family='Arial' "
+        + "font-size='5px' x='" + to_string(x) + "' y='" + to_string(y + 1) + "' text-anchor='middle' "
+        + "font-weight='bold'>" + n->get_valor() + "</text>";
+}
+
+string crea_lin(double x1, double y1, double x2, double y2) {
+    return string("\n    <line x1='") + to_string(x1) + "' y1='" + to_string(y1) + "' x2='" + to_string(x2) + "' y2='" + to_string(y2) + "' "
+        + "style='stroke:black;stroke-width:1.3' />";
+}
+
+string vacio(){
+    return string("<?xml version='1.0' encoding='UTF-8' ?>")
+        + "\n<svg width='65' height='11'>" 
+        + "\n  <g>"
+        + "\n    <text fill='black' font-family='Arial' font-size='12px' "
+        + "x='0' y='11' font-weight='bold'>&#193;rbol vac&#237;o</text>"
+        + "\n  </g>"
+        + "\n</svg>";
+}
+
+string circulos(Nodo * n, double x, double y, double h, string s) {
+    if(n->num_hijos() == 0)
+        return s;
+    if(n->num_hijos() == 1) 
+        s += circulos(n->get(0), x, y + 80, h / n->num_hijos(),
+                      crea_circ(n->get(0), x, y + 80));
+    else if(n->num_hijos() % 2 == 0) {
+        cout << "x: " << x << endl;
+        cout << "h: " << h << endl;        
+        int init = x - (h / n->num_hijos()) * (n->num_hijos() / 2);
+        cout << "init: " << init << endl;
+        for(int i = 0; i < n->num_hijos(); i++) {
+            s += circulos(n->get(i), init, y + 80, h / n->num_hijos(),
+                          crea_circ(n->get(i), init, y + 80));
+            init += h / n->num_hijos();
+            if(i == (n->num_hijos() / 2) - 1)
+                init += h / n->num_hijos();
+        }
+    }
+    else {
+        cout << "x: " << x << endl;
+        cout << "h: " << h << endl;        
+        int init = x - (h / n->num_hijos()) * (n->num_hijos() / 2);
+        cout << "init: " << init << endl;
+        for(int i = 0; i < n->num_hijos(); i++) {
+            s += circulos(n->get(i), init, y + 80, h / n->num_hijos(),
+                          crea_circ(n->get(i), init, y + 80));
+            init += h / n->num_hijos();
+        }
+    }
+    return s;
+}
+
+string lineas(Nodo * n, double x, double y, double h, string s) {
+    if(n->num_hijos() == 0)
+        return s;
+    if(n->num_hijos() == 1)
+        s += lineas(n->get(0), x, y + 80, h / n->num_hijos(),
+		    crea_lin(x, y, x, y + 80));
+    else if(n->num_hijos() % 2 == 0) {
+        cout << "x: " << x << endl;
+        cout << "h: " << h << endl;        
+        int init = x - (h / n->num_hijos()) * (n->num_hijos() / 2);
+        cout << "init: " << init << endl;
+        for(int i = 0; i < n->num_hijos(); i++) {
+            s += lineas(n->get(i), init, y + 80, h / n->num_hijos(),
+                        crea_lin(x, y, init, y + 80));
+            init += h / n->num_hijos();
+            if(i == (n->num_hijos() / 2) - 1)
+                init += h / n->num_hijos();
+        }
+    }
+    else {
+        cout << "x: " << x << endl;
+        cout << "h: " << h << endl;        
+        int init = x - (h / n->num_hijos()) * (n->num_hijos() / 2);
+        cout << "init: " << init << endl;
+        for(int i = 0; i < n->num_hijos(); i++) {
+            s += lineas(n->get(i), init, y + 80, h / n->num_hijos(),
+                        crea_lin(x, y, init, y + 80));
+            init += h / n->num_hijos();
+        }
+    }
+    return s;
+}
+
+string str_svg(Nodo * n) {
+    if(!n)
+        return vacio();
+    int p = profundidad(n);
+    double h = (p * 80) + 15.495;
+    double w = (pow(2, p) - 1) * 20;
+    string s = string("<?xml version='1.0' encoding='UTF-8' ?>")
+        + "\n<svg width='" + to_string(w * 2) + "' height='" + to_string(h) + "'>"
+        + "\n  <g>";
+    s += lineas(n, w, 7.6, w / n->num_hijos(), "");
+    s += circulos(n, w, 7.6, w / n->num_hijos(), crea_circ(n, w, 7.6));
+    s += "\n  </g>\n</svg>";
+    return s;
 }

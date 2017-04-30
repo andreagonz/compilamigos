@@ -199,4 +199,16 @@ std::string espacios(int n, bool rama[]);
 
 int profundidad(Nodo * v);
 
+std::string crea_circ(Nodo * n, double x, double y);
+
+std::string crea_lin(double x1, double y1, double x2, double y2);
+
+std::string vacio();
+
+std::string circulos(Nodo * n, double x, double y, double h, std::string s);
+
+std::string lineas(Nodo * n, double x, double y, double h, std::string s);
+
+std::string str_svg(Nodo * n);
+
 #endif

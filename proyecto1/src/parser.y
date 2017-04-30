@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <queue>
+#include <fstream>
 #include "nodo.h"
     
 using namespace std;
@@ -53,6 +54,10 @@ queue<Nodo*> * nodos = new queue<Nodo*>();
 S :  Fprog {
   $$ = $1;
   cout << str($$) << endl;
+  ofstream arbol;
+  arbol.open ("arbol.svg");
+  arbol << str_svg($$);
+  arbol.close();
   //aqui un cout << $1 << endl; o algo con el nodo jijijii
  } 
 ;
