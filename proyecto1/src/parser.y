@@ -52,21 +52,26 @@ queue<Nodo*> * nodos = new queue<Nodo*>();
 
 S :  Fprog {
   $$ = $1;
+  cout << str($$) << endl;
   //aqui un cout << $1 << endl; o algo con el nodo jijijii
  } 
 ;
 
 Fprog :
 Fprog FprogPrim {
-  $2->add($1);
-  $$ = $2;
+    cout << "Fprog -> Fprog FprogPrim" << endl;
+    $1->add($2);
+    $$ = $1;
 }
-| FprogPrim { $$ = $1; } 
+| FprogPrim { $$ = $1;
+    cout << "Fprog -> FprogPrim" << endl;
+      } 
 ;
 
 FprogPrim :
 AsigPrim SEMIC {
-  Nodo *n = new NodoSeq($2);
+    cout << "FprogPrim -> AsigPrim SEMIC" << endl;
+  Nodo *n = new NodoSeq(";");
   n->add($1);
   nodos->push(n);
   $$ = n; 
@@ -85,28 +90,35 @@ Prog :  Prog ProgPrim {
 ProgPrim :
 Conditional { $$ = $1; }
 | Whileloop { $$ = $1; }
-| Inst SEMIC { $$ = $1; }
-| Function SEMIC { $$ = $1; }
+| Inst SEMIC {
+      Nodo *n = new NodoSeq(";");
+      n->add($1);
+      nodos->push(n);
+  $$ = n; }
+| Function SEMIC {
+      Nodo *n = new NodoSeq(";");
+      n->add($1);
+      nodos->push(n);
+      $$ = n; }
 ;
 Inst :
-Expr { $$ = $1; }  
+Expr { $$ = $1; }
 | Asig { $$ = $1; }
 ;
 
 Fundef :
 FUN Id LPAR Fdparams RPAR FundefPrim {
-  /*issues inexplicables, dice que $1 es null
 cout << "entro" << endl;
-  Nodo * n = new NodoFunDef($1);
+  Nodo * n = new NodoFunDef("fundef");
   cout << "paso" << endl;
   nodos->push(n);
   n->add($2);
   n->add($4);
   n->add($6);
-  $$ = n;*/
+  $$ = n;
 }
 | FUN Id LPAR RPAR FundefPrim {
-  Nodo * n = new NodoFunDef($1);
+  Nodo * n = new NodoFunDef("fundef");
   nodos->push(n);
   n->add($2);
   n->add($5);
@@ -115,6 +127,8 @@ cout << "entro" << endl;
 ;
 
 // aqui es necesario poner un nodo de secuenciacion para semic??
+
+////****FALTA PONER TIPO DE RETURN****/////
 FundefPrim:  Tipo DOTDOT Prog Return SEMIC ENDFUN {
   Nodo * n = new NodoCuerpo("cuerpo");
   nodos->push(n);
@@ -128,7 +142,6 @@ FundefPrim:  Tipo DOTDOT Prog Return SEMIC ENDFUN {
   Nodo * v = new NodoCuerpo($1);
   nodos->push(n);
   nodos->push(v);
-
   n->add(v);
   n->add($3);
   $$ = n;
@@ -136,13 +149,13 @@ FundefPrim:  Tipo DOTDOT Prog Return SEMIC ENDFUN {
 ;
 Return:
 RETURN Expr {
-  Nodo * n = new NodoReturn($1);
+  Nodo * n = new NodoReturn("return");
   nodos->push(n);
   n->add($2);
   $$ = n;
 }
 | RETURN Function {
-  Nodo * n = new NodoReturn($1);
+  Nodo * n = new NodoReturn("return");
   nodos->push(n);
   n->add($2);
   $$ = n;
@@ -150,7 +163,7 @@ RETURN Expr {
 ;
 Whileloop :
 WHILE Expr DOTDOT Prog ENDWHILE {
-  Nodo * n = new NodoWhile($1);
+  Nodo * n = new NodoWhile("while");
   nodos->push(n);
   n->add($2);
   n->add($4);
@@ -174,7 +187,7 @@ Id LPAR Fparams RPAR {
 ;
 Fdparams :
 Fdparams COMMA Tipo Id {
-  Nodo * n = new NodoComa($2);
+  Nodo * n = new NodoComa(",");
   nodos->push(n);
   $3->add($4);
   n->add($1);
@@ -188,7 +201,7 @@ Fdparams COMMA Tipo Id {
 ;
 Fparams :
 Fparams COMMA Param {
-  Nodo * n = new NodoComa($2);
+  Nodo * n = new NodoComa(",");
   nodos->push(n);
   n->add($1);
   n->add($3);
@@ -212,12 +225,11 @@ Sig :  Prog PIPE Expr DOTDOT Sig | Prog PIPE DEFAULT DOTDOT Prog | Prog
 
 
 
-
 Expr :  Bexp { $$ = $1; }
 ;
 Bexp :
 Bexp OR Bterm {
-  Nodo * n = new NodoOr($2);
+  Nodo * n = new NodoOr("or");
   nodos->push(n);
   n->add($1);
   n->add($3);
@@ -227,7 +239,7 @@ Bexp OR Bterm {
 ; 
 Bterm :
 Bterm AND Beq {
-  Nodo * n = new NodoAnd($2);
+  Nodo * n = new NodoAnd("and");
   nodos->push(n);
   n->add($1);
   n->add($3);
@@ -236,14 +248,14 @@ Bterm AND Beq {
 | Beq { $$ = $1;  } 
 ; 
 Beq :  Beq EQ Bcomp {
-  Nodo * n = new NodoEq($2);
+  Nodo * n = new NodoEq("==");
   nodos->push(n);
   n->add($1);
   n->add($3);
   $$ = n;
 }
 | Beq NEQ Bcomp {
-  Nodo * n = new NodoNeq($2);
+  Nodo * n = new NodoNeq("!=");
   nodos->push(n);
   n->add($1);
   n->add($3);
@@ -253,28 +265,28 @@ Beq :  Beq EQ Bcomp {
 ;
 Bcomp :
 Bcomp LESS ExprPrim {
-  Nodo * n = new NodoLess($2);
+  Nodo * n = new NodoLess("<");
   nodos->push(n);
   n->add($1);
   n->add($3);
   $$ = n;
 }
 | Bcomp GREAT ExprPrim {
-  Nodo * n = new NodoGreat($2);
+  Nodo * n = new NodoGreat(">");
   nodos->push(n);
   n->add($1);
   n->add($3);
   $$ = n;
 }
 | Bcomp LESSEQ ExprPrim {
-  Nodo * n = new NodoLessEq($2);
+  Nodo * n = new NodoLessEq("<=");
   nodos->push(n);
   n->add($1);
   n->add($3);
   $$ = n;
 }
 | Bcomp GREATEQ ExprPrim {
-  Nodo * n = new NodoGreatEq($2);
+  Nodo * n = new NodoGreatEq(">=");
   nodos->push(n);
   n->add($1);
   n->add($3);
@@ -284,14 +296,14 @@ Bcomp LESS ExprPrim {
 ; 
 ExprPrim :
 ExprPrim PLUS Term {
-  Nodo * n = new NodoSum($2);
+  Nodo * n = new NodoSum("+");
   nodos->push(n);
   n->add($1);
   n->add($3);
   $$ = n;
 }
 | ExprPrim MINUS Term {
-  Nodo * n = new NodoMenos($2);
+  Nodo * n = new NodoMenos("-");
   nodos->push(n);
   n->add($1);
   n->add($3);
@@ -301,14 +313,14 @@ ExprPrim PLUS Term {
 ;
 Term :
 Term MULT Factor{
-  Nodo * n = new NodoMult($2);
+  Nodo * n = new NodoMult("*");
   nodos->push(n);
   n->add($1);
   n->add($3);
   $$ = n;
 }
 | Term DIV Factor {
-  Nodo * n = new NodoDiv($2);
+  Nodo * n = new NodoDiv("/");
   nodos->push(n);
   n->add($1);
   n->add($3);
@@ -319,28 +331,30 @@ Factor {
   $$ = $1;
 } 
 ;    
+
 Factor :
 Id {
   $$ = $1;
 }
 |
 Num {
+    cout << "Num" << endl;
   $$ = $1;
 }
 |
 LPAR Expr RPAR {
-  
+    $$ = $2;
 }
 |
 MINUS Factor {
-  Nodo * n = new NodoMenos($1);
+  Nodo * n = new NodoMenos("-");
   n->add($2);
   nodos->push(n);
   $$ = n;
 }
 |
 NOT Factor {
-  Nodo * n = new NodoNot($1);
+  Nodo * n = new NodoNot("not");
   n->add($2);
   nodos->push(n);
   $$ = n;
@@ -353,22 +367,25 @@ Bool {
 
 Bool :
 TRUE {
-  Nodo * n = new NodoBool($1);
+  Nodo * n = new NodoBool("true");
   nodos->push(n);
   cout << "true fine" << endl;
   $$ = n;
 }
 |
 FALSE {
-  Nodo * n = new NodoBool($1);
+  Nodo * n = new NodoBool("false");
   nodos->push(n);
   cout << "bool fine" << endl;
   $$ = n;
 } 
 ;
+
 Asig :
-Easig { $$ = $1; }
-| AsigPrim { $$ = $1; } 
+Easig {
+    $$ = $1; }
+| AsigPrim {
+    $$ = $1; } 
 ;
 
 //considerar un nodo de declaracion de variable
@@ -378,9 +395,10 @@ Tipo Easig {
   $$ = $1;
 } 
 ;
+
 Easig :
 Id ASIG Expr {
-  Nodo * n = new NodoAsig($2);
+  Nodo * n = new NodoAsig("=");
   nodos->push(n);
   n->add($1);
   n->add($3);
@@ -388,7 +406,7 @@ Id ASIG Expr {
   $$ = n;
 }
 | Id ASIG Function {
-  Nodo * n = new NodoAsig($2);
+  Nodo * n = new NodoAsig("=");
   nodos->push(n);
   n->add($1);
   n->add($3);
@@ -404,33 +422,35 @@ ID {
   cout << "id fine" << endl;
   $$ = n;
 }
+
 Num:
 FLOAT {
   Nodo * n = new NodoFloat($1);
   nodos->push(n);
   cout << " float fine" << endl;
   $$ = n;
-} |
-INT {
+}
+| INT {
   Nodo * n = new NodoInt($1);
   nodos->push(n);
   cout << "int fine" << endl;
   $$ = n;
 }
 ;
+
 Tipo:
 ENTERO {
-  Nodo * n = new NodoTipo($1);
-  nodos->push(n);
-  $$ = n;
+    Nodo * n = new NodoTipo("int");
+    nodos->push(n);
+    $$ = n;
 }
 | FLOTANTE {
-  Nodo * n = new NodoTipo($1);
+  Nodo * n = new NodoTipo("float");
   nodos->push(n);
   $$ = n;
   }
 | BOOLEANO {
-  Nodo * n = new NodoTipo($1);
+  Nodo * n = new NodoTipo("bool");
   nodos->push(n);
   $$ = n;
   }

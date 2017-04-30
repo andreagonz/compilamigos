@@ -8,14 +8,13 @@ class Nodo {
   std::vector<Nodo*> hijos;
   std::string valor;
  public:
- Nodo(std::string v): valor(v) {
-    hijos.reserve(2); // al menos tendra dos hijos
-  }
+ Nodo(std::string v): valor(v) {}
   Nodo * get(int i);
   std::string get_valor(void);
   void set(int i, Nodo *n);
   void add(Nodo *n);
   std::string str(void);
+  int num_hijos();
 };
 
 /**
@@ -191,7 +190,7 @@ class NodoReturn: public Nodo {
 
 /** TERMINA SECCION DE REGIDORES */
 
-/*
+
 std::string str(Nodo * n);
 
 std::string aCadena(Nodo * vertice, int nivel, bool rama[]);
@@ -199,5 +198,5 @@ std::string aCadena(Nodo * vertice, int nivel, bool rama[]);
 std::string espacios(int n, bool rama[]);
 
 int profundidad(Nodo * v);
-*/
+
 #endif

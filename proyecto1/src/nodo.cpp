@@ -1,5 +1,6 @@
 #include "nodo.h"
 #include <string>
+#include <iostream>
 
 using namespace std;
 
@@ -23,7 +24,10 @@ string Nodo::get_valor() {
     return valor;
 }
 
-/*
+int Nodo::num_hijos() {
+    return hijos.size();
+}
+
 string str(Nodo * n) {
     int p = profundidad(n) + 1;
     bool rama[p];
@@ -36,24 +40,14 @@ string str(Nodo * n) {
 string aCadena(Nodo * vertice, int nivel, bool rama[]) {
     string s = vertice->str() + "\n";
     rama[nivel] = true;
-    if (vertice->get_izq() && vertice->get_der()) {
+    for(int i = 0; i < vertice->num_hijos(); i++) {
         s += espacios(nivel, rama);
-        s += "├─›";
-        s += aCadena(vertice->get_izq(), nivel + 1, rama);
-        s += espacios(nivel, rama);
-        s += "└─»";
+        if(i < vertice->num_hijos() - 1)
+            s += "├─›";
+        else
+            s += "└─»";
+        s += aCadena(vertice->get(i), nivel + 1, rama);
         rama[nivel] = false;
-        s += aCadena(vertice->get_der(), nivel + 1, rama);
-    } else if (vertice->get_izq()) {
-        s += espacios(nivel, rama);
-        s += "└─›";
-        rama[nivel] = false;
-        s += aCadena(vertice->get_izq(), nivel + 1, rama);
-    } else if (vertice->get_der()) {
-        s += espacios(nivel, rama);
-        s += "└─»";
-        rama[nivel] = false;
-        s += aCadena(vertice->get_der(), nivel + 1, rama);
     }
     return s;
 }
@@ -69,16 +63,11 @@ string espacios(int n, bool rama[]) {
 }
 
 int profundidad(Nodo * v){
-    int izq = -1;
-    int der = -1;
-    if(v->get_izq())
-        izq = profundidad(v->get_izq());
-    
-    if(v->get_der())
-        der = profundidad(v->get_der());
-
-    if(izq > der)
-        return izq + 1;
-    return der + 1;
+    int max = -1;
+    for(int i = 0; i < v->num_hijos(); i++) {
+        int p = profundidad(v->get(i));
+        if(p > max)
+            max = p;
+    }    
+    return max + 1;
 }
-*/
