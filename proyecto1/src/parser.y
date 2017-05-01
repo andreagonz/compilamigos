@@ -71,18 +71,20 @@ S :  Fprog {
 Fprog :
 Fprog FprogPrim {
     cout << "Fprog -> Fprog FprogPrim" << endl;
-    $1->add($2);
-    $$ = $1;
+    Nodo * n = new Nodo("seq");
+    n->add($1);
+    n->add($2);
+    $$ = n;
 }
 | FprogPrim { $$ = $1;
     cout << "Fprog -> FprogPrim" << endl;
-      } 
+  } 
 ;
 
 FprogPrim :
 AsigPrim SEMIC {
-    cout << "FprogPrim -> AsigPrim SEMIC" << endl;
-  Nodo *n = new NodoSeq(";");
+  cout << "FprogPrim -> AsigPrim SEMIC" << endl;
+  Nodo *n = new NodoSeq("seq");
   n->add($1);
   nodos->push(n);
   $$ = n; 
@@ -102,12 +104,12 @@ ProgPrim :
 Conditional { $$ = $1; }
 | Whileloop { $$ = $1; }
 | Inst SEMIC {
-      Nodo *n = new NodoSeq(";");
+      Nodo *n = new NodoSeq("seq");
       n->add($1);
       nodos->push(n);
   $$ = n; }
 | Function SEMIC {
-      Nodo *n = new NodoSeq(";");
+      Nodo *n = new NodoSeq("seq");
       n->add($1);
       nodos->push(n);
       $$ = n; }
@@ -119,9 +121,7 @@ Expr { $$ = $1; }
 
 Fundef :
 FUN Id LPAR Fdparams RPAR FundefPrim {
-  cout << "entro" << endl;
   Nodo * n = new NodoFunDef("fundef");
-  cout << "paso" << endl;
   nodos->push(n);
   n->add($2);
   n->add($4);
@@ -229,17 +229,17 @@ COND Expr DOTDOT Sig ENDCOND {
   Nodo *n = new Nodo("cond");
   nodos->push(n);
   n->add($2);
-  transfer(n,$4,0);
-  cout << n->num_hijos() << endl;
+  n->add($4);
+  //transfer(n,$4,0);
   $$ = n;
 }
 ;
 Sig :
 Prog PIPE Expr DOTDOT Sig {
   Nodo *n = new Nodo("pipe");
-  n->add($5);
-  n->add($3);
   n->add($1);
+  n->add($3);
+  n->add($5);
   nodos->push(n);
   $$ = n;
 }
@@ -248,9 +248,9 @@ Prog PIPE Expr DOTDOT Sig {
   Nodo *d = new Nodo("default");
   nodos->push(n);
   nodos->push(d);
-  n->add($5);
-  n->add(d);
   n->add($1);
+  n->add(d);
+  n->add($5);
   $$ = n;
 }
 | Prog { $$ = $1; } 
@@ -258,7 +258,11 @@ Prog PIPE Expr DOTDOT Sig {
 
 
 
-Expr :  Bexp { $$ = $1; }
+Expr :  Bexp {
+  Nodo *n = new Nodo("Expr");
+  n->add($1);
+  $$ = n;
+}
 ;
 Bexp :
 Bexp OR Bterm {
