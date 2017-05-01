@@ -95,8 +95,11 @@ Fundef { $$ = $1; }
 
 // considerar un nodo bloque
 Prog :  Prog ProgPrim {
-  $1->add($2);
-  $$ = $1;
+  Nodo *n = new NodoSeq("seq");
+  n->add($1);
+  nodos->push(n);
+  n->add($2);
+  $$ = n;
 }
 | ProgPrim { $$ = $1; }
 ;
@@ -259,9 +262,10 @@ Prog PIPE Expr DOTDOT Sig {
 
 
 Expr :  Bexp {
-  Nodo *n = new Nodo("Expr");
-  n->add($1);
-  $$ = n;
+  //Nodo *n = new Nodo("Expr");
+  //n->add($1);
+  //$$ = n;
+  $$ = $1; 
 }
 ;
 Bexp :
