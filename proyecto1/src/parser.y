@@ -8,7 +8,6 @@
     
 using namespace std;
 
-// stuff from flex that bison needs to know about:
 extern "C" int yylex();
 extern "C" int yyparse();
 extern "C" FILE *yyin;
@@ -18,9 +17,7 @@ extern int col;
  
 void yyerror(const char *s);
 queue<Nodo*> * nodos = new queue<Nodo*>();
-// ancho y alto del arbol (si son -1 se usa medidas por defecto)
-int width = -1;
-int height = -1;
+string archivo;
 %}
 
 /* bison declarations */
@@ -32,6 +29,7 @@ int height = -1;
   Nodo *nval;
 }
 
+/* Declaración de tokens */
 %token <sval> TRUE FALSE DEFAULT ENTERO FLOTANTE BOOLEANO VOID
 %token <sval> LPAR RPAR SEMIC ASIG FUN ENDFUN COND ENDCOND WHILE ENDWHILE DOTDOT COMMA PIPE RETURN
 %token <sval> EQ NEQ LESS GREAT LESSEQ GREATEQ AND OR NOT
@@ -51,39 +49,28 @@ int height = -1;
 
 %%
 
-/*gramática*/
-
+/* Gramática */
 S :  Fprog {
   $$ = $1;
-  /* cout << str($$) << endl; */
-  ofstream svg;
-  svg.open ("arbol.svg");
-  svg << str_svg($$, width, height);
-  svg.close();
   ofstream arbol;
-  arbol.open ("arbol.txt");
+  arbol.open (archivo + ".asa");
   arbol << str($$);
   arbol.close();
-  //aqui un cout << $1 << endl; o algo con el nodo jijijii
  } 
 ;
 
 Fprog :
 Fprog FprogPrim {
-    cout << "Fprog -> Fprog FprogPrim" << endl;
     Nodo * n = new Nodo("seq");
     n->add($1);
     n->add($2);
     $$ = n;
 }
-| FprogPrim { $$ = $1;
-    cout << "Fprog -> FprogPrim" << endl;
-  } 
+| FprogPrim { $$ = $1; } 
 ;
 
 FprogPrim :
 AsigPrim SEMIC {
-  cout << "FprogPrim -> AsigPrim SEMIC" << endl;
   Nodo *n = new NodoSeq("seq");
   n->add($1);
   nodos->push(n);
@@ -93,7 +80,6 @@ AsigPrim SEMIC {
 Fundef { $$ = $1; }
 ;
 
-// considerar un nodo bloque
 Prog :  Prog ProgPrim {
   Nodo *n = new NodoSeq("seq");
   n->add($1);
@@ -140,9 +126,6 @@ FUN Id LPAR Fdparams RPAR FundefPrim {
 }
 ;
 
-// aqui es necesario poner un nodo de secuenciacion para semic??
-
-////****FALTA PONER TIPO DE RETURN****/////
 FundefPrim:  Tipo DOTDOT Prog Return SEMIC ENDFUN {
   Nodo * n = new NodoCuerpo("cuerpo");
   nodos->push(n);
@@ -226,14 +209,12 @@ Fparams COMMA Param {
 Param :  Expr { $$ = $1; }
 ;
 
-
 Conditional :
 COND Expr DOTDOT Sig ENDCOND {
   Nodo *n = new Nodo("cond");
   nodos->push(n);
   n->add($2);
   n->add($4);
-  //transfer(n,$4,0);
   $$ = n;
 }
 ;
@@ -259,12 +240,7 @@ Prog PIPE Expr DOTDOT Sig {
 | Prog { $$ = $1; } 
 ;
 
-
-
 Expr :  Bexp {
-  //Nodo *n = new Nodo("Expr");
-  //n->add($1);
-  //$$ = n;
   $$ = $1; 
 }
 ;
@@ -379,7 +355,6 @@ Id {
 }
 |
 Num {
-  cout << "Num" << endl;
   $$ = $1;
 }
 |
@@ -408,14 +383,12 @@ Bool :
 TRUE {
   Nodo * n = new NodoBool("true");
   nodos->push(n);
-  cout << "true fine" << endl;
   $$ = n;
 }
 |
 FALSE {
   Nodo * n = new NodoBool("false");
   nodos->push(n);
-  cout << "bool fine" << endl;
   $$ = n;
 } 
 ;
@@ -425,7 +398,6 @@ Easig { $$ = $1; }
 | AsigPrim { $$ = $1; } 
 ;
 
-//considerar un nodo de declaracion de variable
 AsigPrim :
 Tipo Easig {
   $1->add($2);
@@ -439,7 +411,6 @@ Id ASIG Expr {
   nodos->push(n);
   n->add($1);
   n->add($3);
-  cout << "asig func fine" << endl;
   $$ = n;
 }
 | Id ASIG Function {
@@ -447,7 +418,6 @@ Id ASIG Expr {
   nodos->push(n);
   n->add($1);
   n->add($3);
-  cout << "asig fine" << endl;
   $$ = n;
 }
 ;
@@ -456,7 +426,6 @@ Id:
 ID {
   Nodo * n = new NodoId($1);
   nodos->push(n);
-  cout << "id fine" << endl;
   $$ = n;
 }
 
@@ -464,13 +433,11 @@ Num:
 FLOAT {
   Nodo * n = new NodoFloat($1);
   nodos->push(n);
-  cout << " float fine" << endl;
   $$ = n;
 }
 | INT {
   Nodo * n = new NodoInt($1);
   nodos->push(n);
-  cout << "int fine" << endl;
   $$ = n;
 }
 ;
@@ -494,8 +461,9 @@ ENTERO {
 ;
 %%
 
-/* epilogo */
-    
+/* Epilogo */
+
+/* Función para liberar espacio de los nodos */
 void clear() {
     while(!nodos->empty()) {
         Nodo *n = nodos->front();
@@ -507,24 +475,20 @@ void clear() {
 
 int main(int argc, char* argv[]) {
 	if(argc < 2) {
-            // -w y -h son para las medidas del arbol (son opcionales)
-		cout << "Uso: ./kyc-ip <archivo> [-w ancho] [-h alto]" << endl;
+		cout << "Uso: ./kyc-ip <archivo>" << endl;
                 clear();
 		return -1;
  	}
-        for(int i = 1; i < argc; i++) {
-            if(string(argv[i]) == "-w") {
-                width = stoi(argv[i + 1]);
-            }
-            if(string(argv[i]) == "-h")
-                height = stoi(argv[i + 1]);
-        }
+        
 	FILE *myfile = fopen(argv[1], "r");
 	if (!myfile) {
 		cout << "Error al abrir archivo!" << endl;
                 clear();
 		return -1;
 	}
+        string s = argv[1];
+        archivo = s.substr(s.find_last_of("\\/") + 1, s.size());
+        archivo = archivo.substr(0, archivo.find_last_of("."));
 	yyin = myfile;
 
 	do {
