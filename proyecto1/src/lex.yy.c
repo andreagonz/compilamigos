@@ -527,7 +527,8 @@ int yy_flex_debug = 0;
 char *yytext;
 #line 1 "lexer.lex"
 #line 2 "lexer.lex"
-
+#include "nodo.h"
+#include <string>
 #include <iostream>
 #include "parser.tab.h"
 using namespace std;
@@ -535,7 +536,7 @@ using namespace std;
 int linea = 1;
 int col = 1;
 
-#line 539 "lex.yy.c"
+#line 540 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -753,10 +754,10 @@ YY_DECL
 		}
 
 	{
-#line 16 "lexer.lex"
+#line 17 "lexer.lex"
 
 
-#line 760 "lex.yy.c"
+#line 761 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -815,27 +816,27 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 18 "lexer.lex"
+#line 19 "lexer.lex"
 {
 	//cout << "Encontre un entero:" << yytext << endl;
-        //yylval.ival = atoi(yytext);
+        yylval.sval = yytext;
         col++;    
         return INT;
 }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 25 "lexer.lex"
+#line 26 "lexer.lex"
 {
 	//cout << "Encontre un flotante:" << yytext << endl;
-        //yylval.fval = atof(yytext);
+        yylval.sval = yytext;
         col++;    
         return FLOAT;
 }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 32 "lexer.lex"
+#line 33 "lexer.lex"
 {
         //cout << "Encontre un and:" << yytext << endl;
         col = col + 3;
@@ -844,7 +845,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 38 "lexer.lex"
+#line 39 "lexer.lex"
 { 
         //cout << "Encontre un or:" << yytext << endl;
         col = col + 2;
@@ -853,7 +854,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 44 "lexer.lex"
+#line 45 "lexer.lex"
 { 
         //cout << "Encontre un not:" << yytext << endl;
         col = col + 3;
@@ -862,7 +863,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 50 "lexer.lex"
+#line 51 "lexer.lex"
 {
         //cout << "Encontre un bool:" << yytext << endl;
         col = col + 4;
@@ -871,7 +872,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 56 "lexer.lex"
+#line 57 "lexer.lex"
 {
         //cout << "Encontre un int:" << yytext << endl;
         col = col + 3;
@@ -880,7 +881,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 62 "lexer.lex"
+#line 63 "lexer.lex"
 {
         //cout << "Encontre un float:" << yytext << endl;
         col = col + 5;
@@ -889,7 +890,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 69 "lexer.lex"
+#line 70 "lexer.lex"
 {
         //cout << "Encontre un true:" << yytext << endl;
         col = col + 4;
@@ -898,7 +899,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 75 "lexer.lex"
+#line 76 "lexer.lex"
 {
         //cout << "Encontre un false:" << yytext << endl;
         col = col + 5;
@@ -907,7 +908,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 81 "lexer.lex"
+#line 82 "lexer.lex"
 {
         //cout << "Encontre un default:" << yytext << endl;
         col = col + 7;
@@ -916,7 +917,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 87 "lexer.lex"
+#line 88 "lexer.lex"
 {
         //cout << "Encontre un fun:" << yytext << endl;
         col = col + 3;
@@ -925,7 +926,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 94 "lexer.lex"
+#line 95 "lexer.lex"
 {
         //cout << "Encontre un cond:" << yytext << endl;
         col = col + 4;
@@ -934,7 +935,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 100 "lexer.lex"
+#line 101 "lexer.lex"
 {
         //cout << "Encontre un while:" << yytext << endl;
         col = col + 5;
@@ -943,7 +944,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 106 "lexer.lex"
+#line 107 "lexer.lex"
 {
         col = col + 6;
       return RETURN;
@@ -951,7 +952,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 111 "lexer.lex"
+#line 112 "lexer.lex"
 {
         col = col + 4;
       return VOID;
@@ -959,7 +960,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 116 "lexer.lex"
+#line 117 "lexer.lex"
 {
         //cout << "Encontre un ,:" << yytext << endl;
         col = col + 1;
@@ -968,7 +969,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 122 "lexer.lex"
+#line 123 "lexer.lex"
 {
         //cout << "Encontre un +:" << yytext << endl;
         col = col + 1;
@@ -977,7 +978,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 128 "lexer.lex"
+#line 129 "lexer.lex"
 {
         //cout << "Encontre un -:" << yytext << endl;
         col = col + 1;
@@ -986,7 +987,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 134 "lexer.lex"
+#line 135 "lexer.lex"
 {
         //cout << "Encontre un *:" << yytext << endl;
         col = col + 1;
@@ -995,7 +996,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 140 "lexer.lex"
+#line 141 "lexer.lex"
 {
         //cout << "Encontre un /:" << yytext << endl;
         col = col + 1;
@@ -1004,7 +1005,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 146 "lexer.lex"
+#line 147 "lexer.lex"
 {
         //cout << "Encontre un ( :" << yytext << endl;
         col = col + 1;
@@ -1013,7 +1014,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 152 "lexer.lex"
+#line 153 "lexer.lex"
 {
         //cout << "Encontre un ):" << yytext << endl;
         col = col + 1;
@@ -1022,7 +1023,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 158 "lexer.lex"
+#line 159 "lexer.lex"
 {
         //cout << "Encontre un ; :" << yytext << endl;
         col = col + 1;
@@ -1031,7 +1032,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 164 "lexer.lex"
+#line 165 "lexer.lex"
 {
         //cout << "Encontre un = :" << yytext << endl;
         col = col + 1;
@@ -1040,7 +1041,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 170 "lexer.lex"
+#line 171 "lexer.lex"
 {
         //cout << "Encontre un ~fun:" << yytext << endl;
         col = col + 4;
@@ -1049,7 +1050,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 176 "lexer.lex"
+#line 177 "lexer.lex"
 {
         //cout << "Encontre un ~cond:" << yytext << endl;
         col = col + 5;
@@ -1058,7 +1059,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 182 "lexer.lex"
+#line 183 "lexer.lex"
 {
         //cout << "Encontre un ~while:" << yytext << endl;
         col = col + 6;
@@ -1067,7 +1068,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 189 "lexer.lex"
+#line 190 "lexer.lex"
 {
         //cout << "Encontre un : :" << yytext << endl;
         col = col + 1;
@@ -1076,17 +1077,17 @@ YY_RULE_SETUP
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 196 "lexer.lex"
+#line 197 "lexer.lex"
 {
         //cout << "Encontre un ID :" << yytext << endl;
-        //yylval.sval = strdup(yytext);
-	    col++;     
-      return ID;
+        yylval.sval = strdup(yytext);
+	col++;     
+        return ID;
 }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 203 "lexer.lex"
+#line 204 "lexer.lex"
 {
         //cout << "Encontre un == :" << yytext << endl;
         col = col + 2;
@@ -1095,7 +1096,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 209 "lexer.lex"
+#line 210 "lexer.lex"
 {
         //cout << "Encontre un != :" << yytext << endl;
         col = col + 2;
@@ -1104,7 +1105,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 215 "lexer.lex"
+#line 216 "lexer.lex"
 {
         //cout << "Encontre un < :" << yytext << endl;
         col = col + 1;
@@ -1113,7 +1114,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 221 "lexer.lex"
+#line 222 "lexer.lex"
 {
         //cout << "Encontre un >:" << yytext << endl;
         col = col + 1;
@@ -1122,7 +1123,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 227 "lexer.lex"
+#line 228 "lexer.lex"
 {
         //cout << "Encontre un <= :" << yytext << endl;
         col = col + 2;
@@ -1131,7 +1132,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 233 "lexer.lex"
+#line 234 "lexer.lex"
 {
         //cout << "Encontre un >= :" << yytext << endl;
         col = col + 2;
@@ -1140,7 +1141,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 240 "lexer.lex"
+#line 241 "lexer.lex"
 {
         //cout << "Encontre un | :" << yytext << endl;
         col = col + 1;
@@ -1149,7 +1150,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 247 "lexer.lex"
+#line 248 "lexer.lex"
 {
 
         col = col + 1;
@@ -1158,7 +1159,7 @@ YY_RULE_SETUP
 case 39:
 /* rule 39 can match eol */
 YY_RULE_SETUP
-#line 252 "lexer.lex"
+#line 253 "lexer.lex"
 {
 	    linea++;
 	    col = 1;
@@ -1166,7 +1167,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 257 "lexer.lex"
+#line 258 "lexer.lex"
 {
 	    cout << "Carácter no reconocido en línea " << linea << ", columna " << col << ": " <<  yytext[0] << "\n";
 	    exit(1);
@@ -1174,10 +1175,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 262 "lexer.lex"
+#line 263 "lexer.lex"
 ECHO;
 	YY_BREAK
-#line 1181 "lex.yy.c"
+#line 1182 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2178,7 +2179,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 262 "lexer.lex"
+#line 263 "lexer.lex"
 
 
 

@@ -51,30 +51,30 @@ extern int yydebug;
     ENTERO = 261,
     FLOTANTE = 262,
     BOOLEANO = 263,
-    EQ = 264,
-    NEQ = 265,
-    LESS = 266,
-    GREAT = 267,
-    LESSEQ = 268,
-    GREATEQ = 269,
-    NOT = 270,
-    AND = 271,
-    OR = 272,
-    LPAR = 273,
-    RPAR = 274,
-    SEMIC = 275,
-    ASIG = 276,
-    FUN = 277,
-    ENDFUN = 278,
-    COND = 279,
-    ENDCOND = 280,
-    WHILE = 281,
-    ENDWHILE = 282,
-    DOTDOT = 283,
-    COMMA = 284,
-    PIPE = 285,
-    RETURN = 286,
-    VOID = 287,
+    VOID = 264,
+    LPAR = 265,
+    RPAR = 266,
+    SEMIC = 267,
+    ASIG = 268,
+    FUN = 269,
+    ENDFUN = 270,
+    COND = 271,
+    ENDCOND = 272,
+    WHILE = 273,
+    ENDWHILE = 274,
+    DOTDOT = 275,
+    COMMA = 276,
+    PIPE = 277,
+    RETURN = 278,
+    EQ = 279,
+    NEQ = 280,
+    LESS = 281,
+    GREAT = 282,
+    LESSEQ = 283,
+    GREATEQ = 284,
+    AND = 285,
+    OR = 286,
+    NOT = 287,
     PLUS = 288,
     MINUS = 289,
     MULT = 290,
@@ -90,13 +90,14 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 19 "parser.y" /* yacc.c:1909  */
+#line 25 "parser.y" /* yacc.c:1909  */
 
   int ival;
   float fval; 
-  char* sval; // $$ can either be an int or a string
+  char* sval;
+  Nodo *nval;
 
-#line 100 "parser.tab.h" /* yacc.c:1909  */
+#line 101 "parser.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;
