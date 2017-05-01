@@ -13,9 +13,13 @@
 \usepackage{scrextend}
 \usepackage{outlines}
 \usepackage{graphicx}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{alltt}
+\usepackage{pmboxdraw}
 
 %Preambulo
-\title{Compiladores\\ Proyecto 1}
+\title{Compiladores\\ Proyecto 1: kyc-ip}
 \author{Carlos Acosta \qquad Karla Esquivel \\ Yuan Yuan \qquad Luis Mayo \\ Andrea González}
 \date{Facultad de Ciencias UNAM \\ 2017-2}
 \setlength\parindent{0pt}
@@ -26,28 +30,26 @@
 \newpage
 
 \section{Preliminares}
-\subsection{El lenguaje}
-Definimos la gramática de nuestro lenguaje con mucha inspiración de los lenguajes que ya conocíamos, tratando de tomar aspectos de la sintaxis de estos, pero con nuestras propias propuestas también. La base de nuestra gramática era del programa de la calculadora que vimos en clase y la grámatica del analizador sintáctico de descenso recursivo de la tarea. Agregamos posteriormente definiciones de funciones y algunas estructuras de control de flujo, además de expresiones booleanas. Este proceso nos llevó a pensar en cuáles eran las funcionalidades mínimas que tendría nuestro lenguaje. \\
+\subsection{El lenguaje y la gramática}
+Definimos la gramática de nuestro lenguaje con mucha inspiración en los lenguajes que ya conocemos, tratando de construirlo con elementos de la sintáxis de éstos, pero considerando las propuestas del equipo también. Idealmente buscamos tomar los aspectos que visual y programáticamente nos agradan en un lenguaje de programación, por supuesto ajustandolo a las funcionalidades que se encomendaban en los lineamientos del proyecto.\\
 
-Una decisión que nos resultó difícil tomar fue cómo distinguir el final de las estructuras de control y funciones, debido a que no estaba en nuestras intenciones utilizar corchetes. Así que uno de los tokens importantes era para terminar una estructuras de control y, tomando inspiración de lenguajes que determinan el final de un bloque con un un lexema similar al del inicio del bloque como bash, terminamos eligiendo el símbolo `$\sim$'\; junto al nombre de la estructura para indicar la terminación de ésta. \\
+La base de la gramática de nuestro lenguaje, es la gramática para expresiones aritméticas trabajada en el salón de clases, extendida para secuencias de instrucciones y bloques de estructuras de control y de funciones. Específicamente, ciclos \textit{while}, condicionales \textit{cond} con posibilidad de múltiples sentencias, y funciones. La grámatica del analizador sintáctico de descenso recursivo de la tarea fue de gran ayuda en el diseño. Este proceso nos llevó a pensar en cuáles debían ser las funcionalidades mínimas de nuestro lenguaje. \\
 
-Elegir el resto de los tokens no fue difícil. Era sólo una cuestión de cubrir todas las entradas posibles que nuestro programa aceptaría, y cual podría ser cada símbolo. Los números eran una opción obvia por la calculadora (lo que elegimos representar por un flotante y entero para soportar todas las posibilidades, como decimales). Además de eso, incluimos cadenas, así como varios otros símbolos comunes en lenguajes actuales como \texttt{<=}.
+Cabe mencionar que una de las decisiones que nos resultó difícil tomar fue cómo distinguir el final de las estructuras de control y funciones, debido a que no estaba en nuestras intenciones utilizar corchetes. Así que uno de los tokens importantes del lenguaje resultante es para terminar las estructuras de control y las funciones; tomando inspiración de lenguajes que determinan el final de un bloque con un un lexema similar al del inicio del bloque como en el lenguaje de \textit{bash}, terminamos eligiendo el símbolo `$\sim$'\; junto al nombre de la estructura para indicar la terminación de ésta. \\
 
-\subsection {La gramática}
-\subsection{Categorias sintácticas y tokens}
-Ver número 2.
+Al haber incluído, estructuras de control, que por lo general se rigen por expresiones lógicas, decidimos incluír expresiones booleanas y operadores propios de ellas, esto con el fin de que sea más explícita la operación de valores lógicos y dividir la mecánica de uso por tipos en el lenguaje.\\ 
 
-
+Un ejemplo de código fuente en nuestro lenguaje, puede apreciarse en la Sección \ref{sec:s}.
 \section{Definición de la gramática formal}
 
-Sea $G$ nuestra gramática de expresiones aritméticas. Definiremos $G$, como la 4-tupla: $G = (N,T,P,S)$, con $N,T,P$ conjuntos y $S \in N$ el símbolo de la producción inicial.
+Sea $G$ la gramática de nuestro lenguaje de programación \textit{KYC-IP}. Definiremos $G$, como la 4-tupla: $G = (N,T,P,S)$, con $N,T,P$ conjuntos y $S \in N$ el símbolo de la producción inicial.
 A continuación, se muestran los conjuntos que la conforman:\\ \\
 \texttt{ 
 N = \{S, Fprog, Fprog', Prog, Prog', Inst, Fundef, Fundef', Return, While, Fun, Fdparams, Fparams, Param, Cond, Sig, Expr, Bexp, Bterm, Beq, Bcom, Expr', Term, Factor, Bool, Num, Decimal, Entero, Digito, Asig, Asig', Easig, Id, pos, Carac, Letra, Tipo\}
 }\\
 
 \texttt{
-T = \{., :, ;, +, -, /, *, =, \_, ==, >, <, >=, <=, and, or, not, (, ), fun, while, cond, $\sim$fun, $\sim$while, $\sim$cond, int, float, bool, void, |, 0, 1,..., 9, a, ..., z, A, ..., Z\}  \footnote{En la gramática utilizaremos ``!'' para representar a ``|'' con el propósito de no confundir el símbolo terminal ``|'' con la separación las ramificaciones en las producciones.}
+T = \{., :, ;, +, -, /, *, =, \_, ==, >, <, >=, <=, and, or, not, (, ), fun, while, cond, $\sim$fun, $\sim$while, $\sim$cond, int, float, bool, void, |, 0, 1,..., 9, a, ..., z, A, ..., Z\}  \footnote{En la gramática se utiliza ``!'' para representar a | con el propósito de no confundir el símbolo terminal ``|'' con la separación de las ramificaciones en las producciones.}
 }\\
 
 \texttt{
@@ -96,6 +98,9 @@ P = \{
 
 %razomiento para gramática va aquí 
 \section{Categorías sintácticas y definición de tokens}
+Elegir los tokens que comprenderían el léxico disponible para nuestro lenguaje de programación, consistió en la observación de las expresiones que era capaz de generar nuestra gramática, proceso que no fue mucho más exhaustivo que el reconocimiento de los símbolos terminales y las cadenas finales que podían producir en combinación. Dada la base de las expresiones aritméticas, los números resultaron una consideración obvia, es por ello que elegimos representar tanto enteros como flotantes que, junto con los booleanos, son los tipos que tenemos contemplados hasta el momento para el lenguaje, los operadores
+disponibles para cada uno y los elementos de las estructuras de control y las funciones, fueron igualmente contempladas.\\ 
+
 A continuación se describen las categorías sintácticas identificadas en la grámatica y los tokens\footnote{Por convención, los identificadores de los tokens (átomos) están escritos exclusivamente en mayúsculas.} que la componen:\\
 \subsection{Valores:}
 \begin{itemize}
@@ -161,18 +166,49 @@ Dicha implementación está en el archivo \texttt{parser.y} del directorio \text
 
 
 
-\subsection*{Instrucciones para ejecutar y compilar el código}
+\section{Instrucciones para ejecutar y compilar el proyecto}\label{sec:s}
 
-\subsubsection*{Para compilarlo:}
+El código fuente del proyecto, se encuentra dentro del directorio \texttt{src/}. Debe asegurarse
+que tenga esta forma mínima para su correcto funcionamiento:
+\begin{verbatim}
+    src/
+    |-- ejemplo.kyc
+    |-- lexer.lex
+    |-- Makefile
+    |-- nodo.cpp
+    |-- nodo.h
+    |__ parser.y
 
-En cualquier sistema operativo basado en Unix basta con ejecutar \texttt{make} en el directorio \texttt{src} desde línea de comandos. 
+\end{verbatim}
 
-\subsubsection*{Para ejecutarlo:} 
+\subsection{Compilación del proyecto}
+
+En cualquier sistema operativo basado en Unix, con \texttt{g++}, \texttt{flex} y \texttt{bison} preinstalados, basta con ejecutar \textbf{make} en el directorio \texttt{src/} desde línea de comandos.
 
 \begin{verbatim}
-    ./kyc-ip <archivo>
+    [user@host src]$ make
 \end{verbatim}
-Donde \texttt{<archivo>} es el archivo con el código de entrada.
+
+Dicha orden producirá un binario ejecutable de nombre \textit{\textbf{kyc-ip}} listo para recibir código fuente de nuestro lenguaje.\\
+
+En caso de existir un problema para generar dicho ejecutable, recomendamos volver a generar el código de los analizadores sintácticos y volver a intentar construir el ejecutable con las siguientes instrucciones:
+
+\begin{verbatim}
+    [user@host src]$ make flex
+    [user@host src]$ make bison
+    [user@host src]$ make
+\end{verbatim}
+
+
+\subsection{Ejecución del analizador} 
+
+Una vez obtenido el binario, basta:
+\begin{verbatim}
+    [user@host src]$ ./kyc-ip <archivo>
+\end{verbatim}
+Donde \texttt{<archivo>} es el archivo de texto claro con el código fuente correspondiente a nuestro lenguaje de programación.
+
+
 
 \subsubsection*{Ejemplo de entrada\footnote{El archivo de entrada que contiene este ejemplo se encuentra ubicado en la raíz del proyecto con el nombre de \textbf{\textit{ejemplo.kyc}}. }:}
 \begin{verbatim}
@@ -201,5 +237,48 @@ fun adios() void :
 
 int x = f(a, b, c + d);
 bool b = false;
+\end{verbatim}
+
+\subsection{Salida}
+Por cada ejecución se realizará los análisis tanto léxico como sintáctico, de encontrarse algún error en el código fuente, podrá observarse en la salida de la terminal un error señalando la línea y la columna responsables del primer error encontrado que terminó con la ejecución. Si ambos análisis tuvieron éxito, podrá encontrarse dentro de la carpeta raíz del proyecto el árbol de sintáxis abstracta representativo del código fuente de entrada.
+
+\subsubsection*{Ejemplo de ASA}
+Dada la siguiente entrada,
+
+\begin{verbatim}
+fun hola ( int angel ) int : 
+    angel = ( angel + 56 / 89.098 );
+    while(true):
+       hola(99999999999);
+    ~while
+    return 0;
+~fun
+\end{verbatim}
+se obtendría el siguiente árbol.
+\begin{verbatim}
+(fundef)
+├─›(hola)
+├─›(int)
+│  └─›(angel)
+└─›(cuerpo)
+   ├─›(int)
+   ├─›(seq)
+   │  ├─›(seq)
+   │  │  └─›(=)
+   │  │     ├─›(angel)
+   │  │     └─›(+)
+   │  │        ├─›(angel)
+   │  │        └─›(/)
+   │  │           ├─›(56)
+   │  │           └─›(89.098)
+   │  └─›(while)
+   │     ├─›(true)
+   │     └─›(seq)
+   │        └─›(funcall)
+   │           ├─›(hola)
+   │           └─›(99999999999)
+   └─›(return)
+      └─›(0)
+
 \end{verbatim}
 \end{document}
