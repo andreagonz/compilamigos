@@ -1,4 +1,5 @@
 #include "tabla.h"
+#include<iostream>
 
 using namespace std;
 
@@ -17,36 +18,38 @@ void Tabla::guarda_simbolo(string s, Simbolo * simb) {
 Simbolo * Tabla::get_simbolo(string s) {
     if(simbolos.find(s) != simbolos.end())
         return simbolos[s];
-    return nullptr;
+    return NULL;
 }
 
 void TablaSimbolos::insert(string s, Simbolo * simb) {
-    if(actual != nullptr)
+    if(actual != NULL)
         actual->guarda_simbolo(s, simb);
 }
 
 void TablaSimbolos::open_scope() {
-    if(actual != nullptr) {
+    if(actual != NULL) {
         Tabla * t = new Tabla(actual);
         actual = t;
     }
 }
 
 void TablaSimbolos::close_scope() {
-    if(actual != nullptr)
+    if(actual != NULL)
         actual = actual->get_padre();
 }
 
 bool TablaSimbolos::declared_locally(string s) {
-    return actual->get_simbolo(s) != nullptr;
+    return actual->get_simbolo(s) != NULL;
 }
 
 Simbolo * TablaSimbolos::look_up(string s) {
     if(declared_locally(s))
         return actual->get_simbolo(s);
-    while(actual->get_padre() != nullptr) {
-        if(actual->get_padre()->get_simbolo(s) != nullptr)
-            return actual->get_padre()->get_simbolo(s);
+    Tabla * t = actual;
+    while(t->get_padre() != NULL) {
+        if(t->get_padre()->get_simbolo(s) != NULL)
+            return t->get_padre()->get_simbolo(s);
+	t = t->get_padre();
     }
-    return nullptr;
+    return NULL;
 }

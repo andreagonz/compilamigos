@@ -24,7 +24,7 @@ class Tabla {
     Tabla * padre;
     std::unordered_map<std::string, Simbolo*> simbolos;
 public:
-Tabla(): padre(nullptr){};
+Tabla(): padre(NULL){};
 Tabla(Tabla * p): padre(p){};
     Tabla * get_padre(void);
     void guarda_simbolo(std::string, Simbolo*);
