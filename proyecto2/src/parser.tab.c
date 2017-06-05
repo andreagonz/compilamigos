@@ -70,6 +70,7 @@
 #include <queue>
 #include <fstream>
 #include "nodo.h"
+#include "tabla.h"
     
 using namespace std;
 
@@ -84,7 +85,7 @@ void yyerror(const char *s);
 queue<Nodo*> * nodos = new queue<Nodo*>();
 string archivo;
 
-#line 88 "parser.tab.c" /* yacc.c:339  */
+#line 89 "parser.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -164,14 +165,14 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 25 "parser.y" /* yacc.c:355  */
+#line 26 "parser.y" /* yacc.c:355  */
 
   int ival;
   float fval; 
   char* sval;
   Nodo *nval;
 
-#line 175 "parser.tab.c" /* yacc.c:355  */
+#line 176 "parser.tab.c" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -188,7 +189,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 192 "parser.tab.c" /* yacc.c:358  */
+#line 193 "parser.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -489,14 +490,14 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    53,    53,    63,    69,    73,    80,    83,    90,    93,
-      94,    95,   100,   107,   108,   112,   120,   129,   137,   148,
-     154,   162,   171,   178,   186,   194,   200,   207,   209,   213,
-     222,   230,   240,   243,   248,   255,   258,   265,   267,   274,
-     281,   284,   291,   298,   305,   312,   315,   322,   329,   332,
-     339,   347,   353,   357,   361,   365,   372,   379,   383,   389,
-     397,   398,   402,   409,   416,   426,   433,   438,   446,   451,
-     456
+       0,    54,    54,    64,    70,    74,    81,    84,    91,    94,
+      95,    96,   101,   108,   109,   113,   121,   130,   138,   149,
+     155,   163,   172,   179,   187,   195,   201,   208,   210,   214,
+     223,   231,   241,   244,   249,   256,   259,   266,   268,   275,
+     282,   285,   292,   299,   306,   313,   316,   323,   330,   333,
+     340,   348,   354,   358,   362,   366,   373,   380,   384,   390,
+     398,   399,   403,   410,   417,   427,   434,   439,   447,   452,
+     457
 };
 #endif
 
@@ -1381,7 +1382,7 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 53 "parser.y" /* yacc.c:1646  */
+#line 54 "parser.y" /* yacc.c:1646  */
     {
   (yyval.nval) = (yyvsp[0].nval);
   ofstream arbol;
@@ -1389,45 +1390,45 @@ yyreduce:
   arbol << str((yyval.nval));
   arbol.close();
  }
-#line 1393 "parser.tab.c" /* yacc.c:1646  */
+#line 1394 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 3:
-#line 63 "parser.y" /* yacc.c:1646  */
+#line 64 "parser.y" /* yacc.c:1646  */
     {
-    Nodo * n = new Nodo("seq");
+    NodoSeq * n = new NodoSeq("seq");
     n->add((yyvsp[-1].nval));
     n->add((yyvsp[0].nval));
     (yyval.nval) = n;
 }
-#line 1404 "parser.tab.c" /* yacc.c:1646  */
+#line 1405 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 4:
-#line 69 "parser.y" /* yacc.c:1646  */
+#line 70 "parser.y" /* yacc.c:1646  */
     { (yyval.nval) = (yyvsp[0].nval); }
-#line 1410 "parser.tab.c" /* yacc.c:1646  */
+#line 1411 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 5:
-#line 73 "parser.y" /* yacc.c:1646  */
+#line 74 "parser.y" /* yacc.c:1646  */
     {
   Nodo *n = new NodoSeq("seq");
   n->add((yyvsp[-1].nval));
   nodos->push(n);
   (yyval.nval) = n; 
 }
-#line 1421 "parser.tab.c" /* yacc.c:1646  */
+#line 1422 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 6:
-#line 80 "parser.y" /* yacc.c:1646  */
+#line 81 "parser.y" /* yacc.c:1646  */
     { (yyval.nval) = (yyvsp[0].nval); }
-#line 1427 "parser.tab.c" /* yacc.c:1646  */
+#line 1428 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 7:
-#line 83 "parser.y" /* yacc.c:1646  */
+#line 84 "parser.y" /* yacc.c:1646  */
     {
   Nodo *n = new NodoSeq("seq");
   n->add((yyvsp[-1].nval));
@@ -1435,61 +1436,61 @@ yyreduce:
   n->add((yyvsp[0].nval));
   (yyval.nval) = n;
 }
-#line 1439 "parser.tab.c" /* yacc.c:1646  */
+#line 1440 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 8:
-#line 90 "parser.y" /* yacc.c:1646  */
+#line 91 "parser.y" /* yacc.c:1646  */
     { (yyval.nval) = (yyvsp[0].nval); }
-#line 1445 "parser.tab.c" /* yacc.c:1646  */
+#line 1446 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 9:
-#line 93 "parser.y" /* yacc.c:1646  */
+#line 94 "parser.y" /* yacc.c:1646  */
     { (yyval.nval) = (yyvsp[0].nval); }
-#line 1451 "parser.tab.c" /* yacc.c:1646  */
+#line 1452 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 94 "parser.y" /* yacc.c:1646  */
+#line 95 "parser.y" /* yacc.c:1646  */
     { (yyval.nval) = (yyvsp[0].nval); }
-#line 1457 "parser.tab.c" /* yacc.c:1646  */
+#line 1458 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 11:
-#line 95 "parser.y" /* yacc.c:1646  */
+#line 96 "parser.y" /* yacc.c:1646  */
     {
       Nodo *n = new NodoSeq("seq");
       n->add((yyvsp[-1].nval));
       nodos->push(n);
   (yyval.nval) = n; }
-#line 1467 "parser.tab.c" /* yacc.c:1646  */
+#line 1468 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 12:
-#line 100 "parser.y" /* yacc.c:1646  */
+#line 101 "parser.y" /* yacc.c:1646  */
     {
       Nodo *n = new NodoSeq("seq");
       n->add((yyvsp[-1].nval));
       nodos->push(n);
       (yyval.nval) = n; }
-#line 1477 "parser.tab.c" /* yacc.c:1646  */
+#line 1478 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 107 "parser.y" /* yacc.c:1646  */
+#line 108 "parser.y" /* yacc.c:1646  */
     { (yyval.nval) = (yyvsp[0].nval); }
-#line 1483 "parser.tab.c" /* yacc.c:1646  */
+#line 1484 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 108 "parser.y" /* yacc.c:1646  */
+#line 109 "parser.y" /* yacc.c:1646  */
     { (yyval.nval) = (yyvsp[0].nval); }
-#line 1489 "parser.tab.c" /* yacc.c:1646  */
+#line 1490 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 112 "parser.y" /* yacc.c:1646  */
+#line 113 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoFunDef("fundef");
   nodos->push(n);
@@ -1498,11 +1499,11 @@ yyreduce:
   n->add((yyvsp[0].nval));
   (yyval.nval) = n;
 }
-#line 1502 "parser.tab.c" /* yacc.c:1646  */
+#line 1503 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 120 "parser.y" /* yacc.c:1646  */
+#line 121 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoFunDef("fundef");
   nodos->push(n);
@@ -1510,11 +1511,11 @@ yyreduce:
   n->add((yyvsp[0].nval));
   (yyval.nval) = n;
 }
-#line 1514 "parser.tab.c" /* yacc.c:1646  */
+#line 1515 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 129 "parser.y" /* yacc.c:1646  */
+#line 130 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoCuerpo("cuerpo");
   nodos->push(n);
@@ -1523,11 +1524,11 @@ yyreduce:
   n->add((yyvsp[-2].nval));
   (yyval.nval) = n;
 }
-#line 1527 "parser.tab.c" /* yacc.c:1646  */
+#line 1528 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 137 "parser.y" /* yacc.c:1646  */
+#line 138 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoCuerpo("cuerpo");
   Nodo * v = new NodoCuerpo((yyvsp[-3].sval));
@@ -1537,33 +1538,33 @@ yyreduce:
   n->add((yyvsp[-1].nval));
   (yyval.nval) = n;
 }
-#line 1541 "parser.tab.c" /* yacc.c:1646  */
+#line 1542 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 148 "parser.y" /* yacc.c:1646  */
+#line 149 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoReturn("return");
   nodos->push(n);
   n->add((yyvsp[0].nval));
   (yyval.nval) = n;
 }
-#line 1552 "parser.tab.c" /* yacc.c:1646  */
+#line 1553 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 154 "parser.y" /* yacc.c:1646  */
+#line 155 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoReturn("return");
   nodos->push(n);
   n->add((yyvsp[0].nval));
   (yyval.nval) = n;
 }
-#line 1563 "parser.tab.c" /* yacc.c:1646  */
+#line 1564 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 162 "parser.y" /* yacc.c:1646  */
+#line 163 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoWhile("while");
   nodos->push(n);
@@ -1571,11 +1572,11 @@ yyreduce:
   n->add((yyvsp[-1].nval));
   (yyval.nval) = n;
 }
-#line 1575 "parser.tab.c" /* yacc.c:1646  */
+#line 1576 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 171 "parser.y" /* yacc.c:1646  */
+#line 172 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoFun("funcall");
   nodos->push(n);
@@ -1583,22 +1584,22 @@ yyreduce:
   n->add((yyvsp[-1].nval));
   (yyval.nval) = n;
 }
-#line 1587 "parser.tab.c" /* yacc.c:1646  */
+#line 1588 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 178 "parser.y" /* yacc.c:1646  */
+#line 179 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoFun("funcall");
   nodos->push(n);
   n->add((yyvsp[-2].nval));
   (yyval.nval) = n;
 }
-#line 1598 "parser.tab.c" /* yacc.c:1646  */
+#line 1599 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 186 "parser.y" /* yacc.c:1646  */
+#line 187 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoComa(",");
   nodos->push(n);
@@ -1607,20 +1608,20 @@ yyreduce:
   n->add((yyvsp[-1].nval));
   (yyval.nval) = n;
 }
-#line 1611 "parser.tab.c" /* yacc.c:1646  */
+#line 1612 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 194 "parser.y" /* yacc.c:1646  */
+#line 195 "parser.y" /* yacc.c:1646  */
     {
   (yyvsp[-1].nval)->add((yyvsp[0].nval));
   (yyval.nval) = (yyvsp[-1].nval);
 }
-#line 1620 "parser.tab.c" /* yacc.c:1646  */
+#line 1621 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 200 "parser.y" /* yacc.c:1646  */
+#line 201 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoComa(",");
   nodos->push(n);
@@ -1628,51 +1629,51 @@ yyreduce:
   n->add((yyvsp[0].nval));
   (yyval.nval) = n;
 }
-#line 1632 "parser.tab.c" /* yacc.c:1646  */
+#line 1633 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 207 "parser.y" /* yacc.c:1646  */
+#line 208 "parser.y" /* yacc.c:1646  */
     { (yyval.nval) = (yyvsp[0].nval); }
-#line 1638 "parser.tab.c" /* yacc.c:1646  */
+#line 1639 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 209 "parser.y" /* yacc.c:1646  */
+#line 210 "parser.y" /* yacc.c:1646  */
     { (yyval.nval) = (yyvsp[0].nval); }
-#line 1644 "parser.tab.c" /* yacc.c:1646  */
+#line 1645 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 213 "parser.y" /* yacc.c:1646  */
+#line 214 "parser.y" /* yacc.c:1646  */
     {
-  Nodo *n = new Nodo("cond");
+  NodoCond *n = new NodoCond("cond");
   nodos->push(n);
   n->add((yyvsp[-3].nval));
   n->add((yyvsp[-1].nval));
   (yyval.nval) = n;
 }
-#line 1656 "parser.tab.c" /* yacc.c:1646  */
+#line 1657 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 30:
-#line 222 "parser.y" /* yacc.c:1646  */
+#line 223 "parser.y" /* yacc.c:1646  */
     {
-  Nodo *n = new Nodo("pipe");
+  Nodo *n = new NodoPipe("pipe");
   n->add((yyvsp[-4].nval));
   n->add((yyvsp[-2].nval));
   n->add((yyvsp[0].nval));
   nodos->push(n);
   (yyval.nval) = n;
 }
-#line 1669 "parser.tab.c" /* yacc.c:1646  */
+#line 1670 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 230 "parser.y" /* yacc.c:1646  */
+#line 231 "parser.y" /* yacc.c:1646  */
     {
-  Nodo *n = new Nodo("pipe");
-  Nodo *d = new Nodo("default");
+  Nodo *n = new NodoPipe("pipe");
+  Nodo *d = new NodoDefault("default");
   nodos->push(n);
   nodos->push(d);
   n->add((yyvsp[-4].nval));
@@ -1680,25 +1681,25 @@ yyreduce:
   n->add((yyvsp[0].nval));
   (yyval.nval) = n;
 }
-#line 1684 "parser.tab.c" /* yacc.c:1646  */
+#line 1685 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 32:
-#line 240 "parser.y" /* yacc.c:1646  */
+#line 241 "parser.y" /* yacc.c:1646  */
     { (yyval.nval) = (yyvsp[0].nval); }
-#line 1690 "parser.tab.c" /* yacc.c:1646  */
+#line 1691 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 33:
-#line 243 "parser.y" /* yacc.c:1646  */
+#line 244 "parser.y" /* yacc.c:1646  */
     {
   (yyval.nval) = (yyvsp[0].nval); 
 }
-#line 1698 "parser.tab.c" /* yacc.c:1646  */
+#line 1699 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 34:
-#line 248 "parser.y" /* yacc.c:1646  */
+#line 249 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoOr("or");
   nodos->push(n);
@@ -1706,17 +1707,17 @@ yyreduce:
   n->add((yyvsp[0].nval));
   (yyval.nval) = n;
 }
-#line 1710 "parser.tab.c" /* yacc.c:1646  */
+#line 1711 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 35:
-#line 255 "parser.y" /* yacc.c:1646  */
+#line 256 "parser.y" /* yacc.c:1646  */
     { (yyval.nval) = (yyvsp[0].nval); }
-#line 1716 "parser.tab.c" /* yacc.c:1646  */
+#line 1717 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 36:
-#line 258 "parser.y" /* yacc.c:1646  */
+#line 259 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoAnd("and");
   nodos->push(n);
@@ -1724,17 +1725,17 @@ yyreduce:
   n->add((yyvsp[0].nval));
   (yyval.nval) = n;
 }
-#line 1728 "parser.tab.c" /* yacc.c:1646  */
+#line 1729 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 37:
-#line 265 "parser.y" /* yacc.c:1646  */
+#line 266 "parser.y" /* yacc.c:1646  */
     { (yyval.nval) = (yyvsp[0].nval);  }
-#line 1734 "parser.tab.c" /* yacc.c:1646  */
+#line 1735 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 38:
-#line 267 "parser.y" /* yacc.c:1646  */
+#line 268 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoEq("==");
   nodos->push(n);
@@ -1742,11 +1743,11 @@ yyreduce:
   n->add((yyvsp[0].nval));
   (yyval.nval) = n;
 }
-#line 1746 "parser.tab.c" /* yacc.c:1646  */
+#line 1747 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 39:
-#line 274 "parser.y" /* yacc.c:1646  */
+#line 275 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoNeq("!=");
   nodos->push(n);
@@ -1754,17 +1755,17 @@ yyreduce:
   n->add((yyvsp[0].nval));
   (yyval.nval) = n;
 }
-#line 1758 "parser.tab.c" /* yacc.c:1646  */
+#line 1759 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 40:
-#line 281 "parser.y" /* yacc.c:1646  */
+#line 282 "parser.y" /* yacc.c:1646  */
     { (yyval.nval) = (yyvsp[0].nval); }
-#line 1764 "parser.tab.c" /* yacc.c:1646  */
+#line 1765 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 41:
-#line 284 "parser.y" /* yacc.c:1646  */
+#line 285 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoLess("<");
   nodos->push(n);
@@ -1772,11 +1773,11 @@ yyreduce:
   n->add((yyvsp[0].nval));
   (yyval.nval) = n;
 }
-#line 1776 "parser.tab.c" /* yacc.c:1646  */
+#line 1777 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 42:
-#line 291 "parser.y" /* yacc.c:1646  */
+#line 292 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoGreat(">");
   nodos->push(n);
@@ -1784,11 +1785,11 @@ yyreduce:
   n->add((yyvsp[0].nval));
   (yyval.nval) = n;
 }
-#line 1788 "parser.tab.c" /* yacc.c:1646  */
+#line 1789 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 43:
-#line 298 "parser.y" /* yacc.c:1646  */
+#line 299 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoLessEq("<=");
   nodos->push(n);
@@ -1796,11 +1797,11 @@ yyreduce:
   n->add((yyvsp[0].nval));
   (yyval.nval) = n;
 }
-#line 1800 "parser.tab.c" /* yacc.c:1646  */
+#line 1801 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 44:
-#line 305 "parser.y" /* yacc.c:1646  */
+#line 306 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoGreatEq(">=");
   nodos->push(n);
@@ -1808,17 +1809,17 @@ yyreduce:
   n->add((yyvsp[0].nval));
   (yyval.nval) = n;
 }
-#line 1812 "parser.tab.c" /* yacc.c:1646  */
+#line 1813 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 45:
-#line 312 "parser.y" /* yacc.c:1646  */
+#line 313 "parser.y" /* yacc.c:1646  */
     { (yyval.nval) = (yyvsp[0].nval); }
-#line 1818 "parser.tab.c" /* yacc.c:1646  */
+#line 1819 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 46:
-#line 315 "parser.y" /* yacc.c:1646  */
+#line 316 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoSum("+");
   nodos->push(n);
@@ -1826,11 +1827,11 @@ yyreduce:
   n->add((yyvsp[0].nval));
   (yyval.nval) = n;
 }
-#line 1830 "parser.tab.c" /* yacc.c:1646  */
+#line 1831 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 47:
-#line 322 "parser.y" /* yacc.c:1646  */
+#line 323 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoMenos("-");
   nodos->push(n);
@@ -1838,17 +1839,17 @@ yyreduce:
   n->add((yyvsp[0].nval));
   (yyval.nval) = n;
 }
-#line 1842 "parser.tab.c" /* yacc.c:1646  */
+#line 1843 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 48:
-#line 329 "parser.y" /* yacc.c:1646  */
+#line 330 "parser.y" /* yacc.c:1646  */
     { (yyval.nval) = (yyvsp[0].nval); }
-#line 1848 "parser.tab.c" /* yacc.c:1646  */
+#line 1849 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 49:
-#line 332 "parser.y" /* yacc.c:1646  */
+#line 333 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoMult("*");
   nodos->push(n);
@@ -1856,11 +1857,11 @@ yyreduce:
   n->add((yyvsp[0].nval));
   (yyval.nval) = n;
 }
-#line 1860 "parser.tab.c" /* yacc.c:1646  */
+#line 1861 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 50:
-#line 339 "parser.y" /* yacc.c:1646  */
+#line 340 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoDiv("/");
   nodos->push(n);
@@ -1868,112 +1869,112 @@ yyreduce:
   n->add((yyvsp[0].nval));
   (yyval.nval) = n;
 }
-#line 1872 "parser.tab.c" /* yacc.c:1646  */
+#line 1873 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 51:
-#line 347 "parser.y" /* yacc.c:1646  */
+#line 348 "parser.y" /* yacc.c:1646  */
     {
   (yyval.nval) = (yyvsp[0].nval);
 }
-#line 1880 "parser.tab.c" /* yacc.c:1646  */
+#line 1881 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 52:
-#line 353 "parser.y" /* yacc.c:1646  */
+#line 354 "parser.y" /* yacc.c:1646  */
     {
   (yyval.nval) = (yyvsp[0].nval);
 }
-#line 1888 "parser.tab.c" /* yacc.c:1646  */
+#line 1889 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 53:
-#line 357 "parser.y" /* yacc.c:1646  */
+#line 358 "parser.y" /* yacc.c:1646  */
     {
   (yyval.nval) = (yyvsp[0].nval);
 }
-#line 1896 "parser.tab.c" /* yacc.c:1646  */
+#line 1897 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 54:
-#line 361 "parser.y" /* yacc.c:1646  */
+#line 362 "parser.y" /* yacc.c:1646  */
     {
     (yyval.nval) = (yyvsp[-1].nval);
 }
-#line 1904 "parser.tab.c" /* yacc.c:1646  */
+#line 1905 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 55:
-#line 365 "parser.y" /* yacc.c:1646  */
+#line 366 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoMenos("-");
   n->add((yyvsp[0].nval));
   nodos->push(n);
   (yyval.nval) = n;
 }
-#line 1915 "parser.tab.c" /* yacc.c:1646  */
+#line 1916 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 56:
-#line 372 "parser.y" /* yacc.c:1646  */
+#line 373 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoNot("not");
   n->add((yyvsp[0].nval));
   nodos->push(n);
   (yyval.nval) = n;
 }
-#line 1926 "parser.tab.c" /* yacc.c:1646  */
+#line 1927 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 57:
-#line 379 "parser.y" /* yacc.c:1646  */
+#line 380 "parser.y" /* yacc.c:1646  */
     { (yyval.nval) = (yyvsp[0].nval); }
-#line 1932 "parser.tab.c" /* yacc.c:1646  */
+#line 1933 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 58:
-#line 383 "parser.y" /* yacc.c:1646  */
+#line 384 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoBool("true");
   nodos->push(n);
   (yyval.nval) = n;
 }
-#line 1942 "parser.tab.c" /* yacc.c:1646  */
+#line 1943 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 59:
-#line 389 "parser.y" /* yacc.c:1646  */
+#line 390 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoBool("false");
   nodos->push(n);
   (yyval.nval) = n;
 }
-#line 1952 "parser.tab.c" /* yacc.c:1646  */
+#line 1953 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 60:
-#line 397 "parser.y" /* yacc.c:1646  */
+#line 398 "parser.y" /* yacc.c:1646  */
     { (yyval.nval) = (yyvsp[0].nval); }
-#line 1958 "parser.tab.c" /* yacc.c:1646  */
+#line 1959 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 61:
-#line 398 "parser.y" /* yacc.c:1646  */
+#line 399 "parser.y" /* yacc.c:1646  */
     { (yyval.nval) = (yyvsp[0].nval); }
-#line 1964 "parser.tab.c" /* yacc.c:1646  */
+#line 1965 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 62:
-#line 402 "parser.y" /* yacc.c:1646  */
+#line 403 "parser.y" /* yacc.c:1646  */
     {
   (yyvsp[-1].nval)->add((yyvsp[0].nval));
   (yyval.nval) = (yyvsp[-1].nval);
 }
-#line 1973 "parser.tab.c" /* yacc.c:1646  */
+#line 1974 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 63:
-#line 409 "parser.y" /* yacc.c:1646  */
+#line 410 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoAsig("=");
   nodos->push(n);
@@ -1981,11 +1982,11 @@ yyreduce:
   n->add((yyvsp[0].nval));
   (yyval.nval) = n;
 }
-#line 1985 "parser.tab.c" /* yacc.c:1646  */
+#line 1986 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 64:
-#line 416 "parser.y" /* yacc.c:1646  */
+#line 417 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoAsig("=");
   nodos->push(n);
@@ -1993,71 +1994,71 @@ yyreduce:
   n->add((yyvsp[0].nval));
   (yyval.nval) = n;
 }
-#line 1997 "parser.tab.c" /* yacc.c:1646  */
+#line 1998 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 65:
-#line 426 "parser.y" /* yacc.c:1646  */
+#line 427 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoId((yyvsp[0].sval));
   nodos->push(n);
   (yyval.nval) = n;
 }
-#line 2007 "parser.tab.c" /* yacc.c:1646  */
+#line 2008 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 66:
-#line 433 "parser.y" /* yacc.c:1646  */
+#line 434 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoFloat((yyvsp[0].sval));
   nodos->push(n);
   (yyval.nval) = n;
 }
-#line 2017 "parser.tab.c" /* yacc.c:1646  */
+#line 2018 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 67:
-#line 438 "parser.y" /* yacc.c:1646  */
+#line 439 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoInt((yyvsp[0].sval));
   nodos->push(n);
   (yyval.nval) = n;
 }
-#line 2027 "parser.tab.c" /* yacc.c:1646  */
+#line 2028 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 68:
-#line 446 "parser.y" /* yacc.c:1646  */
+#line 447 "parser.y" /* yacc.c:1646  */
     {
-    Nodo * n = new NodoTipo("int");
+    Nodo * n = new NodoTipo("int", TINT);
     nodos->push(n);
     (yyval.nval) = n;
 }
-#line 2037 "parser.tab.c" /* yacc.c:1646  */
+#line 2038 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 69:
-#line 451 "parser.y" /* yacc.c:1646  */
+#line 452 "parser.y" /* yacc.c:1646  */
     {
-  Nodo * n = new NodoTipo("float");
+  Nodo * n = new NodoTipo("float", TFLOAT);
   nodos->push(n);
   (yyval.nval) = n;
   }
-#line 2047 "parser.tab.c" /* yacc.c:1646  */
+#line 2048 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 70:
-#line 456 "parser.y" /* yacc.c:1646  */
+#line 457 "parser.y" /* yacc.c:1646  */
     {
-  Nodo * n = new NodoTipo("bool");
+  Nodo * n = new NodoTipo("bool", TBOOL);
   nodos->push(n);
   (yyval.nval) = n;
   }
-#line 2057 "parser.tab.c" /* yacc.c:1646  */
+#line 2058 "parser.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 2061 "parser.tab.c" /* yacc.c:1646  */
+#line 2062 "parser.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2285,7 +2286,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 462 "parser.y" /* yacc.c:1906  */
+#line 463 "parser.y" /* yacc.c:1906  */
 
 
 /* Epilogo */

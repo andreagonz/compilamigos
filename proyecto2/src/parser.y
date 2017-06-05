@@ -5,6 +5,7 @@
 #include <queue>
 #include <fstream>
 #include "nodo.h"
+#include "tabla.h"
     
 using namespace std;
 
@@ -61,7 +62,7 @@ S :  Fprog {
 
 Fprog :
 Fprog FprogPrim {
-    Nodo * n = new Nodo("seq");
+    NodoSeq * n = new NodoSeq("seq");
     n->add($1);
     n->add($2);
     $$ = n;
@@ -211,7 +212,7 @@ Param :  Expr { $$ = $1; }
 
 Conditional :
 COND Expr DOTDOT Sig ENDCOND {
-  Nodo *n = new Nodo("cond");
+  NodoCond *n = new NodoCond("cond");
   nodos->push(n);
   n->add($2);
   n->add($4);
@@ -220,7 +221,7 @@ COND Expr DOTDOT Sig ENDCOND {
 ;
 Sig :
 Prog PIPE Expr DOTDOT Sig {
-  Nodo *n = new Nodo("pipe");
+  Nodo *n = new NodoPipe("pipe");
   n->add($1);
   n->add($3);
   n->add($5);
@@ -228,8 +229,8 @@ Prog PIPE Expr DOTDOT Sig {
   $$ = n;
 }
 | Prog PIPE DEFAULT DOTDOT Prog {
-  Nodo *n = new Nodo("pipe");
-  Nodo *d = new Nodo("default");
+  Nodo *n = new NodoPipe("pipe");
+  Nodo *d = new NodoDefault("default");
   nodos->push(n);
   nodos->push(d);
   n->add($1);
@@ -444,17 +445,17 @@ FLOAT {
 
 Tipo:
 ENTERO {
-    Nodo * n = new NodoTipo("int");
+    Nodo * n = new NodoTipo("int", TINT);
     nodos->push(n);
     $$ = n;
 }
 | FLOTANTE {
-  Nodo * n = new NodoTipo("float");
+  Nodo * n = new NodoTipo("float", TFLOAT);
   nodos->push(n);
   $$ = n;
   }
 | BOOLEANO {
-  Nodo * n = new NodoTipo("bool");
+  Nodo * n = new NodoTipo("bool", TBOOL);
   nodos->push(n);
   $$ = n;
   }

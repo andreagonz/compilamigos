@@ -1,4 +1,6 @@
 #include "nodo.h"
+#include "tabla.h"
+#include "visitor.h"
 #include <string>
 #include <iostream>
 #include <math.h>
@@ -49,6 +51,18 @@ void transfer(Nodo *n, Nodo *m, int i) {
   transfer(n,m->get(0), i+1);
 }
 
+void NodoId::set_simbolo(Simbolo * s) {
+    simbolo = s;
+}
+
+Tipo NodoId::get_tipo() {
+    return simbolo->get_tipo();
+}
+
+Tipo NodoTipo::get_tipo() {
+    return tipo;
+}
+
 /* Regresa la representación en cadena del árbol desde el nodo n */
 string str(Nodo * n) {
     int p = profundidad(n) + 1;
@@ -95,4 +109,124 @@ int profundidad(Nodo * v){
             max = p;
     }    
     return max + 1;
+}
+
+void NodoInt::accept(Visitor * v) {
+    v->visitaNodoInt(this);
+}
+   
+void NodoFloat::accept(Visitor * v) {
+    v->visitaNodoFloat(this);
+}
+ 
+void NodoBool::accept(Visitor * v) {
+    v->visitaNodoBool(this);
+}
+  
+void NodoSum::accept(Visitor * v) {
+    v->visitaNodoSum(this);
+}
+   
+void NodoMenos::accept(Visitor * v) {
+    v->visitaNodoMenos(this);
+}
+ 
+void NodoMult::accept(Visitor * v) {
+    v->visitaNodoMult(this);
+}
+  
+void NodoDiv::accept(Visitor * v) {
+    v->visitaNodoDiv(this);
+}
+   
+void NodoNeg::accept(Visitor * v) {
+    v->visitaNodoNeg(this);
+}
+   
+void NodoEq::accept(Visitor * v) {
+    v->visitaNodoEq(this);
+}
+    
+void NodoNeq::accept(Visitor * v) {
+    v->visitaNodoNeq(this);
+}
+   
+void NodoLess::accept(Visitor * v) {
+    v->visitaNodoLess(this);
+}
+  
+void NodoGreat::accept(Visitor * v) {
+    v->visitaNodoGreat(this);
+}
+ 
+void NodoLessEq::accept(Visitor * v) {
+    v->visitaNodoLessEq(this);
+}
+
+void NodoGreatEq::accept(Visitor * v) {
+    v->visitaNodoGreatEq(this);
+}
+
+void NodoAnd::accept(Visitor * v) {
+    v->visitaNodoAnd(this);
+}
+   
+void NodoOr::accept(Visitor * v) {
+    v->visitaNodoOr(this);
+}
+    
+void NodoAsig::accept(Visitor * v) {
+    v->visitaNodoAsig(this);
+}
+  
+void NodoNot::accept(Visitor * v) {
+    v->visitaNodoNot(this);
+}
+   
+void NodoId::accept(Visitor * v) {
+    v->visitaNodoId(this);
+}
+    
+void NodoTipo::accept(Visitor * v) {
+    v->visitaNodoTipo(this);
+}
+  
+void NodoFunDef::accept(Visitor * v) {
+    v->visitaNodoFunDef(this);
+}
+
+void NodoFun::accept(Visitor * v) {
+    v->visitaNodoFun(this);
+}
+   
+void NodoWhile::accept(Visitor * v) {
+    v->visitaNodoWhile(this);
+}
+ 
+void NodoCond::accept(Visitor * v) {
+    v->visitaNodoCond(this);
+}
+  
+void NodoCuerpo::accept(Visitor * v) {
+    v->visitaNodoCuerpo(this);
+}
+
+void NodoComa::accept(Visitor * v) {
+    v->visitaNodoComa(this);
+}
+  
+void NodoSeq::accept(Visitor * v) {
+    v->visitaNodoSeq(this);
+}
+   
+void NodoReturn::accept(Visitor * v) {
+    v->visitaNodoReturn(this);
+}
+
+void NodoPipe::accept(Visitor * v) {
+    v->visitaNodoPipe(this);
+}
+   
+void NodoDefault::accept(Visitor * v) {
+    v->visitaNodoDefault(this);
 }
