@@ -13,6 +13,10 @@ void VisitorCreaTabla::error(string s) {
     exito = false;
 }
 
+bool VisitorCreaTabla::tuvo_error() {
+    return !exito;
+}
+
 void VisitorCreaTabla::visitaNodoInt(NodoInt * n) {
 }
  
@@ -191,12 +195,16 @@ void VisitorCreaTabla::visitaNodoCuerpo(NodoCuerpo * n) {
 // AREGLAR ESTO, SI HAY MAS DE DOS ELEMENTOS CON COMA HAY PROBLEMAS
 void VisitorCreaTabla::visitaNodoComa(NodoComa * n) {
     for(int i = 0; i < n->num_hijos(); i++) {
-        NodoTipo * nt = (NodoTipo*)n->get(i);
-        string x = nt->get(0)->get_valor();
-        Simbolo * nsimb = new Simbolo(x, nt->get_tipo());
-        tabla->insert(x, nsimb);
-        NodoId * nid = (NodoId*)nt->get(0);
-        nid->set_simbolo(nsimb);
+        if(n->get(i)->get_valor() == "int" ||
+            n->get(i)->get_valor() == "bool" ||
+           n->get(i)->get_valor() == "float") {
+            NodoTipo * nt = (NodoTipo*)n->get(i);
+            string x = nt->get(0)->get_valor();
+            Simbolo * nsimb = new Simbolo(x, nt->get_tipo());
+            tabla->insert(x, nsimb);
+            NodoId * nid = (NodoId*)nt->get(0);
+            nid->set_simbolo(nsimb);
+        } else n->get(i)->accept(this);
     }
 }
 

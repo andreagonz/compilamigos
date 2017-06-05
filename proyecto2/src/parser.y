@@ -6,6 +6,7 @@
 #include <fstream>
 #include "nodo.h"
 #include "tabla.h"
+#include "visitor.h"
     
 using namespace std;
 
@@ -57,6 +58,11 @@ S :  Fprog {
   arbol.open (archivo + ".asa");
   arbol << str($$);
   arbol.close();
+  VisitorCreaTabla * vct = new VisitorCreaTabla();
+  $$->accept(vct);
+  if(!vct->tuvo_error()) {
+      cout << "Todo bien" << endl;
+  }
  } 
 ;
 
@@ -495,6 +501,7 @@ int main(int argc, char* argv[]) {
 	do {
 		yyparse();
 	} while (!feof(yyin));
+        
         clear();
 }
 

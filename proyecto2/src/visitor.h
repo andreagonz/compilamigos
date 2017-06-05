@@ -80,6 +80,7 @@ VisitorCreaTabla() : exito(true) {
         tabla = new TablaSimbolos(t);    
     }
     void error(std::string s);
+    bool tuvo_error();
     void visitaNodoInt(NodoInt * n); 
     void visitaNodoFloat(NodoFloat * n); 
     void visitaNodoBool(NodoBool * n);
