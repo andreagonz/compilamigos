@@ -61,7 +61,11 @@ S :  Fprog {
   VisitorCreaTabla * vct = new VisitorCreaTabla();
   $$->accept(vct);
   if(!vct->tuvo_error()) {
-      cout << "Todo bien" << endl;
+        VisitorVerificaTipos * vvt = new VisitorVerificaTipos();
+        $$->accept(vvt);
+        if(!vvt->tuvo_error()) {
+            cout << "Todo bien" << endl;
+        }
   }
  } 
 ;

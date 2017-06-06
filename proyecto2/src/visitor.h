@@ -114,10 +114,13 @@ VisitorCreaTabla() : exito(true) {
 };
 
 class VisitorVerificaTipos: public Visitor {
+    Tipo tipo;
+    bool exito;
 public:
     VisitorVerificaTipos() {}
     void error(std::string s);
-    void visitaNodoInt(NodoInt * n); 
+    bool tuvo_error();
+    void visitaNodoInt(NodoInt * n);
     void visitaNodoFloat(NodoFloat * n); 
     void visitaNodoBool(NodoBool * n);
     void visitaNodoSum(NodoSum * n); 
@@ -148,5 +151,7 @@ public:
     void visitaNodoPipe(NodoPipe * n); 
     void visitaNodoDefault(NodoDefault * n);
 };
+
+std::string str(Tipo t);
 
 #endif
