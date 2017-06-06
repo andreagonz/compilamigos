@@ -63,6 +63,10 @@ Tipo NodoTipo::get_tipo() {
     return tipo;
 }
 
+Simbolo * NodoId::get_simbolo() {
+    return simbolo;
+}
+
 /* Regresa la representación en cadena del árbol desde el nodo n */
 string str(Nodo * n) {
     int p = profundidad(n) + 1;

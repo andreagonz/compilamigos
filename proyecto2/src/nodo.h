@@ -154,6 +154,7 @@ NodoId(std::string v): Nodo(v) {}
     void accept(Visitor * v);
     void set_simbolo(Simbolo * t);
     Tipo get_tipo(void);
+    Simbolo * get_simbolo();
 };
 
 class NodoTipo: public Nodo {

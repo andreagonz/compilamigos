@@ -3,6 +3,7 @@
 
 #include<unordered_map>
 #include<string>
+#include<vector>
 
 typedef enum Tipo {
     TINT,
@@ -14,10 +15,17 @@ typedef enum Tipo {
 class Simbolo {
   std::string nombre;
   Tipo tipo;
+  bool fun;
+  std::vector<Tipo> args;
 public:
-Simbolo(std::string s, Tipo t) : nombre(s), tipo(t) {} 
+Simbolo(std::string s, Tipo t) : nombre(s), tipo(t), fun(false) {}
+Simbolo(std::string s, Tipo t, bool f) : nombre(s), tipo(t), fun(f) {}
   std::string get_nombre(void);
   Tipo get_tipo(void);
+  bool es_fun(void);
+  void add_arg(Tipo t);
+  int num_args();
+  Tipo get_arg(int i);
 };
 
 class Tabla {

@@ -3,6 +3,7 @@
 
 #include<unordered_map>
 #include<string>
+#include<vector>
 #include "tabla.h"
 
 class NodoInt;
@@ -74,6 +75,7 @@ class VisitorCreaTabla: public Visitor {
     TablaSimbolos * tabla;
     Tipo tipo;
     bool exito;
+    Simbolo * actual;
 public:
 VisitorCreaTabla() : exito(true) {
         Tabla * t = new Tabla();
@@ -116,6 +118,7 @@ VisitorCreaTabla() : exito(true) {
 class VisitorVerificaTipos: public Visitor {
     Tipo tipo;
     bool exito;
+    std::vector<Tipo> args;
 public:
     VisitorVerificaTipos() {}
     void error(std::string s);

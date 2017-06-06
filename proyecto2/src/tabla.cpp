@@ -7,6 +7,22 @@ Tipo Simbolo::get_tipo() {
     return tipo;
 }
 
+bool Simbolo::es_fun() {
+    return fun;
+}
+
+void Simbolo::add_arg(Tipo t) {
+    args.push_back(t);
+}
+
+int Simbolo::num_args() {
+    return args.size();
+}
+
+Tipo Simbolo::get_arg(int i) {
+    return args[i];
+}
+
 Tabla * Tabla::get_padre() {
     return padre;
 }

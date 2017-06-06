@@ -8,10 +8,6 @@ using namespace std;
   Visitor que crea la tabla de símbolos
 */
 
-////**CHECAR QUE LAS LLAMADAS A FUNCIONES TENGAN EL NÚMERO DE ARGUMENTOS CORRECTO**////
-//FALTA CHECAR QUE LOS ARGUMENTOS DE LLAMADAS DE FUNCIONESS TENGAN EL TIPO CORRECTO
-//MEJORAR MENSAJES DE ERROR 
-
 void VisitorCreaTabla::error(string s) {
     cout << s <<endl;
     exito = false;
@@ -144,6 +140,8 @@ void VisitorCreaTabla::visitaNodoId(NodoId * n) {
 void VisitorCreaTabla::visitaNodoTipo(NodoTipo * n) {
     if(n->num_hijos() > 0) {
         tipo = n->get_tipo();
+        if(actual != nullptr)
+            actual->add_arg(tipo);
         n->get(0)->accept(this);
         tipo = NONE;
     }
@@ -162,14 +160,16 @@ void VisitorCreaTabla::visitaNodoFunDef(NodoFunDef * n) {
            n2->get_valor() == "bool" ||
            n2->get_valor() == "float") {
             NodoTipo * nt = (NodoTipo*)n2;
-            nsimb = new Simbolo(x, nt->get_tipo());
+            nsimb = new Simbolo(x, nt->get_tipo(), true);
         } else
-            nsimb = new Simbolo(x, NONE);
+            nsimb = new Simbolo(x, NONE, true);
         tabla->insert(x, nsimb);
         tabla->open_scope();
         NodoId * nid = (NodoId*)n->get(0);
         nid->set_simbolo(nsimb);
+        actual = nsimb;
         n->get(1)->accept(this);
+        actual = nullptr;
         if(n->num_hijos() > 2)
             n->get(2)->accept(this);
         tabla->close_scope();
@@ -212,18 +212,8 @@ void VisitorCreaTabla::visitaNodoCuerpo(NodoCuerpo * n) {
 }
 
 void VisitorCreaTabla::visitaNodoComa(NodoComa * n) {
-    for(int i = 0; i < n->num_hijos(); i++) {
-        if(n->get(i)->get_valor() == "int" ||
-            n->get(i)->get_valor() == "bool" ||
-           n->get(i)->get_valor() == "float") {
-            NodoTipo * nt = (NodoTipo*)n->get(i);
-            string x = nt->get(0)->get_valor();
-            Simbolo * nsimb = new Simbolo(x, nt->get_tipo());
-            tabla->insert(x, nsimb);
-            NodoId * nid = (NodoId*)nt->get(0);
-            nid->set_simbolo(nsimb);
-        } else n->get(i)->accept(this);
-    }
+    for(int i = 0; i < n->num_hijos(); i++)
+        n->get(i)->accept(this);
 }
 
 void VisitorCreaTabla::visitaNodoSeq(NodoSeq * n) {
@@ -256,7 +246,7 @@ Visitor que verifica los tipos
 
 
 void VisitorVerificaTipos::error(string s) {
-    cout << "Error de tipos: " << s << endl;
+    cout << "Error de semántica: " << s << endl;
     exito = false;
 }
 
@@ -286,7 +276,7 @@ void VisitorVerificaTipos::visitaNodoSum(NodoSum * n) {
     else if(t1 == TINT && t2 == TINT)
         tipo = TINT;    
     else {
-        string s = "Suma de " + n->get(0)->get_valor() + " con " + n->get(1)->get_valor() + " no válida";
+        string s = "Suma de " + str(t1) + " con " + str(t2) + " no válida";
         error(s);
     }
 }
@@ -302,14 +292,14 @@ void VisitorVerificaTipos::visitaNodoMenos(NodoMenos * n) {
         else if(t1 == TINT && t2 == TINT)
             tipo = TINT;    
         else {
-            string s = "Resta de " + n->get(0)->get_valor() + " con " + n->get(1)->get_valor() + " no válida";
+            string s = "Resta de " + str(t1) + " con " + str(t2) + " no válida";
             error(s);
         }
     } else {
         if(t1 == TFLOAT || t1 == TINT)
             tipo = t1;
         else {
-            string s = "Negación de " + n->get(0)->get_valor() +  " no válida.";
+            string s = "Operación 'menos' de " + str(t1) +  " no válida.";
             error(s);
         }
     }
@@ -325,7 +315,7 @@ void VisitorVerificaTipos::visitaNodoMult(NodoMult * n) {
     else if(t1 == TINT && t2 == TINT)
         tipo = TINT;    
     else {
-        string s = "Multiplicación de " + n->get(0)->get_valor() + " con " + n->get(1)->get_valor() + " no válida";
+        string s = "Multiplicación de " + str(t1) + " con " + str(t2) + " no válida";
         error(s);
     }
 }
@@ -340,7 +330,7 @@ void VisitorVerificaTipos::visitaNodoDiv(NodoDiv * n) {
     else if(t1 == TINT && t2 == TINT)
         tipo = TINT;    
     else {
-        string s = "División de " + n->get(0)->get_valor() + " con " + n->get(1)->get_valor() + " no válida";
+        string s = "División de " + str(t1) + " con " + str(t2) + " no válida";
         error(s);
     }
 }
@@ -353,7 +343,7 @@ void VisitorVerificaTipos::visitaNodoNeg(NodoNeg * n) {
     else if(t1 == TINT)
         tipo = TINT;    
     else {
-        string s = "Negación de " + n->get(0)->get_valor() + " no válida.";
+        string s = "Negación de " + str(t1) + " no válida.";
         error(s);
     }
 }
@@ -368,7 +358,7 @@ void VisitorVerificaTipos::visitaNodoEq(NodoEq * n) {
        (t1 == TBOOL && t2 == TBOOL))
         tipo = TBOOL;
     else {
-        string s = "Igualdad de " + n->get(0)->get_valor() + " con " + n->get(1)->get_valor() + " no válida.";
+        string s = "Igualdad de " + str(t1) + " con " + str(t2) + " no válida";
         error(s);
     }
 }
@@ -383,7 +373,7 @@ void VisitorVerificaTipos::visitaNodoNeq(NodoNeq * n) {
        (t1 == TBOOL && t2 == TBOOL))
         tipo = TBOOL;
     else {
-        string s = "Desigualdad de " + n->get(0)->get_valor() + " con " + n->get(1)->get_valor() + " no válida.";
+        string s = "Desigualdad de " + str(t1) + " con " + str(t2) + " no válida";
         error(s);
     }
 }
@@ -397,7 +387,7 @@ void VisitorVerificaTipos::visitaNodoLess(NodoLess * n) {
        (t1 == TINT && t2 == TINT))
         tipo = TBOOL;
     else {
-        string s = "Menor que de " + n->get(0)->get_valor() + " con " + n->get(1)->get_valor() + " no válido.";
+        string s = "'Menor que' de " + str(t1) + " con " + str(t2) + " no válido";
         error(s);
     }
 }
@@ -411,7 +401,7 @@ void VisitorVerificaTipos::visitaNodoGreat(NodoGreat * n) {
        (t1 == TINT && t2 == TINT))
         tipo = TBOOL;
     else {
-        string s = "'Mayor que' de " + n->get(0)->get_valor() + " con " + n->get(1)->get_valor() + " no válido.";
+        string s = "'Mayor que' de " + str(t1) + " con " + str(t2) + " no válido";
         error(s);
     }
 }
@@ -425,7 +415,7 @@ void VisitorVerificaTipos::visitaNodoLessEq(NodoLessEq * n) {
        (t1 == TINT && t2 == TINT))
         tipo = TBOOL;
     else {
-        string s = "'Menor o igual que' de " + n->get(0)->get_valor() + " con " + n->get(1)->get_valor() + " no válido.";
+        string s = "'Menor o igual que' de " + str(t1) + " con " + str(t2) + " no válido";
         error(s);
     }
 }
@@ -439,7 +429,7 @@ void VisitorVerificaTipos::visitaNodoGreatEq(NodoGreatEq * n) {
        (t1 == TINT && t2 == TINT))
         tipo = TBOOL;
     else {
-        string s = "'Mayor o igual que' de " + n->get(0)->get_valor() + " con " + n->get(1)->get_valor() + " no válido.";
+        string s = "'Mayor o igual que' de " + str(t1) + " con " + str(t2) + " no válido";
         error(s);
     }
 }
@@ -452,7 +442,7 @@ void VisitorVerificaTipos::visitaNodoAnd(NodoAnd * n) {
     if(t1 == TBOOL && t2 == TBOOL)
         tipo = TBOOL;
     else {
-        string s = "And de " + n->get(0)->get_valor() + " con " + n->get(1)->get_valor() + " no válido.";
+        string s = "And de " + str(t1) + " con " + str(t2) + " no válido";
         error(s);
     }
 }
@@ -465,7 +455,7 @@ void VisitorVerificaTipos::visitaNodoOr(NodoOr * n) {
     if(t1 == TBOOL && t2 == TBOOL)
         tipo = TBOOL;
     else {
-        string s = "Or de " + n->get(0)->get_valor() + " con " + n->get(1)->get_valor() + " no válido.";
+        string s = "Or de " + str(t1) + " con " + str(t2) + " no válido";
         error(s);
     }
 }
@@ -486,12 +476,19 @@ void VisitorVerificaTipos::visitaNodoNot(NodoNot * n) {
     if(t1 == TBOOL)
         tipo = TBOOL;
     else {
-        string s = "Negación de " + n->get(0)->get_valor() + " no válida.";
+        string s = "Negación de " + str(t1) + " no válida.";
         error(s);
     }
 }
  
 void VisitorVerificaTipos::visitaNodoId(NodoId * n) {
+    if(args.size() > 0 && n->get_simbolo()->es_fun()) {
+        string s = "Tratando de usar función '" + n->get_valor() + "' como argumento a una función";
+        error(s);
+    } else if(n->get_simbolo()->es_fun()) {
+        string s = "Se está tratando de usar función '" + n->get_valor() + "' como variable.";
+        error(s);
+    }
     tipo = n->get_tipo();
 }
 
@@ -513,8 +510,9 @@ string str(Tipo t) {
 }
 
 void VisitorVerificaTipos::visitaNodoFunDef(NodoFunDef * n) {
-    n->get(0)->accept(this);
-    Tipo t1 = tipo;
+    NodoId * nid = (NodoId*)n->get(0);
+    // n->get(0)->accept(this);
+    Tipo t1 = nid->get_tipo();
     n->get(n->num_hijos() - 1)->accept(this);
     if(t1 != tipo) {
         string s = "Función '" + n->get(0)->get_valor() + "' regresa tipo " + str(tipo) + ", tipo " + str(t1) + " esperado.";
@@ -523,8 +521,26 @@ void VisitorVerificaTipos::visitaNodoFunDef(NodoFunDef * n) {
 }
 
 void VisitorVerificaTipos::visitaNodoFun(NodoFun * n) {
-    NodoTipo * nt = (NodoTipo*)n->get(0);
+    NodoId * nt = (NodoId*)n->get(0);
+    if(n->num_hijos() > 1) {
+        n->get(1)->accept(this);
+        if(n->get(1)->get_valor() != ",")
+            args.push_back(tipo);
+    }
+    Simbolo * simb = nt->get_simbolo();
+    if(args.size() != simb->num_args()) {
+        string s = "Número de argumentos en llamada de función '" + nt->get_valor() + "': " + to_string(args.size()) + ". Número de argumentos esperado: " + to_string(simb->num_args());
+        error(s);
+    } else {
+        for(int i = 0; i < simb->num_args(); i++) {
+            if(simb->get_arg(i) != args[i]) {
+                string s = "Tipo de argumento para función '" + nt->get_valor() + "' incorrecto. Esperado " + str(simb->get_arg(i)) + ", encontrado " + str(args[i]) + ".";
+                error(s);
+            }
+        }
+    }
     tipo = nt->get_tipo();
+    args.clear();
 }
  
 void VisitorVerificaTipos::visitaNodoWhile(NodoWhile * n) {
@@ -555,6 +571,11 @@ void VisitorVerificaTipos::visitaNodoCuerpo(NodoCuerpo * n) {
 }
 
 void VisitorVerificaTipos::visitaNodoComa(NodoComa * n) {
+    for(int i = 0; i < n->num_hijos(); i++) {
+        n->get(i)->accept(this);
+        if(n->get(i)->get_valor() != ",")
+            args.push_back(tipo);
+    }
 }
 
 void VisitorVerificaTipos::visitaNodoSeq(NodoSeq * n) {
