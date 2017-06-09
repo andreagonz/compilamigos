@@ -1,4 +1,5 @@
-%Especificacion
+
+% Especificacion
 \documentclass[12pt]{article}
 
 %Paquetes
@@ -19,7 +20,7 @@
 \usepackage{pmboxdraw}
 
 %Preambulo
-\title{Compiladores\\ Proyecto 2: Análisis Semántico}
+\title{Compiladores\\ Proyecto 2: \emph{Análisis Semántico}}
 \author{Carlos Acosta \qquad Karla Esquivel \\ Yuan Yuan \qquad Luis Mayo \\ Andrea González}
 \date{Facultad de Ciencias UNAM \\ 2017-2}
 \setlength\parindent{0pt}
@@ -27,5 +28,70 @@
 \begin{document}
 \maketitle
 \tableofcontents
+\newpage
+
+\section{Sistema de tipos}
+Desde que definimos la gramática para nuestro lenguaje en el \textbf{\emph{proyecto 1}} se habían contemplado los tres tipos que se mencionan en la especificación de este proyecto: tenemos números enteros de tipo \texttt{int}, números con punto flotante de tipo \texttt{float} y valores booleanos \texttt{bool}.
+La sintáxis del lenguaje también permitía que se declararan variables con tipo estático. \\
+Gracias a que nuestro lenguaje ya cumplía con estos requerimentos, no tuvimos que modificar la sintáxis del lenguaje en estos campos.
+
+\section{Tabla de simbolos}
+La \textit{tabla de simbolos} es usada para manejar los tipos de las variables y de los valores que regresen las funciones. Dicha tabla se crea durante el análisis sintáctico usando el patrón \textit{visitor} con la clase \textbf{VisitorCreaTabla} para el descubrimiento de variables, las cuales deben ser inicializadas cuando son declaradas, pero cumplen con la regla de ``declaración antes de uso". \\
+Las funciones pueden regresar\footnote{La sentencia \texttt{return} solo puede ser usada dentro de una función, en cualquier otro caso habrá un error de sintáxis} algún valor de tipo \texttt{int}, \texttt{float} o \texttt{bool} o no regresar ninguno (usando \texttt{void}).
+\subsection{Implementación}
+La tabla de simbolos fue implementada como una estructura de datos en forma de árbol donde la raíz es el alcance principal del programa y cada nuevo alcance que se abra será un hijo para el alcance en el que se abrió.
+\subsubsection{métodos principales}
+\begin{itemize}
+\item \texttt{look\_up(name)}: regresa el nodo que contiene la declaración válida de \emph{name} en el alcance actual. Si no hay declaración, regresa un apuntador nulo.
+\item \texttt{insert(name, simbol)}: ingresa \emph{name} en la tabla de simbolos bajo el alcance actual, \emph{simbol} contiene los atributos obtenidos en la declaración de \emph{name}.
+\item \texttt{open\_scope()}: abre un nuevo alcance para la tabla de símbolos, es decir, crea un nodo hijo donde se ingresarán nuevos simbolos.
+\item \texttt{close\_scope()}: cierra el alcance más reciente, revirtiendo las referencias a simbolos hacia el alcance externo, es decir, a su nodo padre.
+\item \texttt{declared\_locally(name)}: verifica que name esté declarado en el alcance actual y regresa \texttt{true} si lo está, en caso contrario regresa \texttt{false}.
+\end{itemize}
+\section{Verificación de tipos}
+Usando el patrón \textit{visitor} con la clase \textbf{VisitorVerificaTipos} y la \textit{tabla de simbolos} creada anteriormente.
+\section{Análisis dependiente del contexto}
+
+\section{Instrucciones para ejecutar y compilar el proyecto}\label{sec:s}
+
+El código fuente del proyecto, se encuentra dentro del directorio \texttt{src/}. Debe asegurarse
+que tenga esta forma mínima para su correcto funcionamiento:
+\begin{verbatim}
+    src/
+    |-- lexer.lex
+    |-- Makefile
+    |-- nodo.cpp
+    |-- nodo.h
+    |-- parser.y
+    |-- tabla.cpp
+    |-- tabla.h
+    |-- visitor.cpp
+    |__ visitor.h
+
+\end{verbatim}
+
+\subsection{Compilación del proyecto}
+
+En cualquier sistema operativo basado en Unix, con \texttt{g++}, \texttt{flex} y \texttt{bison} preinstalados, basta con ejecutar \textbf{make} en el directorio \texttt{src/} desde línea de comandos.
+
+\begin{verbatim}
+    [user@host src]$ make
+\end{verbatim}
+Dicha orden producirá un binario ejecutable de nombre \textit{\textbf{kyc-ip}} listo para recibir código fuente de nuestro lenguaje.\\
+En caso de existir un problema para generar dicho ejecutable, recomendamos volver a generar el código de los analizadores sintácticos y volver a intentar construir el ejecutable con las siguientes instrucciones:
+\begin{verbatim}
+    [user@host src]$ make flex
+    [user@host src]$ make bison
+    [user@host src]$ make
+\end{verbatim}
+
+\subsection{Ejecución del analizador} 
+
+Una vez obtenido el binario, basta:
+\begin{verbatim}
+    [user@host src]$ ./kyc-ip <archivo>
+\end{verbatim}
+Donde \texttt{<archivo>} es el archivo de texto claro con el código fuente correspondiente a nuestro lenguaje de programación.
 
 \end{document}
+3
