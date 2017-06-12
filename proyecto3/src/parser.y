@@ -22,6 +22,8 @@ queue<Nodo*> * nodos = new queue<Nodo*>();
 VisitorCreaTabla * vct = new VisitorCreaTabla();
 string archivo;
 ofstream codefile;
+bool archivos = false;
+    
 %}
 
 /* bison declarations */
@@ -55,21 +57,25 @@ ofstream codefile;
 
 /* Gramática */
 S :  Prog {
-  $$ = $1;
-  ofstream arbol;
-  arbol.open (archivo + ".asa");
-  arbol << str($$);
-  arbol.close();
-  $$->accept(vct);
-  if(!vct->tuvo_error()) {
-      ofstream tsimb;
-      tsimb.open (archivo + ".tds");
-      tsimb << tstr(vct->get_tabla()->get_raiz());
-      tsimb.close();
-      VisitorVerificaTipos * vvt = new VisitorVerificaTipos();
-      $$->accept(vvt);        
-  }
- } 
+    $$ = $1;
+    if(archivos) {
+        ofstream arbol;
+        arbol.open (archivo + ".asa");
+        arbol << str($$);
+        arbol.close();
+    }
+    $$->accept(vct);
+    if(!vct->tuvo_error()) {
+        if(archivos) {
+            ofstream tsimb;
+            tsimb.open (archivo + ".tds");
+            tsimb << tstr(vct->get_tabla()->get_raiz());
+            tsimb.close();
+        }
+        VisitorVerificaTipos * vvt = new VisitorVerificaTipos();
+        $$->accept(vvt);        
+    }
+} 
 ;
 
 Prog :  Prog ProgPrim {
@@ -855,6 +861,12 @@ int main(int argc, char* argv[]) {
         archivo = s.substr(s.find_last_of("\\/") + 1, s.size());
         archivo = archivo.substr(0, archivo.find_last_of("."));
 	yyin = myfile;
+
+        if(argc > 2) {
+            string arg = argv[2];
+            if(arg == "-a")
+                archivos = true;
+        }        
 
 	do {
 		yyparse();

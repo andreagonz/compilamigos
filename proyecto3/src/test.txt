@@ -1,5 +1,0 @@
-int x = 0;
-2 + 3;
-int cooca = 9 + (0 - 8 - 9 - 0);
-cooca = 9;
-x = cooca + 2 + 23 - 23 + false;
