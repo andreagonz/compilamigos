@@ -84,9 +84,11 @@ extern int col;
  
 void yyerror(const char *s);
 queue<Nodo*> * nodos = new queue<Nodo*>();
+VisitorCreaTabla * vct = new VisitorCreaTabla();
 string archivo;
+ofstream codefile;
 
-#line 90 "parser.tab.c" /* yacc.c:339  */
+#line 92 "parser.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -154,14 +156,14 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 27 "parser.y" /* yacc.c:355  */
+#line 29 "parser.y" /* yacc.c:355  */
 
   int ival;
   float fval; 
   char* sval;
   Nodo *nval;
 
-#line 165 "parser.tab.c" /* yacc.c:355  */
+#line 167 "parser.tab.c" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -178,7 +180,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 182 "parser.tab.c" /* yacc.c:358  */
+#line 184 "parser.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -478,11 +480,11 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    55,    55,    73,    80,    84,    92,    93,    96,   102,
-     109,   113,   120,   123,   130,   137,   141,   148,   155,   162,
-     169,   173,   180,   187,   191,   198,   206,   212,   216,   220,
-     224,   231,   238,   242,   248,   256,   257,   261,   268,   278,
-     285,   290,   298,   303,   308
+       0,    57,    57,    74,    81,    85,    93,    94,    97,   103,
+     110,   114,   121,   124,   131,   138,   142,   149,   156,   163,
+     170,   174,   181,   188,   192,   199,   207,   213,   217,   221,
+     225,   232,   239,   243,   249,   257,   258,   262,   269,   279,
+     286,   291,   299,   304,   309
 };
 #endif
 
@@ -1292,14 +1294,13 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 55 "parser.y" /* yacc.c:1646  */
+#line 57 "parser.y" /* yacc.c:1646  */
     {
   (yyval.nval) = (yyvsp[0].nval);
   ofstream arbol;
   arbol.open (archivo + ".asa");
   arbol << str((yyval.nval));
   arbol.close();
-  VisitorCreaTabla * vct = new VisitorCreaTabla();
   (yyval.nval)->accept(vct);
   if(!vct->tuvo_error()) {
         VisitorVerificaTipos * vvt = new VisitorVerificaTipos();
@@ -1309,11 +1310,11 @@ yyreduce:
         }
   }
  }
-#line 1313 "parser.tab.c" /* yacc.c:1646  */
+#line 1314 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 3:
-#line 73 "parser.y" /* yacc.c:1646  */
+#line 74 "parser.y" /* yacc.c:1646  */
     {
   Nodo *n = new NodoSeq("seq");
   n->add((yyvsp[-1].nval));
@@ -1321,47 +1322,47 @@ yyreduce:
   n->add((yyvsp[0].nval));
   (yyval.nval) = n;
 }
-#line 1325 "parser.tab.c" /* yacc.c:1646  */
+#line 1326 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 4:
-#line 80 "parser.y" /* yacc.c:1646  */
+#line 81 "parser.y" /* yacc.c:1646  */
     { (yyval.nval) = (yyvsp[0].nval); }
-#line 1331 "parser.tab.c" /* yacc.c:1646  */
+#line 1332 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 5:
-#line 84 "parser.y" /* yacc.c:1646  */
+#line 85 "parser.y" /* yacc.c:1646  */
     {
       Nodo *n = new NodoSeq("seq");
       n->add((yyvsp[-1].nval));
       nodos->push(n);
       (yyval.nval) = n; }
-#line 1341 "parser.tab.c" /* yacc.c:1646  */
+#line 1342 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 6:
-#line 92 "parser.y" /* yacc.c:1646  */
+#line 93 "parser.y" /* yacc.c:1646  */
     { (yyval.nval) = (yyvsp[0].nval); }
-#line 1347 "parser.tab.c" /* yacc.c:1646  */
+#line 1348 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 7:
-#line 93 "parser.y" /* yacc.c:1646  */
+#line 94 "parser.y" /* yacc.c:1646  */
     { (yyval.nval) = (yyvsp[0].nval); }
-#line 1353 "parser.tab.c" /* yacc.c:1646  */
+#line 1354 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 8:
-#line 96 "parser.y" /* yacc.c:1646  */
+#line 97 "parser.y" /* yacc.c:1646  */
     {
   (yyval.nval) = (yyvsp[0].nval); 
 }
-#line 1361 "parser.tab.c" /* yacc.c:1646  */
+#line 1362 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 9:
-#line 102 "parser.y" /* yacc.c:1646  */
+#line 103 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoOr("or");
   nodos->push(n);
@@ -1369,17 +1370,17 @@ yyreduce:
   n->add((yyvsp[0].nval));
   (yyval.nval) = n;
 }
-#line 1373 "parser.tab.c" /* yacc.c:1646  */
+#line 1374 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 109 "parser.y" /* yacc.c:1646  */
+#line 110 "parser.y" /* yacc.c:1646  */
     { (yyval.nval) = (yyvsp[0].nval); }
-#line 1379 "parser.tab.c" /* yacc.c:1646  */
+#line 1380 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 11:
-#line 113 "parser.y" /* yacc.c:1646  */
+#line 114 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoAnd("and");
   nodos->push(n);
@@ -1387,17 +1388,17 @@ yyreduce:
   n->add((yyvsp[0].nval));
   (yyval.nval) = n;
 }
-#line 1391 "parser.tab.c" /* yacc.c:1646  */
+#line 1392 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 12:
-#line 120 "parser.y" /* yacc.c:1646  */
+#line 121 "parser.y" /* yacc.c:1646  */
     { (yyval.nval) = (yyvsp[0].nval);  }
-#line 1397 "parser.tab.c" /* yacc.c:1646  */
+#line 1398 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 123 "parser.y" /* yacc.c:1646  */
+#line 124 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoEq("==");
   nodos->push(n);
@@ -1405,11 +1406,11 @@ yyreduce:
   n->add((yyvsp[0].nval));
   (yyval.nval) = n;
 }
-#line 1409 "parser.tab.c" /* yacc.c:1646  */
+#line 1410 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 130 "parser.y" /* yacc.c:1646  */
+#line 131 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoNeq("!=");
   nodos->push(n);
@@ -1417,17 +1418,17 @@ yyreduce:
   n->add((yyvsp[0].nval));
   (yyval.nval) = n;
 }
-#line 1421 "parser.tab.c" /* yacc.c:1646  */
+#line 1422 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 137 "parser.y" /* yacc.c:1646  */
+#line 138 "parser.y" /* yacc.c:1646  */
     { (yyval.nval) = (yyvsp[0].nval); }
-#line 1427 "parser.tab.c" /* yacc.c:1646  */
+#line 1428 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 141 "parser.y" /* yacc.c:1646  */
+#line 142 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoLess("<");
   nodos->push(n);
@@ -1435,11 +1436,11 @@ yyreduce:
   n->add((yyvsp[0].nval));
   (yyval.nval) = n;
 }
-#line 1439 "parser.tab.c" /* yacc.c:1646  */
+#line 1440 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 148 "parser.y" /* yacc.c:1646  */
+#line 149 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoGreat(">");
   nodos->push(n);
@@ -1447,11 +1448,11 @@ yyreduce:
   n->add((yyvsp[0].nval));
   (yyval.nval) = n;
 }
-#line 1451 "parser.tab.c" /* yacc.c:1646  */
+#line 1452 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 155 "parser.y" /* yacc.c:1646  */
+#line 156 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoLessEq("<=");
   nodos->push(n);
@@ -1459,11 +1460,11 @@ yyreduce:
   n->add((yyvsp[0].nval));
   (yyval.nval) = n;
 }
-#line 1463 "parser.tab.c" /* yacc.c:1646  */
+#line 1464 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 162 "parser.y" /* yacc.c:1646  */
+#line 163 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoGreatEq(">=");
   nodos->push(n);
@@ -1471,17 +1472,17 @@ yyreduce:
   n->add((yyvsp[0].nval));
   (yyval.nval) = n;
 }
-#line 1475 "parser.tab.c" /* yacc.c:1646  */
+#line 1476 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 169 "parser.y" /* yacc.c:1646  */
+#line 170 "parser.y" /* yacc.c:1646  */
     { (yyval.nval) = (yyvsp[0].nval); }
-#line 1481 "parser.tab.c" /* yacc.c:1646  */
+#line 1482 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 173 "parser.y" /* yacc.c:1646  */
+#line 174 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoSum("+");
   nodos->push(n);
@@ -1489,11 +1490,11 @@ yyreduce:
   n->add((yyvsp[0].nval));
   (yyval.nval) = n;
 }
-#line 1493 "parser.tab.c" /* yacc.c:1646  */
+#line 1494 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 180 "parser.y" /* yacc.c:1646  */
+#line 181 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoMenos("-");
   nodos->push(n);
@@ -1501,17 +1502,17 @@ yyreduce:
   n->add((yyvsp[0].nval));
   (yyval.nval) = n;
 }
-#line 1505 "parser.tab.c" /* yacc.c:1646  */
+#line 1506 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 187 "parser.y" /* yacc.c:1646  */
+#line 188 "parser.y" /* yacc.c:1646  */
     { (yyval.nval) = (yyvsp[0].nval); }
-#line 1511 "parser.tab.c" /* yacc.c:1646  */
+#line 1512 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 191 "parser.y" /* yacc.c:1646  */
+#line 192 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoMult("*");
   nodos->push(n);
@@ -1519,11 +1520,11 @@ yyreduce:
   n->add((yyvsp[0].nval));
   (yyval.nval) = n;
 }
-#line 1523 "parser.tab.c" /* yacc.c:1646  */
+#line 1524 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 198 "parser.y" /* yacc.c:1646  */
+#line 199 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoDiv("/");
   nodos->push(n);
@@ -1531,112 +1532,112 @@ yyreduce:
   n->add((yyvsp[0].nval));
   (yyval.nval) = n;
 }
-#line 1535 "parser.tab.c" /* yacc.c:1646  */
+#line 1536 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 206 "parser.y" /* yacc.c:1646  */
+#line 207 "parser.y" /* yacc.c:1646  */
     {
   (yyval.nval) = (yyvsp[0].nval);
 }
-#line 1543 "parser.tab.c" /* yacc.c:1646  */
+#line 1544 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 212 "parser.y" /* yacc.c:1646  */
+#line 213 "parser.y" /* yacc.c:1646  */
     {
   (yyval.nval) = (yyvsp[0].nval);
 }
-#line 1551 "parser.tab.c" /* yacc.c:1646  */
+#line 1552 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 216 "parser.y" /* yacc.c:1646  */
+#line 217 "parser.y" /* yacc.c:1646  */
     {
   (yyval.nval) = (yyvsp[0].nval);
 }
-#line 1559 "parser.tab.c" /* yacc.c:1646  */
+#line 1560 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 220 "parser.y" /* yacc.c:1646  */
+#line 221 "parser.y" /* yacc.c:1646  */
     {
     (yyval.nval) = (yyvsp[-1].nval);
 }
-#line 1567 "parser.tab.c" /* yacc.c:1646  */
+#line 1568 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 30:
-#line 224 "parser.y" /* yacc.c:1646  */
+#line 225 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoNeg("-");
   n->add((yyvsp[0].nval));
   nodos->push(n);
   (yyval.nval) = n;
 }
-#line 1578 "parser.tab.c" /* yacc.c:1646  */
+#line 1579 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 231 "parser.y" /* yacc.c:1646  */
+#line 232 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoNot("not");
   n->add((yyvsp[0].nval));
   nodos->push(n);
   (yyval.nval) = n;
 }
-#line 1589 "parser.tab.c" /* yacc.c:1646  */
+#line 1590 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 32:
-#line 238 "parser.y" /* yacc.c:1646  */
+#line 239 "parser.y" /* yacc.c:1646  */
     { (yyval.nval) = (yyvsp[0].nval); }
-#line 1595 "parser.tab.c" /* yacc.c:1646  */
+#line 1596 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 33:
-#line 242 "parser.y" /* yacc.c:1646  */
+#line 243 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoBool("true");
   nodos->push(n);
   (yyval.nval) = n;
 }
-#line 1605 "parser.tab.c" /* yacc.c:1646  */
+#line 1606 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 34:
-#line 248 "parser.y" /* yacc.c:1646  */
+#line 249 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoBool("false");
   nodos->push(n);
   (yyval.nval) = n;
 }
-#line 1615 "parser.tab.c" /* yacc.c:1646  */
+#line 1616 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 35:
-#line 256 "parser.y" /* yacc.c:1646  */
+#line 257 "parser.y" /* yacc.c:1646  */
     { (yyval.nval) = (yyvsp[0].nval); }
-#line 1621 "parser.tab.c" /* yacc.c:1646  */
+#line 1622 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 36:
-#line 257 "parser.y" /* yacc.c:1646  */
+#line 258 "parser.y" /* yacc.c:1646  */
     { (yyval.nval) = (yyvsp[0].nval); }
-#line 1627 "parser.tab.c" /* yacc.c:1646  */
+#line 1628 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 37:
-#line 261 "parser.y" /* yacc.c:1646  */
+#line 262 "parser.y" /* yacc.c:1646  */
     {
   (yyvsp[-1].nval)->add((yyvsp[0].nval));
   (yyval.nval) = (yyvsp[-1].nval);
 }
-#line 1636 "parser.tab.c" /* yacc.c:1646  */
+#line 1637 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 38:
-#line 268 "parser.y" /* yacc.c:1646  */
+#line 269 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoAsig("=");
   nodos->push(n);
@@ -1644,71 +1645,71 @@ yyreduce:
   n->add((yyvsp[0].nval));
   (yyval.nval) = n;
 }
-#line 1648 "parser.tab.c" /* yacc.c:1646  */
+#line 1649 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 39:
-#line 278 "parser.y" /* yacc.c:1646  */
+#line 279 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoId((yyvsp[0].sval));
   nodos->push(n);
   (yyval.nval) = n;
 }
-#line 1658 "parser.tab.c" /* yacc.c:1646  */
+#line 1659 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 40:
-#line 285 "parser.y" /* yacc.c:1646  */
+#line 286 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoFloat((yyvsp[0].sval));
   nodos->push(n);
   (yyval.nval) = n;
 }
-#line 1668 "parser.tab.c" /* yacc.c:1646  */
+#line 1669 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 41:
-#line 290 "parser.y" /* yacc.c:1646  */
+#line 291 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoInt((yyvsp[0].sval));
   nodos->push(n);
   (yyval.nval) = n;
 }
-#line 1678 "parser.tab.c" /* yacc.c:1646  */
+#line 1679 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 42:
-#line 298 "parser.y" /* yacc.c:1646  */
+#line 299 "parser.y" /* yacc.c:1646  */
     {
     Nodo * n = new NodoTipo("int", TINT);
     nodos->push(n);
     (yyval.nval) = n;
 }
-#line 1688 "parser.tab.c" /* yacc.c:1646  */
+#line 1689 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 43:
-#line 303 "parser.y" /* yacc.c:1646  */
+#line 304 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoTipo("float", TFLOAT);
   nodos->push(n);
   (yyval.nval) = n;
   }
-#line 1698 "parser.tab.c" /* yacc.c:1646  */
+#line 1699 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 44:
-#line 308 "parser.y" /* yacc.c:1646  */
+#line 309 "parser.y" /* yacc.c:1646  */
     {
   Nodo * n = new NodoTipo("bool", TBOOL);
   nodos->push(n);
   (yyval.nval) = n;
   }
-#line 1708 "parser.tab.c" /* yacc.c:1646  */
+#line 1709 "parser.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1712 "parser.tab.c" /* yacc.c:1646  */
+#line 1713 "parser.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1936,7 +1937,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 314 "parser.y" /* yacc.c:1906  */
+#line 315 "parser.y" /* yacc.c:1906  */
 
 
 /* Epilogo */
@@ -1945,10 +1946,521 @@ yyreturn:
 void clear() {
     while(!nodos->empty()) {
         Nodo *n = nodos->front();
+        //cout << n->str() << endl;
         nodos->pop();
         delete n;
     }
     delete nodos;
+}
+
+//Metodo que marca los nodos de seq y pone cuanto nodos de secuencia tiene en su arbol contandolo a ellos
+int transTreeSeqs(Nodo *nodo){	
+	int seqs = 0;
+        std::string seqstr = "(seq)";
+	if(seqstr.compare(nodo->str()) == 0){
+		seqs += 1;
+	}
+        
+	int numhijos = nodo->num_hijos();
+	for(int i = 0; i < numhijos; i++){
+		seqs += transTreeSeqs(nodo->get(i));
+	}
+
+	nodo->set_num_seqs(seqs);
+	return seqs;
+}
+
+//Metodo que nos dice si una cadena es un entero
+inline bool isNumber(const std::string & s)
+{
+   if(s.empty() || ((!isdigit(s[0])) && (s[0] != '-') && (s[0] != '+'))) return false ;
+
+   char * p ;
+   strtol(s.c_str(), &p, 10) ;
+
+   return (*p == 0) ;
+}
+
+
+//Metodo que nos dice si una cadena es un float
+bool isFloat(const std::string & s)
+{
+   char * p ;
+   strtod(s.c_str(), &p) ;
+
+   return (*p == 0) ;
+}
+
+
+//Metodo que genera el codigo en x86-64 (AUXILIAR)
+void genCodeOpera(Nodo *nodo, int reg, std::string tipo){
+
+	int vars = nodo->num_vars();
+	int numhijos = nodo->num_hijos();
+	std::string nodo_value = nodo->get_valor();
+
+	if( nodo_value.compare("+") == 0 || nodo_value.compare("-") == 0 || nodo_value.compare("*") == 0 || nodo_value.compare("/") == 0 ){
+		Nodo *h0 = nodo->get(0);
+		Nodo *h1 = nodo->get(1);			
+		if (h0->num_vars() == 0 || h1->num_vars() == 0){
+				if(h0->num_vars() == 0){
+					genCodeOpera(h1, reg, tipo);
+					if(tipo.compare("int") == 0){
+						if( nodo_value.compare("+") == 0){
+							codefile << "addq $"+h0->get_valor()+" %r"+std::to_string(reg) +"\t#addq S, D D ← D "+nodo_value+" S"<< endl;	
+						}
+						if( nodo_value.compare("-") == 0){
+							codefile << "subq $"+h0->get_valor()+" %r"+std::to_string(reg) +"\t#subq S, D D ← D "+nodo_value+" S"<< endl;	
+						}
+						if( nodo_value.compare("*") == 0){
+							codefile << "imulq $"+h0->get_valor()+" %r"+std::to_string(reg) +"\t#imulq S, D D ← D "+nodo_value+" S"<< endl;	
+						}
+						if( nodo_value.compare("/") == 0){
+							codefile << "divq $"+h0->get_valor()+" %r"+std::to_string(reg) +"\t#divq S, D D ← D "+nodo_value+" S"<< endl;	
+						}
+						//cout << "INT"+nodo_value+"CONS R"+std::to_string(reg)+" "+h0->get_valor() << endl;
+					}else{
+						if( nodo_value.compare("+") == 0){
+							codefile << "addss $"+h0->get_valor()+" %xmm"+std::to_string(reg) +"\t#addss S, D D ← D "+nodo_value+" S"<< endl;	
+						}
+						if( nodo_value.compare("-") == 0){
+							codefile << "subss $"+h0->get_valor()+" %xmm"+std::to_string(reg) +"\t#subss S, D D ← D "+nodo_value+" S"<< endl;	
+						}
+						if( nodo_value.compare("*") == 0){
+							codefile << "mulss $"+h0->get_valor()+" %xmm"+std::to_string(reg) +"\t#mulss S, D D ← D "+nodo_value+" S"<< endl;	
+						}
+						if( nodo_value.compare("/") == 0){
+							codefile << "divss $"+h0->get_valor()+" %xmm"+std::to_string(reg) +"\t#divss S, D D ← D "+nodo_value+" S"<< endl;	
+						}
+						//cout << "FLOAT"+nodo_value+"CONS R"+std::to_string(reg)+" "+h0->get_valor() << endl;
+					}
+				}else{
+					genCodeOpera(h0, reg, tipo);
+					if(tipo.compare("int") == 0){
+						if( nodo_value.compare("+") == 0){
+							codefile << "addq $"+h1->get_valor()+" %r"+std::to_string(reg) +"\t#addq S, D D ← D "+nodo_value+" S"<< endl;	
+						}
+						if( nodo_value.compare("-") == 0){
+							codefile << "subq $"+h1->get_valor()+" %r"+std::to_string(reg) +"\t#subq S, D D ← D "+nodo_value+" S"<< endl;	
+						}
+						if( nodo_value.compare("*") == 0){
+							codefile << "imulq $"+h1->get_valor()+" %r"+std::to_string(reg) +"\t#imulq S, D D ← D "+nodo_value+" S"<< endl;	
+						}
+						if( nodo_value.compare("/") == 0){
+							codefile << "divq $"+h1->get_valor()+" %r"+std::to_string(reg) +"\t#divq S, D D ← D "+nodo_value+" S"<< endl;	
+						}
+						//cout << "INT"+nodo_value+"CONS R"+std::to_string(reg)+" "+h1->get_valor() << endl;
+					}else{
+						if( nodo_value.compare("+") == 0){
+							codefile << "addss $"+h1->get_valor()+" %xmm"+std::to_string(reg) +"\t#addss S, D D ← D "+nodo_value+" S"<< endl;	
+						}
+						if( nodo_value.compare("-") == 0){
+							codefile << "subss $"+h1->get_valor()+" %xmm"+std::to_string(reg) +"\t#subss S, D D ← D "+nodo_value+" S"<< endl;	
+						}
+						if( nodo_value.compare("*") == 0){
+							codefile << "mulss $"+h1->get_valor()+" %xmm"+std::to_string(reg) +"\t#mulss S, D D ← D "+nodo_value+" S"<< endl;	
+						}
+						if( nodo_value.compare("/") == 0){
+							codefile << "divss $"+h1->get_valor()+" %xmm"+std::to_string(reg) +"\t#divss S, D D ← D "+nodo_value+" S"<< endl;	
+						}
+						//cout << "FLOAT"+nodo_value+"CONS R"+std::to_string(reg)+" "+h1->get_valor() << endl;
+					}
+
+				}
+		}else{
+			genCodeOpera(nodo->get(0), reg, tipo);
+			genCodeOpera(nodo->get(1), reg-1, tipo);
+
+			if(tipo.compare("int") == 0){
+				if( nodo_value.compare("+") == 0){
+					codefile << "addq %r"+std::to_string(reg-1)+" %r"+std::to_string(reg) +"\t#addq S, D D ← D "+nodo_value+" S"<< endl;	
+				}
+				if( nodo_value.compare("-") == 0){
+					codefile << "subq %r"+std::to_string(reg-1)+" %r"+std::to_string(reg) +"\t#subq S, D D ← D "+nodo_value+" S"<< endl;	
+				}
+				if( nodo_value.compare("*") == 0){
+					codefile << "imulq %r"+std::to_string(reg-1)+" %r"+std::to_string(reg) +"\t#imulq S, D D ← D "+nodo_value+" S"<< endl;	
+				}
+				if( nodo_value.compare("/") == 0){
+					codefile << "divq %r"+std::to_string(reg-1)+" %r"+std::to_string(reg) +"\t#divq S, D D ← D "+nodo_value+" S"<< endl;	
+				}
+				//cout << "INT"+nodo_value+" R"+std::to_string(reg)+" R"+std::to_string(reg-1) << endl;	
+			}else{
+				if( nodo_value.compare("+") == 0){
+					codefile << "addss %xmm"+std::to_string(reg-1)+" %xmm"+std::to_string(reg) +"\t#addss S, D D ← D "+nodo_value+" S"<< endl;	
+				}
+				if( nodo_value.compare("-") == 0){
+					codefile << "subss %xmm"+std::to_string(reg-1)+" %xmm"+std::to_string(reg) +"\t#subss S, D D ← D "+nodo_value+" S"<< endl;	
+				}
+				if( nodo_value.compare("*") == 0){
+					codefile << "mulss %xmm"+std::to_string(reg-1)+" %xmm"+std::to_string(reg) +"\t#mulss S, D D ← D "+nodo_value+" S"<< endl;	
+				}
+				if( nodo_value.compare("/") == 0){
+					codefile << "divss %xmm"+std::to_string(reg-1)+" %xmm"+std::to_string(reg) +"\t#divss S, D D ← D "+nodo_value+" S"<< endl;	
+				}
+				//cout << "FLOAT"+nodo_value+" R"+std::to_string(reg)+" R"+std::to_string(reg-1) << endl;	
+			}		
+		}
+		return;
+	}
+
+	if( nodo_value.compare("and") == 0 || nodo_value.compare("or") == 0){
+		Nodo *h0 = nodo->get(0);
+		Nodo *h1 = nodo->get(1);
+		if (h0->num_vars() == 0 || h1->num_vars() == 0){
+				if(h0->num_vars() == 0){
+					std::string consvalue = "0";
+					if (h0->get_valor().compare("true") == 0){
+						consvalue = "1";
+					}else{
+						consvalue = "0";
+					}
+					genCodeOpera(h1, reg, tipo);
+					codefile <<nodo_value+"q $"+consvalue+" %r"+std::to_string(reg)  +"\t#"+nodo_value+"q S, D D ← D "+nodo_value+" S"<< endl;
+					//cout <<"BOOL"+nodo_value+"CONS R"+std::to_string(reg)+" "+h0->get_valor() << endl;
+				}else{ 
+					std::string consvalue = "0";
+					if (h1->get_valor().compare("true") == 0){
+						consvalue = "1";
+					}else{
+						consvalue = "0";
+					}
+					genCodeOpera(h0, reg, tipo);
+					codefile <<nodo_value+"q $"+consvalue+" %r"+std::to_string(reg)  +"\t#"+nodo_value+"q S, D D ← D "+nodo_value+" S"<< endl;
+					//cout <<"BOOL"+nodo_value+"CONS R"+std::to_string(reg)+" "+h1->get_valor() << endl;
+				}			
+
+		}else{
+			genCodeOpera(nodo->get(0), reg, tipo);
+			genCodeOpera(nodo->get(1), reg-1, tipo);
+			//cout << "BOOL"+nodo_value+" R"+std::to_string(reg)+" R"+std::to_string(reg-1) << endl;
+			codefile << nodo_value+"q %r"+std::to_string(reg-1)+" %r"+std::to_string(reg) +"\t#"+nodo_value+"q S, D D ← D "+nodo_value+" S"<< endl;					
+		}
+		return;
+	}
+
+	if(nodo_value.compare("not") == 0){
+		//notq D D ← ˜D
+		genCodeOpera(nodo->get(0), reg, tipo);
+			codefile << "notq %r"+std::to_string(reg) +"\t#notq D D ← ^D"<< endl;
+		//cout << "BOOL"+nodo_value+" R"+std::to_string(reg) << endl;
+		return;
+
+	}
+
+	//movq S, D ####D ← S
+	if(tipo.compare("int") == 0){
+		codefile << "movq "+nodo_value+" %r"+std::to_string(reg)+"\t#movq S, D D ← S   LOAD"<< endl;
+		//cout << "INT LOAD R"+std::to_string(reg)+" "+nodo_value << endl;
+	}
+	if(tipo.compare("bool") == 0){
+		std::string consvalue = "0";
+		if (nodo_value.compare("true") == 0){
+			consvalue = "1";
+		}else{
+			consvalue = "0";
+		}
+		codefile << "movq "+consvalue+" %r"+std::to_string(reg)+"\t#movq S, D D ← S   LOAD"<< endl;
+		//cout << "BOOL LOAD R"+std::to_string(reg)+" "+nodo_value << endl;
+	}
+	if(tipo.compare("float") == 0){
+		codefile << "movss "+nodo_value+" %xmm"+std::to_string(reg)+"\t#movss S, D D ← S   LOAD"<< endl;
+		//cout << "FLOAT LOAD R"+std::to_string(reg)+" "+nodo_value << endl;
+	}	
+}
+
+
+//Metodo que genera el codigo en x86-64 (PRINCIPAL)
+void genCode(Nodo *nodo, TablaSimbolos *ts){	
+
+  	int num_seqs = nodo->num_seqs();
+	if (num_seqs == 1){
+
+                Nodo *linea = nodo->get(0);
+		std::string nodo_value = linea->get_valor();
+
+		if( nodo_value.compare("bool") == 0 || nodo_value.compare("int") == 0 || nodo_value.compare("float") == 0 || nodo_value.compare("=") == 0){
+
+			if(nodo_value.compare("=") == 0){
+				Nodo *var = linea->get(0);
+				Nodo *exp = linea->get(1);
+
+
+                                Simbolo *sim1 = ts->look_up(var->get_valor());
+				int tiposim = sim1->get_tipo();
+				std::string tipo;
+				//cout << "Varible:"+var->get_valor() << endl;
+				//cout << "Tipo:"+tipo << endl;
+				//cout << str(exp) << endl;
+			
+				//movq S, D ####D ← S
+				if(tiposim == 0){
+					tipo = "int";
+					genCodeOpera(exp, exp->num_vars(), tipo);
+  					codefile << "movq %r"+std::to_string(exp->num_vars())+" "+var->get_valor()+"\t#movq S, D D ← S   SAVE"<< endl;
+					//cout << "INT SAVE R"+std::to_string(exp->num_vars())+" "+var->get_valor() << endl;
+					//genCodeX8664(tipo, "SAVE", "R"+std::to_string(exp->num_vars()), var->get_valor());
+				}
+				if(tiposim == 2){
+					tipo = "bool";
+					genCodeOpera(exp, exp->num_vars(), tipo);
+  					codefile << "movq %r"+std::to_string(exp->num_vars())+" "+var->get_valor()+"\t#movq S, D D ← S   SAVE"<< endl;
+					//cout << "BOOL SAVE R"+std::to_string(exp->num_vars())+" "+var->get_valor() << endl;
+					//genCodeX8664(tipo, "SAVE", "R"+std::to_string(exp->num_vars()), var->get_valor());
+				}
+				if(tiposim == 1){
+					tipo = "float";
+					genCodeOpera(exp, exp->num_vars(), tipo);
+  					codefile << "movss %xmm"+std::to_string(exp->num_vars())+" "+var->get_valor()+"\t#movss S, D D ← S   SAVE"<< endl;
+					//cout << "FLOAT SAVE R"+std::to_string(exp->num_vars())+" "+var->get_valor() << endl;
+					//genCodeX8664(tipo, "SAVE", "R"+std::to_string(exp->num_vars()), var->get_valor());
+				}
+
+			}else{
+				std::string tipo = linea->get_valor();
+				Nodo *linea2 = linea->get(0);
+				Nodo *var = linea2->get(0);
+				Nodo *exp = linea2->get(1);
+				//cout << "Tipo:"+tipo << endl;
+				//cout << "Varible:"+var->get_valor() << endl;
+				//cout << str(exp) << endl;
+
+
+				//movq S, D D ← S
+				//genCodeX8664(tipo, "SAVE", "R"+std::to_string(exp->num_vars()), var->get_valor());
+				if(tipo.compare("int") == 0){
+					genCodeOpera(exp, exp->num_vars(), tipo);
+  					codefile << "movq %r"+std::to_string(exp->num_vars())+" "+var->get_valor()+"\t#movq S, D D ← S   SAVE"<< endl;
+					//cout << "INT SAVE R"+std::to_string(exp->num_vars())+" "+var->get_valor() << endl;
+				}
+				if(tipo.compare("bool") == 0){
+					genCodeOpera(exp, exp->num_vars(), tipo);
+  					codefile << "movq %r"+std::to_string(exp->num_vars())+" "+var->get_valor()+"\t#movq S, D D ← S   SAVE"<< endl;
+					//cout << "BOOL SAVE R"+std::to_string(exp->num_vars())+" "+var->get_valor() << endl;
+				}
+				if(tipo.compare("float") == 0){
+					genCodeOpera(exp, exp->num_vars(), tipo);
+  					codefile << "movss %xmm"+std::to_string(exp->num_vars())+" "+var->get_valor()+"\t#movss S, D D ← S   SAVE"<< endl;
+					//cout << "FLOAT SAVE R"+std::to_string(exp->num_vars())+" "+var->get_valor() << endl;
+				}
+
+
+			}
+
+		}else{
+			//cout << str(linea) << endl;
+			//IGNORAMOS CALCULOS QUE NO TENGA ASIGNACION POR QUE SE SON CALCULOS QUE NO SE
+			//USAN NUNCA
+			//genCodeOpera(linea, linea->num_vars());
+		}
+
+	}else{
+		int numhijos = nodo->num_hijos();
+		for(int i = 0; i < numhijos; i++){
+			genCode(nodo->get(i), ts);
+		}
+	}
+
+}
+
+
+//Metodo que evalua las contasntes dentro del arbol para simplificarlos (AUXILIAR)
+std::string evalConstantsNodo(Nodo *nodo){
+
+	int numhijos = nodo->num_hijos();
+	std::string nodo_value = nodo->get_valor();
+
+	if(numhijos == 0){
+		return nodo->get_valor();
+	}
+	if(numhijos == 1){
+		std::string new_val;
+		std::string valh0 =  evalConstantsNodo(nodo->get(0));
+		if ( nodo_value.compare("not") == 0){
+			if (valh0.compare("true") == 0){
+				new_val = "false";
+			}else{
+				new_val = "true";
+			}
+			return new_val;
+		}else{
+			cout << "evalNodo: NOOO DEBE PASAR" << endl;
+			cout << nodo_value << endl;
+		}
+	}
+	if(numhijos == 2){
+		std::string new_val;
+		std::string valh0 =  evalConstantsNodo(nodo->get(0));
+		std::string valh1 =  evalConstantsNodo(nodo->get(1));
+
+		if( nodo_value.compare("and") == 0 || nodo_value.compare("or") == 0 ){
+			if( nodo_value.compare("and") == 0){
+				if (valh0.compare("true") == 0 && valh1.compare("true") == 0){
+					new_val = "true";
+				}else{
+					new_val = "false";
+				}
+			}
+			if( nodo_value.compare("or") == 0){
+				if (valh0.compare("true") == 0 || valh1.compare("true") == 0){
+					new_val = "true";
+				}else{
+					new_val = "false";
+				}
+			}
+			return new_val;
+		}
+
+		if( nodo_value.compare("+") == 0 || nodo_value.compare("-") == 0 || nodo_value.compare("*") == 0 || nodo_value.compare("/") == 0 ){
+			if(isNumber(valh0)){
+				int new_num = 0;
+				int numh0 = std::stoi(valh0);
+				int numh1 = std::stoi(valh1);
+				if(nodo_value.compare("+") == 0){
+					new_num = numh0 + numh1;
+				}
+				if(nodo_value.compare("-") == 0){
+					new_num = numh0 - numh1;
+				}
+				if(nodo_value.compare("*") == 0){
+					new_num = numh0 * numh1;
+				}
+				if(nodo_value.compare("/") == 0){
+					new_num = numh0 / numh1;
+				}
+				return std::to_string(new_num);
+			}else{
+				float new_num = 0.0;
+				float numh0 = std::atof(valh0.c_str());
+				float numh1 = std::atof(valh1.c_str());
+				if(nodo_value.compare("+") == 0){
+					new_num = numh0 + numh1;
+				}
+				if(nodo_value.compare("-") == 0){
+					new_num = numh0 - numh1;
+				}
+				if(nodo_value.compare("*") == 0){
+					new_num = numh0 * numh1;
+				}
+				if(nodo_value.compare("/") == 0){
+					new_num = numh0 / numh1;
+				}
+				return std::to_string(new_num);
+			}
+	
+		}	
+	}
+
+}
+
+
+//Metodo que evalua las contasntes dentro del arbol para simplificarlos  (PRINCIPAL)
+void evalConstants(Nodo *nodo){
+	std::string nodo_value = nodo->get_valor();
+  	int num_vars = nodo->num_vars();
+	
+
+	if (num_vars == 0 && nodo_value.compare("seq") != 0){
+		std::string val = evalConstantsNodo(nodo);
+		while( nodo->num_hijos() > 0){
+			Nodo *newnodo = nodo->pop_back();
+		}
+		nodo->set_valor(val);
+	}else{
+		int numhijos = nodo->num_hijos();
+		for(int i = 0; i < numhijos; i++){
+			evalConstants(nodo->get(i));
+		}
+	}
+
+}
+
+
+//Metodo que implementa el agoritmo Sehti-Ullman simple
+int simpleSethUll(Nodo *nodo){
+
+	//cout << "entro a: "+nodo->str() +"tiene "+ std::to_string(nodo->num_hijos()) +" hijos "<< endl;
+	int vars = 0;
+        std::string seqstr = "(seq)";
+	int numhijos = nodo->num_hijos();
+	if(seqstr.compare(nodo->str()) == 0){
+		for(int i = 0; i < numhijos; i++){
+			int vars_temp;
+			vars_temp = simpleSethUll(nodo->get(i));
+
+                        if (vars_temp > vars){
+				vars = vars_temp;
+			}
+
+		}
+	}else{
+		if (numhijos == 2){
+
+			//cout << nodo->get_valor()+": DOS hijos" << endl;
+			int vars_temp1 = simpleSethUll(nodo->get(0));
+			int vars_temp2 = simpleSethUll(nodo->get(1));
+			if (vars_temp1 > vars_temp2){
+				vars = vars_temp1;
+			}else{
+				if (vars_temp1 < vars_temp2){
+					vars = vars_temp2;
+				}else{
+					if (vars_temp1 != 0	){
+						vars = vars_temp1 + 1;
+					}
+				}
+			}
+
+		}else{
+			if (numhijos == 1){
+				//cout << nodo->get_valor()+": UN hijos" << endl;
+				vars = simpleSethUll(nodo->get(0));
+			}else{
+				if (numhijos == 0){
+					//cout << nodo->get_valor()+": NINGUN hijo" << endl;
+					std::string nodo_value = nodo->get_valor();
+					if ( isNumber(nodo_value) || isFloat(nodo_value) || nodo_value.compare("true") == 0  || nodo_value.compare("false") == 0  ){
+						//cout << nodo_value+": Es INT FLOAT True o False" << endl;
+						vars = 0;
+					}else{
+						//cout << nodo_value+": NO ES INT Numero FLOAT True o False" << endl;
+						vars = 1;
+					}
+				}else{
+					cout << "simpleSethUll: NOOoO DEBE PASRA" << endl;					
+				}
+			}
+		}
+	}
+	//cout << nodo->str() +" "+ std::to_string(vars) << endl;
+	nodo->set_num_vars(vars);
+	return vars;	
+}
+
+
+//Metodo para generar el .data apartir del arbol
+void genData(Nodo *nodo){	
+	
+  	int num_seqs = nodo->num_seqs();
+	if (num_seqs == 1){
+                Nodo *linea = nodo->get(0);
+		std::string nodo_value = linea->get_valor();
+
+		if( nodo_value.compare("bool") == 0 || nodo_value.compare("int") == 0 || nodo_value.compare("float") == 0){
+			Nodo *var = linea->get(0);
+			Nodo *exp = linea->get(1);
+			if( nodo_value.compare("bool") == 0 || nodo_value.compare("int") == 0){
+				codefile << var->get(0)->get_valor()+": \t .quad\t 0"  << endl;		
+			}else{
+				codefile << var->get(0)->get_valor()+": \t .float\t 0.0"  << endl;		
+			}
+		}
+	}else{
+		int numhijos = nodo->num_hijos();
+		for(int i = 0; i < numhijos; i++){
+			genData(nodo->get(i));
+		}
+	}
 }
 
 int main(int argc, char* argv[]) {
@@ -1973,8 +2485,37 @@ int main(int argc, char* argv[]) {
 		yyparse();
 	} while (!feof(yyin));
         
+
+	//Obtenemos la tabla de simbolos y los nodos 
+	TablaSimbolos *ts = vct->get_tabla();
+        Nodo *root = nodos->back();
+
+	//Abrimos el archivo para escribir el codigo generado
+        codefile.open (archivo+".codigo");
+
+	//Generamos la marca de seqs los nodos que solo tiene una sequencia son los que "tiene" lineas de codigo
+	transTreeSeqs(root);
+	//Implementacion simple del algoritmo Sehti-Ullman
+	simpleSethUll(root);
+	//Este metodo simplifica el arbol es decir las operaciones que operan entre puras contasntes se simplifican en un solo nodo
+	evalConstants(root);
+	//Genera el codigo .data
+	codefile << "\t.data" << endl;
+	genData(root);
+	//Genera el codigo .text
+	codefile << "\t.text" << endl;
+	codefile << "\t.globl _start" << endl;
+	codefile << "_start:" << endl;
+	genCode(root, ts);
+
+	//Cerramos el archivo
+	codefile.close();
+
         clear();
 }
+
+
+
 
 void yyerror(const char *s) {
 	cout << "Error! en línea " << linea << ", columna " << col << "  Mensaje: " << s << endl;

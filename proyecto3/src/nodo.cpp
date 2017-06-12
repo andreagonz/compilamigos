@@ -5,10 +5,17 @@
 #include <iostream>
 #include <math.h>
 
+
+//Se le agregaron metodos y propiedades para implemtnar el algoritmo de Sehti-Ullman y para contabailisar las seqs 
+//vars y seqs
 using namespace std;
 
 Nodo * Nodo::get(int i) {
   return hijos[i];
+}
+
+void Nodo::set_valor(std::string val){
+	valor = val;
 }
 
 void Nodo::set(int i, Nodo * n) {
@@ -29,6 +36,22 @@ string Nodo::get_valor() {
 
 int Nodo::num_hijos() {
     return hijos.size();
+}
+
+void Nodo::set_num_seqs(int n) {
+  seqs = n;
+}
+
+int Nodo::num_seqs() {
+    return seqs;
+}
+
+void Nodo::set_num_vars(int n) {
+  vars = n;
+}
+
+int Nodo::num_vars() {
+    return vars;
 }
 
 Nodo * Nodo::pop_back() {
@@ -79,6 +102,9 @@ string str(Nodo * n) {
 
 string aCadena(Nodo * vertice, int nivel, bool rama[]) {
     string s = vertice->str() + "\n";
+    //string s = vertice->str() +" Vars: "+std::to_string(vertice->num_vars()) +"\n";
+    //string s = vertice->str() +" Seqs: "+std::to_string(vertice->num_seqs()) +"\n";
+    //string s = vertice->str() +" Vars: "+std::to_string(vertice->num_vars())+" Seqs: "+std::to_string(vertice->num_seqs()) +"\n";
     rama[nivel] = true;
     for(int i = 0; i < vertice->num_hijos(); i++) {
         s += espacios(nivel, rama);
