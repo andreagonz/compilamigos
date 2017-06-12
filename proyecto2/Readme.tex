@@ -31,7 +31,7 @@
 \newpage
 
 \section{Sistema de tipos}
-Desde que definimos la gramática para nuestro lenguaje en el \textbf{\emph{proyecto 1}} se habían contemplado los tres tipos que se mencionan en la especificación de este proyecto: tenemos números enteros de tipo \texttt{int}, números con punto flotante de tipo \texttt{float} y valores booleanos \texttt{bool}.
+Desde que definimos la gramática para nuestro lenguaje en el \emph{proyecto 1} se habían contemplado los tres tipos que se mencionan en la especificación de este proyecto: tenemos números enteros de tipo \texttt{int}, números con punto flotante de tipo \texttt{float} y valores booleanos \texttt{bool}.
 La sintáxis del lenguaje también permitía que se declararan variables con tipo estático. \\
 Gracias a que nuestro lenguaje ya cumplía con estos requerimentos, no tuvimos que modificar la sintáxis del lenguaje en estos campos.
 
@@ -51,7 +51,13 @@ La tabla de simbolos fue implementada como una estructura de datos en forma de �
 \section{Verificación de tipos}
 Usando el patrón \textit{visitor} con la clase \textbf{VisitorVerificaTipos} y la \textit{tabla de simbolos} creada anteriormente.
 \section{Análisis dependiente del contexto}
-
+Además de la verificación de tipos, el análisis semántico de este compilador está implementado de modo que para que un programa sea válido para nuestro lenguaje debe cumplir los siguientes requisitos.
+\begin{itemize}
+\item Solo se puede llamar a funciones que sean definidas previamente.
+\item El número de parámetros que recibe la llamada de una función debe ser el mismo que el número de parámetros que se definieron en la firma de dicha función.
+\item Los tipos de los parámetros que recibe la llamada de una función deben ser los mismos que los definidos en la firma de la función.
+\item En el caso de una asignación, el valor de retorno de la función llamada debe ser del mismo tipo de la variable a la que se está asignando. 
+\end{itemize}
 \section{Instrucciones para ejecutar y compilar el proyecto}\label{sec:s}
 
 El código fuente del proyecto, se encuentra dentro del directorio \texttt{src/}. Debe asegurarse
