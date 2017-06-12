@@ -8,9 +8,16 @@ using namespace std;
   Visitor que crea la tabla de símbolos
 */
 
+
+//Se le agrego el metodo get_table para poder obtener y preguntale por las variable el tipo de variables al genera el codigo
+
 void VisitorCreaTabla::error(string s) {
     cout << s <<endl;
     exito = false;
+}
+
+TablaSimbolos * VisitorCreaTabla::get_tabla(void) {
+    return tabla;
 }
 
 bool VisitorCreaTabla::tuvo_error() {

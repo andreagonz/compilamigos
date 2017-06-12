@@ -1,0 +1,9 @@
+bool xy = true;
+bool z = false;
+bool x = true;
+bool xx = true;
+bool xxx = true;
+bool w = false;
+bool y = z or xy;
+x = z or true and w;
+xx = not( z or false and w);

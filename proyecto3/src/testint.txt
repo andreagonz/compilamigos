@@ -1,0 +1,25 @@
+int x = 0;
+2 + 3;
+int cooca = 9 + (0 - 8 - 9 - 0);
+cooca = 9;
+x = cooca + 2 + 23 - 23 + 12;
+int xa = 0;
+xa = 5 + 4;
+2 + 3 * 6 * 10 - 13;
+5 * (4 + 5 - 10);
+81 / 9 * 3 + 5;
+int xx = 0;
+xx = 5 / 3;
+4 / 2 + 5 - 2;
+int hos = 22;
+int op = 29 + 13; 
+int opp = 2 + 4 / 2 + op;
+int xyz = 2 + 2 + 4;
+int xyw = 5 * 3;
+int vx = 4 * 2 + hos;
+int xxxx = 5 * 4 + 5 * xyz;
+int r = 0;
+int wwww = 2 + 3 * 2;
+int i = 0;
+i = 1 * wwww + xx + vx * op + xxxx;
+

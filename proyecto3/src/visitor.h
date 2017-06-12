@@ -6,6 +6,8 @@
 #include<vector>
 #include "tabla.h"
 
+//Se le agrego el metodo get_table para poder obtener y preguntale por las variable el tipo de variables al genera el codigo
+
 class NodoInt;
 class NodoFloat;
 class NodoBool;
@@ -63,6 +65,8 @@ VisitorCreaTabla() : exito(true) {
         Tabla * t = new Tabla();
         tabla = new TablaSimbolos(t);    
     }
+    
+    TablaSimbolos * get_tabla(void);
     void error(std::string s);
     bool tuvo_error();
     void visitaNodoInt(NodoInt * n); 

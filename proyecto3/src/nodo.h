@@ -11,9 +11,12 @@ class Nodo {
 protected:
     std::vector<Nodo*> hijos;
     std::string valor;
+    int vars = 0;
+    int seqs = 0;
 public:
 Nodo(std::string v): valor(v) {}
     Nodo * get(int i);
+    void set_valor(std::string val);
     std::string get_valor(void);
     void set(int i, Nodo *n);
     void add(Nodo *n);
@@ -21,12 +24,17 @@ Nodo(std::string v): valor(v) {}
     int num_hijos();
     Nodo * pop_back();
     virtual void accept(Visitor * v) = 0;
+    void set_num_seqs(int n);
+    int num_seqs(void);
+    void set_num_vars(int n);
+    int num_vars(void);
 };
 
 /**
  * Nodos valor
  */
-
+//Se le agregaron metodos y propiedades para implemtnar el algoritmo de Sehti-Ullman y para contabailisar las seqs 
+//vars y seqs
 class NodoInt: public Nodo {
 public:
 NodoInt(std::string v): Nodo(v) {}

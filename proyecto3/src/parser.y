@@ -19,7 +19,9 @@ extern int col;
  
 void yyerror(const char *s);
 queue<Nodo*> * nodos = new queue<Nodo*>();
+VisitorCreaTabla * vct = new VisitorCreaTabla();
 string archivo;
+ofstream codefile;
 %}
 
 /* bison declarations */
@@ -58,7 +60,6 @@ S :  Prog {
   arbol.open (archivo + ".asa");
   arbol << str($$);
   arbol.close();
-  VisitorCreaTabla * vct = new VisitorCreaTabla();
   $$->accept(vct);
   if(!vct->tuvo_error()) {
         VisitorVerificaTipos * vvt = new VisitorVerificaTipos();
@@ -319,10 +320,521 @@ ENTERO {
 void clear() {
     while(!nodos->empty()) {
         Nodo *n = nodos->front();
+        //cout << n->str() << endl;
         nodos->pop();
         delete n;
     }
     delete nodos;
+}
+
+//Metodo que marca los nodos de seq y pone cuanto nodos de secuencia tiene en su arbol contandolo a ellos
+int transTreeSeqs(Nodo *nodo){	
+	int seqs = 0;
+        std::string seqstr = "(seq)";
+	if(seqstr.compare(nodo->str()) == 0){
+		seqs += 1;
+	}
+        
+	int numhijos = nodo->num_hijos();
+	for(int i = 0; i < numhijos; i++){
+		seqs += transTreeSeqs(nodo->get(i));
+	}
+
+	nodo->set_num_seqs(seqs);
+	return seqs;
+}
+
+//Metodo que nos dice si una cadena es un entero
+inline bool isNumber(const std::string & s)
+{
+   if(s.empty() || ((!isdigit(s[0])) && (s[0] != '-') && (s[0] != '+'))) return false ;
+
+   char * p ;
+   strtol(s.c_str(), &p, 10) ;
+
+   return (*p == 0) ;
+}
+
+
+//Metodo que nos dice si una cadena es un float
+bool isFloat(const std::string & s)
+{
+   char * p ;
+   strtod(s.c_str(), &p) ;
+
+   return (*p == 0) ;
+}
+
+
+//Metodo que genera el codigo en x86-64 (AUXILIAR)
+void genCodeOpera(Nodo *nodo, int reg, std::string tipo){
+
+	int vars = nodo->num_vars();
+	int numhijos = nodo->num_hijos();
+	std::string nodo_value = nodo->get_valor();
+
+	if( nodo_value.compare("+") == 0 || nodo_value.compare("-") == 0 || nodo_value.compare("*") == 0 || nodo_value.compare("/") == 0 ){
+		Nodo *h0 = nodo->get(0);
+		Nodo *h1 = nodo->get(1);			
+		if (h0->num_vars() == 0 || h1->num_vars() == 0){
+				if(h0->num_vars() == 0){
+					genCodeOpera(h1, reg, tipo);
+					if(tipo.compare("int") == 0){
+						if( nodo_value.compare("+") == 0){
+							codefile << "addq $"+h0->get_valor()+" %r"+std::to_string(reg) +"\t#addq S, D D ← D "+nodo_value+" S"<< endl;	
+						}
+						if( nodo_value.compare("-") == 0){
+							codefile << "subq $"+h0->get_valor()+" %r"+std::to_string(reg) +"\t#subq S, D D ← D "+nodo_value+" S"<< endl;	
+						}
+						if( nodo_value.compare("*") == 0){
+							codefile << "imulq $"+h0->get_valor()+" %r"+std::to_string(reg) +"\t#imulq S, D D ← D "+nodo_value+" S"<< endl;	
+						}
+						if( nodo_value.compare("/") == 0){
+							codefile << "divq $"+h0->get_valor()+" %r"+std::to_string(reg) +"\t#divq S, D D ← D "+nodo_value+" S"<< endl;	
+						}
+						//cout << "INT"+nodo_value+"CONS R"+std::to_string(reg)+" "+h0->get_valor() << endl;
+					}else{
+						if( nodo_value.compare("+") == 0){
+							codefile << "addss $"+h0->get_valor()+" %xmm"+std::to_string(reg) +"\t#addss S, D D ← D "+nodo_value+" S"<< endl;	
+						}
+						if( nodo_value.compare("-") == 0){
+							codefile << "subss $"+h0->get_valor()+" %xmm"+std::to_string(reg) +"\t#subss S, D D ← D "+nodo_value+" S"<< endl;	
+						}
+						if( nodo_value.compare("*") == 0){
+							codefile << "mulss $"+h0->get_valor()+" %xmm"+std::to_string(reg) +"\t#mulss S, D D ← D "+nodo_value+" S"<< endl;	
+						}
+						if( nodo_value.compare("/") == 0){
+							codefile << "divss $"+h0->get_valor()+" %xmm"+std::to_string(reg) +"\t#divss S, D D ← D "+nodo_value+" S"<< endl;	
+						}
+						//cout << "FLOAT"+nodo_value+"CONS R"+std::to_string(reg)+" "+h0->get_valor() << endl;
+					}
+				}else{
+					genCodeOpera(h0, reg, tipo);
+					if(tipo.compare("int") == 0){
+						if( nodo_value.compare("+") == 0){
+							codefile << "addq $"+h1->get_valor()+" %r"+std::to_string(reg) +"\t#addq S, D D ← D "+nodo_value+" S"<< endl;	
+						}
+						if( nodo_value.compare("-") == 0){
+							codefile << "subq $"+h1->get_valor()+" %r"+std::to_string(reg) +"\t#subq S, D D ← D "+nodo_value+" S"<< endl;	
+						}
+						if( nodo_value.compare("*") == 0){
+							codefile << "imulq $"+h1->get_valor()+" %r"+std::to_string(reg) +"\t#imulq S, D D ← D "+nodo_value+" S"<< endl;	
+						}
+						if( nodo_value.compare("/") == 0){
+							codefile << "divq $"+h1->get_valor()+" %r"+std::to_string(reg) +"\t#divq S, D D ← D "+nodo_value+" S"<< endl;	
+						}
+						//cout << "INT"+nodo_value+"CONS R"+std::to_string(reg)+" "+h1->get_valor() << endl;
+					}else{
+						if( nodo_value.compare("+") == 0){
+							codefile << "addss $"+h1->get_valor()+" %xmm"+std::to_string(reg) +"\t#addss S, D D ← D "+nodo_value+" S"<< endl;	
+						}
+						if( nodo_value.compare("-") == 0){
+							codefile << "subss $"+h1->get_valor()+" %xmm"+std::to_string(reg) +"\t#subss S, D D ← D "+nodo_value+" S"<< endl;	
+						}
+						if( nodo_value.compare("*") == 0){
+							codefile << "mulss $"+h1->get_valor()+" %xmm"+std::to_string(reg) +"\t#mulss S, D D ← D "+nodo_value+" S"<< endl;	
+						}
+						if( nodo_value.compare("/") == 0){
+							codefile << "divss $"+h1->get_valor()+" %xmm"+std::to_string(reg) +"\t#divss S, D D ← D "+nodo_value+" S"<< endl;	
+						}
+						//cout << "FLOAT"+nodo_value+"CONS R"+std::to_string(reg)+" "+h1->get_valor() << endl;
+					}
+
+				}
+		}else{
+			genCodeOpera(nodo->get(0), reg, tipo);
+			genCodeOpera(nodo->get(1), reg-1, tipo);
+
+			if(tipo.compare("int") == 0){
+				if( nodo_value.compare("+") == 0){
+					codefile << "addq %r"+std::to_string(reg-1)+" %r"+std::to_string(reg) +"\t#addq S, D D ← D "+nodo_value+" S"<< endl;	
+				}
+				if( nodo_value.compare("-") == 0){
+					codefile << "subq %r"+std::to_string(reg-1)+" %r"+std::to_string(reg) +"\t#subq S, D D ← D "+nodo_value+" S"<< endl;	
+				}
+				if( nodo_value.compare("*") == 0){
+					codefile << "imulq %r"+std::to_string(reg-1)+" %r"+std::to_string(reg) +"\t#imulq S, D D ← D "+nodo_value+" S"<< endl;	
+				}
+				if( nodo_value.compare("/") == 0){
+					codefile << "divq %r"+std::to_string(reg-1)+" %r"+std::to_string(reg) +"\t#divq S, D D ← D "+nodo_value+" S"<< endl;	
+				}
+				//cout << "INT"+nodo_value+" R"+std::to_string(reg)+" R"+std::to_string(reg-1) << endl;	
+			}else{
+				if( nodo_value.compare("+") == 0){
+					codefile << "addss %xmm"+std::to_string(reg-1)+" %xmm"+std::to_string(reg) +"\t#addss S, D D ← D "+nodo_value+" S"<< endl;	
+				}
+				if( nodo_value.compare("-") == 0){
+					codefile << "subss %xmm"+std::to_string(reg-1)+" %xmm"+std::to_string(reg) +"\t#subss S, D D ← D "+nodo_value+" S"<< endl;	
+				}
+				if( nodo_value.compare("*") == 0){
+					codefile << "mulss %xmm"+std::to_string(reg-1)+" %xmm"+std::to_string(reg) +"\t#mulss S, D D ← D "+nodo_value+" S"<< endl;	
+				}
+				if( nodo_value.compare("/") == 0){
+					codefile << "divss %xmm"+std::to_string(reg-1)+" %xmm"+std::to_string(reg) +"\t#divss S, D D ← D "+nodo_value+" S"<< endl;	
+				}
+				//cout << "FLOAT"+nodo_value+" R"+std::to_string(reg)+" R"+std::to_string(reg-1) << endl;	
+			}		
+		}
+		return;
+	}
+
+	if( nodo_value.compare("and") == 0 || nodo_value.compare("or") == 0){
+		Nodo *h0 = nodo->get(0);
+		Nodo *h1 = nodo->get(1);
+		if (h0->num_vars() == 0 || h1->num_vars() == 0){
+				if(h0->num_vars() == 0){
+					std::string consvalue = "0";
+					if (h0->get_valor().compare("true") == 0){
+						consvalue = "1";
+					}else{
+						consvalue = "0";
+					}
+					genCodeOpera(h1, reg, tipo);
+					codefile <<nodo_value+"q $"+consvalue+" %r"+std::to_string(reg)  +"\t#"+nodo_value+"q S, D D ← D "+nodo_value+" S"<< endl;
+					//cout <<"BOOL"+nodo_value+"CONS R"+std::to_string(reg)+" "+h0->get_valor() << endl;
+				}else{ 
+					std::string consvalue = "0";
+					if (h1->get_valor().compare("true") == 0){
+						consvalue = "1";
+					}else{
+						consvalue = "0";
+					}
+					genCodeOpera(h0, reg, tipo);
+					codefile <<nodo_value+"q $"+consvalue+" %r"+std::to_string(reg)  +"\t#"+nodo_value+"q S, D D ← D "+nodo_value+" S"<< endl;
+					//cout <<"BOOL"+nodo_value+"CONS R"+std::to_string(reg)+" "+h1->get_valor() << endl;
+				}			
+
+		}else{
+			genCodeOpera(nodo->get(0), reg, tipo);
+			genCodeOpera(nodo->get(1), reg-1, tipo);
+			//cout << "BOOL"+nodo_value+" R"+std::to_string(reg)+" R"+std::to_string(reg-1) << endl;
+			codefile << nodo_value+"q %r"+std::to_string(reg-1)+" %r"+std::to_string(reg) +"\t#"+nodo_value+"q S, D D ← D "+nodo_value+" S"<< endl;					
+		}
+		return;
+	}
+
+	if(nodo_value.compare("not") == 0){
+		//notq D D ← ˜D
+		genCodeOpera(nodo->get(0), reg, tipo);
+			codefile << "notq %r"+std::to_string(reg) +"\t#notq D D ← ^D"<< endl;
+		//cout << "BOOL"+nodo_value+" R"+std::to_string(reg) << endl;
+		return;
+
+	}
+
+	//movq S, D ####D ← S
+	if(tipo.compare("int") == 0){
+		codefile << "movq "+nodo_value+" %r"+std::to_string(reg)+"\t#movq S, D D ← S   LOAD"<< endl;
+		//cout << "INT LOAD R"+std::to_string(reg)+" "+nodo_value << endl;
+	}
+	if(tipo.compare("bool") == 0){
+		std::string consvalue = "0";
+		if (nodo_value.compare("true") == 0){
+			consvalue = "1";
+		}else{
+			consvalue = "0";
+		}
+		codefile << "movq "+consvalue+" %r"+std::to_string(reg)+"\t#movq S, D D ← S   LOAD"<< endl;
+		//cout << "BOOL LOAD R"+std::to_string(reg)+" "+nodo_value << endl;
+	}
+	if(tipo.compare("float") == 0){
+		codefile << "movss "+nodo_value+" %xmm"+std::to_string(reg)+"\t#movss S, D D ← S   LOAD"<< endl;
+		//cout << "FLOAT LOAD R"+std::to_string(reg)+" "+nodo_value << endl;
+	}	
+}
+
+
+//Metodo que genera el codigo en x86-64 (PRINCIPAL)
+void genCode(Nodo *nodo, TablaSimbolos *ts){	
+
+  	int num_seqs = nodo->num_seqs();
+	if (num_seqs == 1){
+
+                Nodo *linea = nodo->get(0);
+		std::string nodo_value = linea->get_valor();
+
+		if( nodo_value.compare("bool") == 0 || nodo_value.compare("int") == 0 || nodo_value.compare("float") == 0 || nodo_value.compare("=") == 0){
+
+			if(nodo_value.compare("=") == 0){
+				Nodo *var = linea->get(0);
+				Nodo *exp = linea->get(1);
+
+
+                                Simbolo *sim1 = ts->look_up(var->get_valor());
+				int tiposim = sim1->get_tipo();
+				std::string tipo;
+				//cout << "Varible:"+var->get_valor() << endl;
+				//cout << "Tipo:"+tipo << endl;
+				//cout << str(exp) << endl;
+			
+				//movq S, D ####D ← S
+				if(tiposim == 0){
+					tipo = "int";
+					genCodeOpera(exp, exp->num_vars(), tipo);
+  					codefile << "movq %r"+std::to_string(exp->num_vars())+" "+var->get_valor()+"\t#movq S, D D ← S   SAVE"<< endl;
+					//cout << "INT SAVE R"+std::to_string(exp->num_vars())+" "+var->get_valor() << endl;
+					//genCodeX8664(tipo, "SAVE", "R"+std::to_string(exp->num_vars()), var->get_valor());
+				}
+				if(tiposim == 2){
+					tipo = "bool";
+					genCodeOpera(exp, exp->num_vars(), tipo);
+  					codefile << "movq %r"+std::to_string(exp->num_vars())+" "+var->get_valor()+"\t#movq S, D D ← S   SAVE"<< endl;
+					//cout << "BOOL SAVE R"+std::to_string(exp->num_vars())+" "+var->get_valor() << endl;
+					//genCodeX8664(tipo, "SAVE", "R"+std::to_string(exp->num_vars()), var->get_valor());
+				}
+				if(tiposim == 1){
+					tipo = "float";
+					genCodeOpera(exp, exp->num_vars(), tipo);
+  					codefile << "movss %xmm"+std::to_string(exp->num_vars())+" "+var->get_valor()+"\t#movss S, D D ← S   SAVE"<< endl;
+					//cout << "FLOAT SAVE R"+std::to_string(exp->num_vars())+" "+var->get_valor() << endl;
+					//genCodeX8664(tipo, "SAVE", "R"+std::to_string(exp->num_vars()), var->get_valor());
+				}
+
+			}else{
+				std::string tipo = linea->get_valor();
+				Nodo *linea2 = linea->get(0);
+				Nodo *var = linea2->get(0);
+				Nodo *exp = linea2->get(1);
+				//cout << "Tipo:"+tipo << endl;
+				//cout << "Varible:"+var->get_valor() << endl;
+				//cout << str(exp) << endl;
+
+
+				//movq S, D D ← S
+				//genCodeX8664(tipo, "SAVE", "R"+std::to_string(exp->num_vars()), var->get_valor());
+				if(tipo.compare("int") == 0){
+					genCodeOpera(exp, exp->num_vars(), tipo);
+  					codefile << "movq %r"+std::to_string(exp->num_vars())+" "+var->get_valor()+"\t#movq S, D D ← S   SAVE"<< endl;
+					//cout << "INT SAVE R"+std::to_string(exp->num_vars())+" "+var->get_valor() << endl;
+				}
+				if(tipo.compare("bool") == 0){
+					genCodeOpera(exp, exp->num_vars(), tipo);
+  					codefile << "movq %r"+std::to_string(exp->num_vars())+" "+var->get_valor()+"\t#movq S, D D ← S   SAVE"<< endl;
+					//cout << "BOOL SAVE R"+std::to_string(exp->num_vars())+" "+var->get_valor() << endl;
+				}
+				if(tipo.compare("float") == 0){
+					genCodeOpera(exp, exp->num_vars(), tipo);
+  					codefile << "movss %xmm"+std::to_string(exp->num_vars())+" "+var->get_valor()+"\t#movss S, D D ← S   SAVE"<< endl;
+					//cout << "FLOAT SAVE R"+std::to_string(exp->num_vars())+" "+var->get_valor() << endl;
+				}
+
+
+			}
+
+		}else{
+			//cout << str(linea) << endl;
+			//IGNORAMOS CALCULOS QUE NO TENGA ASIGNACION POR QUE SE SON CALCULOS QUE NO SE
+			//USAN NUNCA
+			//genCodeOpera(linea, linea->num_vars());
+		}
+
+	}else{
+		int numhijos = nodo->num_hijos();
+		for(int i = 0; i < numhijos; i++){
+			genCode(nodo->get(i), ts);
+		}
+	}
+
+}
+
+
+//Metodo que evalua las contasntes dentro del arbol para simplificarlos (AUXILIAR)
+std::string evalConstantsNodo(Nodo *nodo){
+
+	int numhijos = nodo->num_hijos();
+	std::string nodo_value = nodo->get_valor();
+
+	if(numhijos == 0){
+		return nodo->get_valor();
+	}
+	if(numhijos == 1){
+		std::string new_val;
+		std::string valh0 =  evalConstantsNodo(nodo->get(0));
+		if ( nodo_value.compare("not") == 0){
+			if (valh0.compare("true") == 0){
+				new_val = "false";
+			}else{
+				new_val = "true";
+			}
+			return new_val;
+		}else{
+			cout << "evalNodo: NOOO DEBE PASAR" << endl;
+			cout << nodo_value << endl;
+		}
+	}
+	if(numhijos == 2){
+		std::string new_val;
+		std::string valh0 =  evalConstantsNodo(nodo->get(0));
+		std::string valh1 =  evalConstantsNodo(nodo->get(1));
+
+		if( nodo_value.compare("and") == 0 || nodo_value.compare("or") == 0 ){
+			if( nodo_value.compare("and") == 0){
+				if (valh0.compare("true") == 0 && valh1.compare("true") == 0){
+					new_val = "true";
+				}else{
+					new_val = "false";
+				}
+			}
+			if( nodo_value.compare("or") == 0){
+				if (valh0.compare("true") == 0 || valh1.compare("true") == 0){
+					new_val = "true";
+				}else{
+					new_val = "false";
+				}
+			}
+			return new_val;
+		}
+
+		if( nodo_value.compare("+") == 0 || nodo_value.compare("-") == 0 || nodo_value.compare("*") == 0 || nodo_value.compare("/") == 0 ){
+			if(isNumber(valh0)){
+				int new_num = 0;
+				int numh0 = std::stoi(valh0);
+				int numh1 = std::stoi(valh1);
+				if(nodo_value.compare("+") == 0){
+					new_num = numh0 + numh1;
+				}
+				if(nodo_value.compare("-") == 0){
+					new_num = numh0 - numh1;
+				}
+				if(nodo_value.compare("*") == 0){
+					new_num = numh0 * numh1;
+				}
+				if(nodo_value.compare("/") == 0){
+					new_num = numh0 / numh1;
+				}
+				return std::to_string(new_num);
+			}else{
+				float new_num = 0.0;
+				float numh0 = std::atof(valh0.c_str());
+				float numh1 = std::atof(valh1.c_str());
+				if(nodo_value.compare("+") == 0){
+					new_num = numh0 + numh1;
+				}
+				if(nodo_value.compare("-") == 0){
+					new_num = numh0 - numh1;
+				}
+				if(nodo_value.compare("*") == 0){
+					new_num = numh0 * numh1;
+				}
+				if(nodo_value.compare("/") == 0){
+					new_num = numh0 / numh1;
+				}
+				return std::to_string(new_num);
+			}
+	
+		}	
+	}
+
+}
+
+
+//Metodo que evalua las contasntes dentro del arbol para simplificarlos  (PRINCIPAL)
+void evalConstants(Nodo *nodo){
+	std::string nodo_value = nodo->get_valor();
+  	int num_vars = nodo->num_vars();
+	
+
+	if (num_vars == 0 && nodo_value.compare("seq") != 0){
+		std::string val = evalConstantsNodo(nodo);
+		while( nodo->num_hijos() > 0){
+			Nodo *newnodo = nodo->pop_back();
+		}
+		nodo->set_valor(val);
+	}else{
+		int numhijos = nodo->num_hijos();
+		for(int i = 0; i < numhijos; i++){
+			evalConstants(nodo->get(i));
+		}
+	}
+
+}
+
+
+//Metodo que implementa el agoritmo Sehti-Ullman simple
+int simpleSethUll(Nodo *nodo){
+
+	//cout << "entro a: "+nodo->str() +"tiene "+ std::to_string(nodo->num_hijos()) +" hijos "<< endl;
+	int vars = 0;
+        std::string seqstr = "(seq)";
+	int numhijos = nodo->num_hijos();
+	if(seqstr.compare(nodo->str()) == 0){
+		for(int i = 0; i < numhijos; i++){
+			int vars_temp;
+			vars_temp = simpleSethUll(nodo->get(i));
+
+                        if (vars_temp > vars){
+				vars = vars_temp;
+			}
+
+		}
+	}else{
+		if (numhijos == 2){
+
+			//cout << nodo->get_valor()+": DOS hijos" << endl;
+			int vars_temp1 = simpleSethUll(nodo->get(0));
+			int vars_temp2 = simpleSethUll(nodo->get(1));
+			if (vars_temp1 > vars_temp2){
+				vars = vars_temp1;
+			}else{
+				if (vars_temp1 < vars_temp2){
+					vars = vars_temp2;
+				}else{
+					if (vars_temp1 != 0	){
+						vars = vars_temp1 + 1;
+					}
+				}
+			}
+
+		}else{
+			if (numhijos == 1){
+				//cout << nodo->get_valor()+": UN hijos" << endl;
+				vars = simpleSethUll(nodo->get(0));
+			}else{
+				if (numhijos == 0){
+					//cout << nodo->get_valor()+": NINGUN hijo" << endl;
+					std::string nodo_value = nodo->get_valor();
+					if ( isNumber(nodo_value) || isFloat(nodo_value) || nodo_value.compare("true") == 0  || nodo_value.compare("false") == 0  ){
+						//cout << nodo_value+": Es INT FLOAT True o False" << endl;
+						vars = 0;
+					}else{
+						//cout << nodo_value+": NO ES INT Numero FLOAT True o False" << endl;
+						vars = 1;
+					}
+				}else{
+					cout << "simpleSethUll: NOOoO DEBE PASRA" << endl;					
+				}
+			}
+		}
+	}
+	//cout << nodo->str() +" "+ std::to_string(vars) << endl;
+	nodo->set_num_vars(vars);
+	return vars;	
+}
+
+
+//Metodo para generar el .data apartir del arbol
+void genData(Nodo *nodo){	
+	
+  	int num_seqs = nodo->num_seqs();
+	if (num_seqs == 1){
+                Nodo *linea = nodo->get(0);
+		std::string nodo_value = linea->get_valor();
+
+		if( nodo_value.compare("bool") == 0 || nodo_value.compare("int") == 0 || nodo_value.compare("float") == 0){
+			Nodo *var = linea->get(0);
+			Nodo *exp = linea->get(1);
+			if( nodo_value.compare("bool") == 0 || nodo_value.compare("int") == 0){
+				codefile << var->get(0)->get_valor()+": \t .quad\t 0"  << endl;		
+			}else{
+				codefile << var->get(0)->get_valor()+": \t .float\t 0.0"  << endl;		
+			}
+		}
+	}else{
+		int numhijos = nodo->num_hijos();
+		for(int i = 0; i < numhijos; i++){
+			genData(nodo->get(i));
+		}
+	}
 }
 
 int main(int argc, char* argv[]) {
@@ -347,8 +859,37 @@ int main(int argc, char* argv[]) {
 		yyparse();
 	} while (!feof(yyin));
         
+
+	//Obtenemos la tabla de simbolos y los nodos 
+	TablaSimbolos *ts = vct->get_tabla();
+        Nodo *root = nodos->back();
+
+	//Abrimos el archivo para escribir el codigo generado
+        codefile.open (archivo+".codigo");
+
+	//Generamos la marca de seqs los nodos que solo tiene una sequencia son los que "tiene" lineas de codigo
+	transTreeSeqs(root);
+	//Implementacion simple del algoritmo Sehti-Ullman
+	simpleSethUll(root);
+	//Este metodo simplifica el arbol es decir las operaciones que operan entre puras contasntes se simplifican en un solo nodo
+	evalConstants(root);
+	//Genera el codigo .data
+	codefile << "\t.data" << endl;
+	genData(root);
+	//Genera el codigo .text
+	codefile << "\t.text" << endl;
+	codefile << "\t.globl _start" << endl;
+	codefile << "_start:" << endl;
+	genCode(root, ts);
+
+	//Cerramos el archivo
+	codefile.close();
+
         clear();
 }
+
+
+
 
 void yyerror(const char *s) {
 	cout << "Error! en línea " << linea << ", columna " << col << "  Mensaje: " << s << endl;
