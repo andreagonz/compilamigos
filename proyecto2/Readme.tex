@@ -93,7 +93,7 @@ En caso de existir un problema para generar dicho ejecutable, recomendamos volve
 
 \subsection{Ejecución del analizador} 
 
-Una vez obtenido el binario, basta:
+Una vez obtenido el binario, basta ejecutar:
 \begin{verbatim}
     [user@host src]$ ./kyc-ip <archivo>
 \end{verbatim}
@@ -126,6 +126,26 @@ fun gungi () void:
 ~fun
 \end{verbatim}
 
+Ejecutar este código resultará en los siguientes errores:
+
+\begin{verbatim}
+Error de semántica: And de int con bool no válido
+Error de semántica: Se está tratando de asignar tipo bool a variable 'val' 
+de tipo int
+Error de semántica: And de int con bool no válido
+Error de semántica: Se está tratando de asignar tipo bool a variable 'val' 
+de tipo int
+Error de semántica: Multiplicación de int con float no válida
+Error de semántica: Se está tratando de asignar tipo float a variable 'val' 
+de tipo int
+Error de semántica: División de int con float no válida
+Error de semántica: Se está tratando de asignar tipo float a variable 'a' de 
+tipo int
+Error de semántica: Or de int con bool no válido
+Error de semántica: Se está tratando de asignar tipo bool a variable 'b' de 
+tipo int
+\end{verbatim}
+
 \subsection{Ejemplo de un programa válido}
 \begin{verbatim}
 fun cmp (int a, int b) int:
@@ -150,8 +170,8 @@ fun gungi () void:
         c = cmp(a,b);
     ~while
 ~fun
-
-
 \end{verbatim}
+
+Por otro lado al ejecutar este código el proceso se completará exitosamente sin lanzar ningún error. En ambos casos ya que no habrá error alguno en el análisis sintáctico, se creará el archivo \texttt{archivo.asa} con el árbol de sintáxis abstracto.
 
 \end{document}
