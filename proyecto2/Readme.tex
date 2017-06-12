@@ -99,5 +99,59 @@ Una vez obtenido el binario, basta:
 \end{verbatim}
 Donde \texttt{<archivo>} es el archivo de texto claro con el código fuente correspondiente a nuestro lenguaje de programación.
 
+\subsection{Ejemplo de un programa no válido}
+\begin{verbatim}
+fun cmp (int a, int b) int:
+    int val = 0;
+    cond (a > b):
+        val = 1 and true;
+    | (a < b):
+        val = -1 and false;
+    | default:
+        val = 0 * 1.23;
+    ~cond
+    return val;
+~fun
+
+fun gungi () void:
+    int a = 100;
+    int b = a/2;
+    int c = 1;
+    bool d = false;
+    while (c > 0):
+        a = (a*b)/0.2;
+        b = b*b or d;
+        c = cmp(a,b);
+    ~while
+~fun
+\end{verbatim}
+
+\subsection{Ejemplo de un programa válido}
+\begin{verbatim}
+fun cmp (int a, int b) int:
+    int val = 0;
+    cond (a > b):
+        val = 1;
+    | (a < b):
+        val = -1;
+    | default:
+        val = 0;
+    ~cond
+    return val;
+~fun
+
+fun gungi () void:
+    int a = 100;
+    int b = a/2;
+    int c = 1;
+    while (c > 0):
+        a = a*b;
+        b = b*b;
+        c = cmp(a,b);
+    ~while
+~fun
+
+
+\end{verbatim}
+
 \end{document}
-3
