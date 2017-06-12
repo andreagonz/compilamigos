@@ -49,7 +49,8 @@ La tabla de simbolos fue implementada como una estructura de datos en forma de �
 \item \texttt{declared\_locally(name)}: verifica que name esté declarado en el alcance actual y regresa \texttt{true} si lo está, en caso contrario regresa \texttt{false}.
 \end{itemize}
 \section{Verificación de tipos}
-Usando el patrón \textit{visitor} con la clase \textbf{VisitorVerificaTipos} y la \textit{tabla de simbolos} creada anteriormente.
+Al igual que en la creación de la \textit{tabla de símbolos}, se utilizó el patrón \textit{visitor} con la clase \textbf{VisitorVerificaTipos}. Para auxiliarnos en la verificación de tipos se hace uso de la \textit{tabla de simbolos} creada anteriormente, de manera que se pueda extraer el tipo de cada identificador (ya sea de alguna variable o función) utilizado en el código de entrada.
+
 \section{Análisis dependiente del contexto}
 Además de la verificación de tipos, el análisis semántico de este compilador está implementado de modo que para que un programa sea válido para nuestro lenguaje debe cumplir los siguientes requisitos.
 \begin{itemize}
