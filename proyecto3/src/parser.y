@@ -62,11 +62,12 @@ S :  Prog {
   arbol.close();
   $$->accept(vct);
   if(!vct->tuvo_error()) {
-        VisitorVerificaTipos * vvt = new VisitorVerificaTipos();
-        $$->accept(vvt);
-        if(!vvt->tuvo_error()) {
-            cout << "Todo bien" << endl;
-        }
+      ofstream tsimb;
+      tsimb.open (archivo + ".tds");
+      tsimb << tstr(vct->get_tabla()->get_raiz());
+      tsimb.close();
+      VisitorVerificaTipos * vvt = new VisitorVerificaTipos();
+      $$->accept(vvt);        
   }
  } 
 ;
