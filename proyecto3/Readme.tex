@@ -72,7 +72,7 @@ P = \{
 \}
 }
 
-\section{Compilación y ejecución del proyecto}
+\section{Compilación, ejecución y ensamblado}
 El código fuente del proyecto, se encuentra dentro del directorio \texttt{src/}. Debe asegurarse
 que tenga esta forma mínima para su correcto funcionamiento:
 \begin{verbatim}
@@ -129,17 +129,31 @@ Al término de la ejecución podremos encontrar nuevos archivos dentro de la car
 proyecto.
 \begin{verbatim}
     src/
-    |-- <archivo>.codigo
+    |-- <archivo>.asm
     ...
 \end{verbatim}
 Si hemos elegido omitir la bandera de archivos intermedios. En otro caso, además del código ensamblador encontraremos los siguientes archivos.
 \begin{verbatim}
     src/
-    |-- <archivo>.codigo
+    |-- <archivo>.asm
     |-- <archivo>.asa
     |-- <archivo>.tds
     ...
 \end{verbatim}
+Que corresponden al código objeto, el árbol de sintáxis abstracta y la tabla de símbolos, respectivamente.
+\subsection{Ensamblado}
+Para este proceso es necesario contar con \textit{NASM} instalado, pues la generación de código está
+pensado para éste.
+Una vez que hayamos obtenido el archivo de ensamblador, podemos proceder a ensamblarlo de la siguiente
+manera:
+\begin{verbatim}
+    [user@host src]$ nasm -felf64 <archivo>.asm && ld -o <salida> <archivo>.o 
+\end{verbatim}
+Donde <salida> es el nombre de archivo que queremos que tenga el nuevo binario ejecutable;
+por manejabilidad recomendamos esa bandera, pero es posible omitirla y podremos reconocer un
+archivo \textit{a.out} en el directorio como nuestro ejecutable.
+
+
 \subsection{Ejemplo}
 Por ejemplo para la siguiente \textbf{entrada}:
 \begin{verbatim}
@@ -151,33 +165,6 @@ d = d and d;
 
 
 \end{verbatim}
-Obtendremos el siguiente \textbf{código objeto}:
-\begin{verbatim}
-        .data
-w:       .quad   0
-f:       .float  0.0
-d:       .quad   0
-        .text
-        .globl _start
-_start:
-movq 1000 %r0   #movq S, D D ← S   LOAD
-movq %r0 w      #movq S, D D ← S   SAVE
-movss 0.628521 %xmm0    #movss S, D D ← S   LOAD
-movss %xmm0 f   #movss S, D D ← S   SAVE
-movq 1 %r0      #movq S, D D ← S   LOAD
-movq %r0 d      #movq S, D D ← S   SAVE
-movss f %xmm1   #movss S, D D ← S   LOAD
-addss $2.735130 %xmm1   #addss S, D D ← D + S
-subss $24.95 %xmm1      #subss S, D D ← D - S
-movss %xmm1 f   #movss S, D D ← S   SAVE
-movq 0 %r2      #movq S, D D ← S   LOAD
-movq 0 %r1      #movq S, D D ← S   LOAD
-andq %r1 %r2    #andq S, D D ← D and S
-movq %r2 d      #movq S, D D ← S   SAVE
-
-
-\end{verbatim}
-
 La siguiente \textbf{tabla de símbolos}:
 \begin{verbatim}
 {bool: d, int: w, float: f}
