@@ -372,6 +372,58 @@ bool isFloat(const std::string & s)
    return (*p == 0) ;
 }
 
+std::string registroStr(int reg){
+	if ( reg == 0){
+		return "rax";
+	}
+	if ( reg == 1){
+		return "rcx";
+	}
+	//No se regresa RDX que es el que le tocaria al r2
+	//por que es el que se usa para divir y se pone en 0
+	if ( reg == 2){
+		return "r15";
+	}
+	if ( reg == 3){
+		return "rbx";
+	}
+	if ( reg == 4){
+		return "rsp";
+	}
+	if ( reg == 5){
+		return "rbp";
+	}
+	if ( reg == 6){
+		return "rsi";
+	}
+	if ( reg == 7){
+		return "rdi";
+	}
+	if ( reg == 8){
+		return "r8";
+	}
+	if ( reg == 9){
+		return "r9";
+	}
+	if ( reg == 10){
+		return "r10";
+	}
+	if ( reg == 11){
+		return "r11";
+	}
+	if ( reg == 12){
+		return "r12";
+	}
+	if ( reg == 13){
+		return "r13";
+	}
+	if ( reg == 14){
+		return "r14";
+	}
+	if ( reg == 15){
+		return "r15";
+	}
+}
 
 //Metodo que genera el codigo en x86-64 (AUXILIAR)
 void genCodeOpera(Nodo *nodo, int reg, std::string tipo){
@@ -388,63 +440,140 @@ void genCodeOpera(Nodo *nodo, int reg, std::string tipo){
 					genCodeOpera(h1, reg, tipo);
 					if(tipo.compare("int") == 0){
 						if( nodo_value.compare("+") == 0){
-							codefile << "addq $"+h0->get_valor()+" %r"+std::to_string(reg) +"\t#addq S, D D ← D "+nodo_value+" S"<< endl;	
+							//codefile << "addq $"+h0->get_valor()+" %"+registroStr(reg) +"\t#addq S, D D ← D "+nodo_value+" S"<< endl;	
+							codefile << "\tadd \t"+registroStr(reg)+", "+h0->get_valor()<< endl;	
 						}
 						if( nodo_value.compare("-") == 0){
-							codefile << "subq $"+h0->get_valor()+" %r"+std::to_string(reg) +"\t#subq S, D D ← D "+nodo_value+" S"<< endl;	
+							//codefile << "subq $"+h0->get_valor()+" %"+registroStr(reg) +"\t#subq S, D D ← D "+nodo_value+" S"<< endl;	
+							codefile << "\tsub \t"+registroStr(reg)+", "+h0->get_valor()<< endl;	
 						}
 						if( nodo_value.compare("*") == 0){
-							codefile << "imulq $"+h0->get_valor()+" %r"+std::to_string(reg) +"\t#imulq S, D D ← D "+nodo_value+" S"<< endl;	
+							//codefile << "imulq $"+h0->get_valor()+" %"+registroStr(reg) +"\t#imulq S, D D ← D "+nodo_value+" S"<< endl;
+							codefile << "\timul \t"+registroStr(reg)+", "+h0->get_valor()<< endl;		
 						}
 						if( nodo_value.compare("/") == 0){
-							codefile << "divq $"+h0->get_valor()+" %r"+std::to_string(reg) +"\t#divq S, D D ← D "+nodo_value+" S"<< endl;	
+							std::string dividend = registroStr(reg);
+							std::string divisor = h0->get_valor();
+							codefile <<"\tmov\trax,"+dividend<< endl;
+							codefile <<"\tmov\trdx, 0"<<endl;
+							codefile <<"\tdiv\t"+divisor<< endl;
+							codefile <<"\tmov\t"+dividend+",rax"<< endl;
+							//codefile << "divq $"+h0->get_valor()+" %"+registroStr(reg) +"\t#divq S, D D ← D "+nodo_value+" S"<< endl;	
 						}
-						//cout << "INT"+nodo_value+"CONS R"+std::to_string(reg)+" "+h0->get_valor() << endl;
+						//cout << "INT"+nodo_value+"CONS "+registroStr(reg)+" "+h0->get_valor() << endl;
 					}else{
-						if( nodo_value.compare("+") == 0){
-							codefile << "addss $"+h0->get_valor()+" %xmm"+std::to_string(reg) +"\t#addss S, D D ← D "+nodo_value+" S"<< endl;	
+						if(isFloat(h0->get_valor())){
+							codefile << ";Truco horrible para operar con una constante float"<< endl;
+							codefile << ";cargandolo primero aun registro normal y memoria y de la memoria"<< endl;
+							codefile << ";al registro xmm15"<< endl;
+							codefile << "\tmov\tr15, __float64__("+h0->get_valor()+")"<< endl;
+							codefile <<"\tmov\t[floattemp], r15" << endl;
+							codefile <<"\tmovsd\txmm15, [floattemp]" << endl;
+							if( nodo_value.compare("+") == 0){
+								//codefile << "addss $"+h0->get_valor()+" %xmm"+std::to_string(reg) +"\t#addss S, D D ← D "+nodo_value+" S"<< endl;
+								codefile << "\taddsd \txmm"+std::to_string(reg)+", xmm15"<< endl;	
+							}
+							if( nodo_value.compare("-") == 0){
+								//codefile << "subss $"+h0->get_valor()+" %xmm"+std::to_string(reg) +"\t#subss S, D D ← D "+nodo_value+" S"<< endl;	
+								codefile << "\tsubsd \txmm"+std::to_string(reg)+", xmm15"<< endl;	
+							}
+							if( nodo_value.compare("*") == 0){
+								//codefile << "mulss $"+h0->get_valor()+" %xmm"+std::to_string(reg) +"\t#mulss S, D D ← D "+nodo_value+" S"<< endl;
+								codefile << "\tmulsd \txmm"+std::to_string(reg)+", xmm15"<< endl;		
+							}
+							if( nodo_value.compare("/") == 0){
+								//codefile << "divss $"+h0->get_valor()+" %xmm"+std::to_string(reg) +"\t#divss S, D D ← D "+nodo_value+" S"<< endl;	
+								codefile << "\tdivsd \txmm"+std::to_string(reg)+", xmm15"<< endl;		
+							}
+						}else{
+							if( nodo_value.compare("+") == 0){
+								//codefile << "addss $"+h0->get_valor()+" %xmm"+std::to_string(reg) +"\t#addss S, D D ← D "+nodo_value+" S"<< endl;
+								codefile << "\taddsd \txmm"+std::to_string(reg)+", "+h0->get_valor()<< endl;	
+							}
+							if( nodo_value.compare("-") == 0){
+								//codefile << "subss $"+h0->get_valor()+" %xmm"+std::to_string(reg) +"\t#subss S, D D ← D "+nodo_value+" S"<< endl;	
+								codefile << "\tsubsd \txmm"+std::to_string(reg)+", "+h0->get_valor()<< endl;	
+							}
+							if( nodo_value.compare("*") == 0){
+								//codefile << "mulss $"+h0->get_valor()+" %xmm"+std::to_string(reg) +"\t#mulss S, D D ← D "+nodo_value+" S"<< endl;
+								codefile << "\tmulsd \txmm"+std::to_string(reg)+", "+h0->get_valor()<< endl;		
+							}
+							if( nodo_value.compare("/") == 0){
+								//codefile << "divss $"+h0->get_valor()+" %xmm"+std::to_string(reg) +"\t#divss S, D D ← D "+nodo_value+" S"<< endl;	
+								codefile << "\tdivsd \txmm"+std::to_string(reg)+", "+h0->get_valor()<< endl;		
+							}
 						}
-						if( nodo_value.compare("-") == 0){
-							codefile << "subss $"+h0->get_valor()+" %xmm"+std::to_string(reg) +"\t#subss S, D D ← D "+nodo_value+" S"<< endl;	
-						}
-						if( nodo_value.compare("*") == 0){
-							codefile << "mulss $"+h0->get_valor()+" %xmm"+std::to_string(reg) +"\t#mulss S, D D ← D "+nodo_value+" S"<< endl;	
-						}
-						if( nodo_value.compare("/") == 0){
-							codefile << "divss $"+h0->get_valor()+" %xmm"+std::to_string(reg) +"\t#divss S, D D ← D "+nodo_value+" S"<< endl;	
-						}
-						//cout << "FLOAT"+nodo_value+"CONS R"+std::to_string(reg)+" "+h0->get_valor() << endl;
+						//cout << "FLOAT"+nodo_value+"CONS "+registroStr(reg)+" "+h0->get_valor() << endl;
 					}
 				}else{
 					genCodeOpera(h0, reg, tipo);
 					if(tipo.compare("int") == 0){
 						if( nodo_value.compare("+") == 0){
-							codefile << "addq $"+h1->get_valor()+" %r"+std::to_string(reg) +"\t#addq S, D D ← D "+nodo_value+" S"<< endl;	
+							//codefile << "addq $"+h1->get_valor()+" %"+registroStr(reg) +"\t#addq S, D D ← D "+nodo_value+" S"<< endl;	
+							codefile << "\tadd \t"+registroStr(reg)+", "+h1->get_valor()<< endl;
 						}
 						if( nodo_value.compare("-") == 0){
-							codefile << "subq $"+h1->get_valor()+" %r"+std::to_string(reg) +"\t#subq S, D D ← D "+nodo_value+" S"<< endl;	
+							//codefile << "subq $"+h1->get_valor()+" %"+registroStr(reg) +"\t#subq S, D D ← D "+nodo_value+" S"<< endl;	
+							codefile << "\tsub \t"+registroStr(reg)+", "+h1->get_valor()<< endl;	
 						}
 						if( nodo_value.compare("*") == 0){
-							codefile << "imulq $"+h1->get_valor()+" %r"+std::to_string(reg) +"\t#imulq S, D D ← D "+nodo_value+" S"<< endl;	
+							//codefile << "imulq $"+h1->get_valor()+" %"+registroSxmm"+std::to_string(reg)tr(reg) +"\t#imulq S, D D ← D "+nodo_value+" S"<< endl;
+							codefile << "\timul \t"+registroStr(reg)+", "+h1->get_valor()<< endl;			
 						}
 						if( nodo_value.compare("/") == 0){
-							codefile << "divq $"+h1->get_valor()+" %r"+std::to_string(reg) +"\t#divq S, D D ← D "+nodo_value+" S"<< endl;	
+							std::string dividend = h1->get_valor();
+							std::string divisor = registroStr(reg);
+							codefile <<"\tmov\trax,"+dividend<< endl;
+							codefile <<"\tmov\trdx, 0"<<endl;
+							codefile <<"\tdiv\t"+divisor<< endl;
+							codefile <<"\tmov\t"+divisor+",rax"<< endl;
+							//codefile << "divq $"+h1->get_valor()+" %"+registroStr(reg) +"\t#divq S, D D ← D "+nodo_value+" S"<< endl;	
+
 						}
-						//cout << "INT"+nodo_value+"CONS R"+std::to_string(reg)+" "+h1->get_valor() << endl;
+						//cout << "INT"+nodo_value+"CONS "+registroStr(reg)+" "+h1->get_valor() << endl;
 					}else{
-						if( nodo_value.compare("+") == 0){
-							codefile << "addss $"+h1->get_valor()+" %xmm"+std::to_string(reg) +"\t#addss S, D D ← D "+nodo_value+" S"<< endl;	
+						if(isFloat(h1->get_valor())){
+							codefile << ";Truco horrible para operar con una constante float"<< endl;
+							codefile << ";cargandolo primero aun registro normal y memoria y de la memoria"<< endl;
+							codefile << ";al registro xmm15"<< endl;
+							codefile << "\tmov\tr15, __float64__("+h1->get_valor()+")"<< endl;
+							codefile <<"\tmov\t[floattemp], r15" << endl;
+							codefile <<"\tmovsd\txmm15, [floattemp]" << endl;
+							if( nodo_value.compare("+") == 0){
+								//codefile << "addss $"+h0->get_valor()+" %xmm"+std::to_string(reg) +"\t#addss S, D D ← D "+nodo_value+" S"<< endl;
+								codefile << "\taddsd \txmm"+std::to_string(reg)+", xmm15"<< endl;	
+							}
+							if( nodo_value.compare("-") == 0){
+								//codefile << "subss $"+h0->get_valor()+" %xmm"+std::to_string(reg) +"\t#subss S, D D ← D "+nodo_value+" S"<< endl;	
+								codefile << "\tsubsd \txmm"+std::to_string(reg)+", xmm15"<< endl;	
+							}
+							if( nodo_value.compare("*") == 0){
+								//codefile << "mulss $"+h0->get_valor()+" %xmm"+std::to_string(reg) +"\t#mulss S, D D ← D "+nodo_value+" S"<< endl;
+								codefile << "\tmulsd \txmm"+std::to_string(reg)+", xmm15"<< endl;		
+							}
+							if( nodo_value.compare("/") == 0){
+								//codefile << "divss $"+h0->get_valor()+" %xmm"+std::to_string(reg) +"\t#divss S, D D ← D "+nodo_value+" S"<< endl;	
+								codefile << "\tdivsd \txmm"+std::to_string(reg)+", xmm15"<< endl;		
+							}
+						}else{
+							if( nodo_value.compare("+") == 0){
+								//codefile << "addss $"+h1->get_valor()+" %xmm"+std::to_string(reg) +"\t#addss S, D D ← D "+nodo_value+" S"<< endl;	
+								codefile << "\taddsd \txmm"+std::to_string(reg)+", "+h1->get_valor()<< endl;	
+							}
+							if( nodo_value.compare("-") == 0){
+								//codefile << "subss $"+h1->get_valor()+" %xmm"+std::to_string(reg) +"\t#subss S, D D ← D "+nodo_value+" S"<< endl;
+								codefile << "\taddsd \txmm"+std::to_string(reg)+", "+h1->get_valor()<< endl;		
+							}
+							if( nodo_value.compare("*") == 0){
+								//codefile << "mulss $"+h1->get_valor()+" %xmm"+std::to_string(reg) +"\t#mulss S, D D ← D "+nodo_value+" S"<< endl;
+								codefile << "\tmulsd \txmm"+std::to_string(reg)+", "+h1->get_valor()<< endl;		
+							}
+							if( nodo_value.compare("/") == 0){
+								//codefile << "divss $"+h1->get_valor()+" %xmm"+std::to_string(reg) +"\t#divss S, D D ← D "+nodo_value+" S"<< endl;	
+								codefile << "\tdivsd \txmm"+std::to_string(reg)+", "+h1->get_valor()<< endl;	
+							}
 						}
-						if( nodo_value.compare("-") == 0){
-							codefile << "subss $"+h1->get_valor()+" %xmm"+std::to_string(reg) +"\t#subss S, D D ← D "+nodo_value+" S"<< endl;	
-						}
-						if( nodo_value.compare("*") == 0){
-							codefile << "mulss $"+h1->get_valor()+" %xmm"+std::to_string(reg) +"\t#mulss S, D D ← D "+nodo_value+" S"<< endl;	
-						}
-						if( nodo_value.compare("/") == 0){
-							codefile << "divss $"+h1->get_valor()+" %xmm"+std::to_string(reg) +"\t#divss S, D D ← D "+nodo_value+" S"<< endl;	
-						}
-						//cout << "FLOAT"+nodo_value+"CONS R"+std::to_string(reg)+" "+h1->get_valor() << endl;
+						//cout << "FLOAT"+nodo_value+"CONS "+registroStr(reg)+" "+h1->get_valor() << endl;
 					}
 
 				}
@@ -454,32 +583,45 @@ void genCodeOpera(Nodo *nodo, int reg, std::string tipo){
 
 			if(tipo.compare("int") == 0){
 				if( nodo_value.compare("+") == 0){
-					codefile << "addq %r"+std::to_string(reg-1)+" %r"+std::to_string(reg) +"\t#addq S, D D ← D "+nodo_value+" S"<< endl;	
+					//codefile << "addq %"+std::to_string(reg-1)+" %"+registroStr(reg) +"\t#addq S, D D ← D "+nodo_value+" S"<< endl;	
+					codefile << "\tadd \t"+registroStr(reg)+", "+std::to_string(reg-1)<< endl;
 				}
 				if( nodo_value.compare("-") == 0){
-					codefile << "subq %r"+std::to_string(reg-1)+" %r"+std::to_string(reg) +"\t#subq S, D D ← D "+nodo_value+" S"<< endl;	
+					//codefile << "subq %"+std::to_string(reg-1)+" %"+registroStr(reg) +"\t#subq S, D D ← D "+nodo_value+" S"<< endl;	
+					codefile << "\tsub \t"+registroStr(reg)+", "+std::to_string(reg-1)<< endl;
 				}
 				if( nodo_value.compare("*") == 0){
-					codefile << "imulq %r"+std::to_string(reg-1)+" %r"+std::to_string(reg) +"\t#imulq S, D D ← D "+nodo_value+" S"<< endl;	
+					//codefile << "imulq %"+std::to_string(reg-1)+" %"+registroStr(reg) +"\t#imulq S, D D ← D "+nodo_value+" S"<< endl;	
+					codefile << "\timul \t"+registroStr(reg)+", "+std::to_string(reg-1)<< endl;
 				}
 				if( nodo_value.compare("/") == 0){
-					codefile << "divq %r"+std::to_string(reg-1)+" %r"+std::to_string(reg) +"\t#divq S, D D ← D "+nodo_value+" S"<< endl;	
+					std::string dividend = registroStr(reg);
+					std::string divisor = registroStr(reg-1);
+					codefile <<"\tmov\trax,"+dividend<< endl;
+					codefile <<"\tmov\trdx, 0"<<endl;
+					codefile <<"\tdiv\t"+divisor << endl;
+					codefile <<"\tmov\t"+dividend+",rax"<< endl;
+					//codefile << "divq %"+std::to_string(reg-1)+" %"+registroStr(reg) +"\t#divq S, D D ← D "+nodo_value+" S"<< endl;	
 				}
-				//cout << "INT"+nodo_value+" R"+std::to_string(reg)+" R"+std::to_string(reg-1) << endl;	
+				//cout << "INT"+nodo_value+" "+registroStr(reg)+" "+std::to_string(reg-1) << endl;	
 			}else{
 				if( nodo_value.compare("+") == 0){
-					codefile << "addss %xmm"+std::to_string(reg-1)+" %xmm"+std::to_string(reg) +"\t#addss S, D D ← D "+nodo_value+" S"<< endl;	
+					//codefile << "addss %xmm"+std::to_string(reg-1)+" %xmm"+std::to_string(reg) +"\t#addss S, D D ← D "+nodo_value+" S"<< endl;	
+					codefile << "\taddsd \txmm"+std::to_string(reg)+", xmm"+std::to_string(reg-1)<< endl;				
 				}
 				if( nodo_value.compare("-") == 0){
-					codefile << "subss %xmm"+std::to_string(reg-1)+" %xmm"+std::to_string(reg) +"\t#subss S, D D ← D "+nodo_value+" S"<< endl;	
+					//codefile << "subss %xmm"+std::to_string(reg-1)+" %xmm"+std::to_string(reg) +"\t#subss S, D D ← D "+nodo_value+" S"<< endl;
+					codefile << "\tsubsd \txmm"+std::to_string(reg)+", xmm"+std::to_string(reg-1)<< endl;					
 				}
 				if( nodo_value.compare("*") == 0){
-					codefile << "mulss %xmm"+std::to_string(reg-1)+" %xmm"+std::to_string(reg) +"\t#mulss S, D D ← D "+nodo_value+" S"<< endl;	
+					//codefile << "mulss %xmm"+std::to_string(reg-1)+" %xmm"+std::to_string(reg) +"\t#mulss S, D D ← D "+nodo_value+" S"<< endl;	
+					codefile << "\tmulsd \txmm"+std::to_string(reg)+", xmm"+std::to_string(reg-1)<< endl;				
 				}
 				if( nodo_value.compare("/") == 0){
-					codefile << "divss %xmm"+std::to_string(reg-1)+" %xmm"+std::to_string(reg) +"\t#divss S, D D ← D "+nodo_value+" S"<< endl;	
+					//codefile << "divss %xmm"+std::to_string(reg-1)+" %xmm"+std::to_string(reg) +"\t#divss S, D D ← D "+nodo_value+" S"<< endl;
+					codefile << "\tdivsd \txmm"+std::to_string(reg)+", xmm"+std::to_string(reg-1)<< endl;					
 				}
-				//cout << "FLOAT"+nodo_value+" R"+std::to_string(reg)+" R"+std::to_string(reg-1) << endl;	
+				//cout << "FLOAT"+nodo_value+" "+registroStr(reg)+" "+std::to_string(reg-1) << endl;	
 			}		
 		}
 		return;
@@ -497,8 +639,9 @@ void genCodeOpera(Nodo *nodo, int reg, std::string tipo){
 						consvalue = "0";
 					}
 					genCodeOpera(h1, reg, tipo);
-					codefile <<nodo_value+"q $"+consvalue+" %r"+std::to_string(reg)  +"\t#"+nodo_value+"q S, D D ← D "+nodo_value+" S"<< endl;
-					//cout <<"BOOL"+nodo_value+"CONS R"+std::to_string(reg)+" "+h0->get_valor() << endl;
+					//codefile <<nodo_value+"q $"+consvalue+" %"+registroStr(reg)  +"\t#"+nodo_value+"q S, D D ← D "+nodo_value+" S"<< endl;
+					codefile << "\t"+nodo_value+"\t"+registroStr(reg)+", "+consvalue<< endl;					
+					//cout <<"BOOL"+nodo_value+"CONS "+registroStr(reg)+" "+h0->get_valor() << endl;
 				}else{ 
 					std::string consvalue = "0";
 					if (h1->get_valor().compare("true") == 0){
@@ -507,15 +650,17 @@ void genCodeOpera(Nodo *nodo, int reg, std::string tipo){
 						consvalue = "0";
 					}
 					genCodeOpera(h0, reg, tipo);
-					codefile <<nodo_value+"q $"+consvalue+" %r"+std::to_string(reg)  +"\t#"+nodo_value+"q S, D D ← D "+nodo_value+" S"<< endl;
-					//cout <<"BOOL"+nodo_value+"CONS R"+std::to_string(reg)+" "+h1->get_valor() << endl;
+					//codefile <<nodo_value+"q $"+consvalue+" %"+registroStr(reg)  +"\t#"+nodo_value+"q S, D D ← D "+nodo_value+" S"<< endl;
+					codefile << "\t"+nodo_value+"\t"+registroStr(reg)+", "+consvalue<< endl;					
+					//cout <<"BOOL"+nodo_value+"CONS "+registroStr(reg)+" "+h1->get_valor() << endl;
 				}			
 
 		}else{
 			genCodeOpera(nodo->get(0), reg, tipo);
 			genCodeOpera(nodo->get(1), reg-1, tipo);
-			//cout << "BOOL"+nodo_value+" R"+std::to_string(reg)+" R"+std::to_string(reg-1) << endl;
-			codefile << nodo_value+"q %r"+std::to_string(reg-1)+" %r"+std::to_string(reg) +"\t#"+nodo_value+"q S, D D ← D "+nodo_value+" S"<< endl;					
+			//cout << "BOOL"+nodo_value+" "+registroStr(reg)+" "+std::to_string(reg-1) << endl;
+			//codefile << nodo_value+"q %"+std::to_string(reg-1)+" %"+registroStr(reg) +"\t#"+nodo_value+"q S, D D ← D "+nodo_value+" S"<< endl;					
+			codefile << "\t"+nodo_value+"\t"+registroStr(reg)+", "+std::to_string(reg-1)<< endl;					
 		}
 		return;
 	}
@@ -523,30 +668,54 @@ void genCodeOpera(Nodo *nodo, int reg, std::string tipo){
 	if(nodo_value.compare("not") == 0){
 		//notq D D ← ˜D
 		genCodeOpera(nodo->get(0), reg, tipo);
-			codefile << "notq %r"+std::to_string(reg) +"\t#notq D D ← ^D"<< endl;
-		//cout << "BOOL"+nodo_value+" R"+std::to_string(reg) << endl;
+			//codefile << "notq %"+registroStr(reg) +"\t#notq D D ← ^D"<< endl;
+			codefile << "\tnot \t"+registroStr(reg)<< endl;
+		//cout << "BOOL"+nodo_value+" "+registroStr(reg) << endl;
 		return;
 
 	}
 
 	//movq S, D ####D ← S
 	if(tipo.compare("int") == 0){
-		codefile << "movq "+nodo_value+" %r"+std::to_string(reg)+"\t#movq S, D D ← S   LOAD"<< endl;
-		//cout << "INT LOAD R"+std::to_string(reg)+" "+nodo_value << endl;
+		if (isNumber(nodo_value)){
+			codefile << "\tmov \t"+registroStr(reg)+","+nodo_value<< endl;
+		}else{
+			codefile << "\tmov \t"+registroStr(reg)+", ["+nodo_value+"]"<< endl;
+		}
+		//codefile << "movq "+nodo_value+" %"+registroStr(reg)+"\t#movq S, D D ← S   LOAD"<< endl;
+		//cout << "INT LOAD "+registroStr(reg)+" "+nodo_value << endl;
 	}
 	if(tipo.compare("bool") == 0){
 		std::string consvalue = "0";
-		if (nodo_value.compare("true") == 0){
-			consvalue = "1";
+		if (nodo_value.compare("true") == 0 || nodo_value.compare("false") == 0){
+			if (nodo_value.compare("true") == 0){
+				consvalue = "1";
+				codefile << "\tmov \t"+registroStr(reg)+", "+consvalue<< endl;
+			}else{
+				consvalue = "0";
+				codefile << "\tmov \t"+registroStr(reg)+", "+consvalue<< endl;
+			}
 		}else{
-			consvalue = "0";
+		
+			codefile << "\tmov \t"+registroStr(reg)+", ["+nodo_value+"]"<< endl;
 		}
-		codefile << "movq "+consvalue+" %r"+std::to_string(reg)+"\t#movq S, D D ← S   LOAD"<< endl;
-		//cout << "BOOL LOAD R"+std::to_string(reg)+" "+nodo_value << endl;
+		//codefile << "movq "+consvalue+" %"+registroStr(reg)+"\t#movq S, D D ← S   LOAD"<< endl;
+		//cout << "BOOL LOAD "+registroStr(reg)+" "+nodo_value << endl;
 	}
 	if(tipo.compare("float") == 0){
-		codefile << "movss "+nodo_value+" %xmm"+std::to_string(reg)+"\t#movss S, D D ← S   LOAD"<< endl;
-		//cout << "FLOAT LOAD R"+std::to_string(reg)+" "+nodo_value << endl;
+		if (isFloat(nodo_value)){
+			codefile << ";Truco horrible para cargar una constante float a un registro xmm"<< endl;
+			codefile << ";cargandolo primero aun registro normal y memoria y de la memoria"<< endl;
+			codefile << ";al registro xmm"<< endl;
+			codefile << "\tmov\tr15, __float64__("+nodo_value+")"<< endl;
+			codefile <<"\tmov\t[floattemp], r15" << endl;
+			codefile << "\tmovsd \txmm"+std::to_string(reg)+",[floattemp]"<< endl;
+			//codefile << "\tmovsd \t"+registroStr(reg)+","+nodo_value<< endl;
+		}else{
+			codefile << "\tmovsd \txmm"+std::to_string(reg)+", ["+nodo_value+"]"<< endl;
+		}
+		//codefile << "movss "+nodo_value+" %xmm"+std::to_string(reg)+"\t#movss S, D D ← S   LOAD"<< endl;
+		//cout << "FLOAT LOAD "+registroStr(reg)+" "+nodo_value << endl;
 	}	
 }
 
@@ -578,23 +747,26 @@ void genCode(Nodo *nodo, TablaSimbolos *ts){
 				if(tiposim == 0){
 					tipo = "int";
 					genCodeOpera(exp, exp->num_vars(), tipo);
-  					codefile << "movq %r"+std::to_string(exp->num_vars())+" "+var->get_valor()+"\t#movq S, D D ← S   SAVE"<< endl;
-					//cout << "INT SAVE R"+std::to_string(exp->num_vars())+" "+var->get_valor() << endl;
-					//genCodeX8664(tipo, "SAVE", "R"+std::to_string(exp->num_vars()), var->get_valor());
+					codefile << "\tmov \t["+var->get_valor()+"], "+registroStr(exp->num_vars())<< endl;
+  					//codefile << "movq %"+registroStr(exp->num_vars())+" "+var->get_valor()+"\t#movq S, D D ← S   SAVE"<< endl;
+					//cout << "INT SAVE "+registroStr(exp->num_vars())+" "+var->get_valor() << endl;
+					//genCodeX8664(tipo, "SAVE", ""+registroStr(exp->num_vars()), var->get_valor());
 				}
 				if(tiposim == 2){
 					tipo = "bool";
 					genCodeOpera(exp, exp->num_vars(), tipo);
-  					codefile << "movq %r"+std::to_string(exp->num_vars())+" "+var->get_valor()+"\t#movq S, D D ← S   SAVE"<< endl;
-					//cout << "BOOL SAVE R"+std::to_string(exp->num_vars())+" "+var->get_valor() << endl;
-					//genCodeX8664(tipo, "SAVE", "R"+std::to_string(exp->num_vars()), var->get_valor());
+					codefile << "\tmov \t["+var->get_valor()+"], "+registroStr(exp->num_vars())<< endl;
+  					//codefile << "movq %"+registroStr(exp->num_vars())+" "+var->get_valor()+"\t#movq S, D D ← S   SAVE"<< endl;
+					//cout << "BOOL SAVE "+registroStr(exp->num_vars())+" "+var->get_valor() << endl;
+					//genCodeX8664(tipo, "SAVE", ""+registroStr(exp->num_vars()), var->get_valor());
 				}
 				if(tiposim == 1){
 					tipo = "float";
 					genCodeOpera(exp, exp->num_vars(), tipo);
-  					codefile << "movss %xmm"+std::to_string(exp->num_vars())+" "+var->get_valor()+"\t#movss S, D D ← S   SAVE"<< endl;
-					//cout << "FLOAT SAVE R"+std::to_string(exp->num_vars())+" "+var->get_valor() << endl;
-					//genCodeX8664(tipo, "SAVE", "R"+std::to_string(exp->num_vars()), var->get_valor());
+					codefile << "\tmovsd \t["+var->get_valor()+"], xmm"+std::to_string(exp->num_vars())<< endl;
+  					//codefile << "movss %xmm"+std::to_string(exp->num_vars())+" "+var->get_valor()+"\t#movss S, D D ← S   SAVE"<< endl;
+					//cout << "FLOAT SAVE "+std::to_string(exp->num_vars())+" "+var->get_valor() << endl;
+					//genCodeX8664(tipo, "SAVE", ""+std::to_string(exp->num_vars()), var->get_valor());
 				}
 
 			}else{
@@ -608,21 +780,24 @@ void genCode(Nodo *nodo, TablaSimbolos *ts){
 
 
 				//movq S, D D ← S
-				//genCodeX8664(tipo, "SAVE", "R"+std::to_string(exp->num_vars()), var->get_valor());
+				//genCodeX8664(tipo, "SAVE", ""+registroStr(exp->num_vars()), var->get_valor());
 				if(tipo.compare("int") == 0){
 					genCodeOpera(exp, exp->num_vars(), tipo);
-  					codefile << "movq %r"+std::to_string(exp->num_vars())+" "+var->get_valor()+"\t#movq S, D D ← S   SAVE"<< endl;
-					//cout << "INT SAVE R"+std::to_string(exp->num_vars())+" "+var->get_valor() << endl;
+					codefile << "\tmov \t["+var->get_valor()+"], "+registroStr(exp->num_vars())<< endl;
+  					//codefile << "movq %"+registroStr(exp->num_vars())+" "+var->get_valor()+"\t#movq S, D D ← S   SAVE"<< endl;
+					//cout << "INT SAVE "+registroStr(exp->num_vars())+" "+var->get_valor() << endl;
 				}
 				if(tipo.compare("bool") == 0){
+					codefile << "\tmov \t["+var->get_valor()+"], "+registroStr(exp->num_vars())<< endl;
 					genCodeOpera(exp, exp->num_vars(), tipo);
-  					codefile << "movq %r"+std::to_string(exp->num_vars())+" "+var->get_valor()+"\t#movq S, D D ← S   SAVE"<< endl;
-					//cout << "BOOL SAVE R"+std::to_string(exp->num_vars())+" "+var->get_valor() << endl;
+  					//codefile << "movq %"+registroStr(exp->num_vars())+" "+var->get_valor()+"\t#movq S, D D ← S   SAVE"<< endl;
+					//cout << "BOOL SAVE "+registroStr(exp->num_vars())+" "+var->get_valor() << endl;
 				}
 				if(tipo.compare("float") == 0){
 					genCodeOpera(exp, exp->num_vars(), tipo);
-  					codefile << "movss %xmm"+std::to_string(exp->num_vars())+" "+var->get_valor()+"\t#movss S, D D ← S   SAVE"<< endl;
-					//cout << "FLOAT SAVE R"+std::to_string(exp->num_vars())+" "+var->get_valor() << endl;
+					codefile << "\tmovsd \t["+var->get_valor()+"], xmm"+std::to_string(exp->num_vars())<< endl;
+  					//codefile << "movss %xmm"+std::to_string(exp->num_vars())+" "+var->get_valor()+"\t#movss S, D D ← S   SAVE"<< endl;
+					//cout << "FLOAT SAVE "+std::to_string(exp->num_vars())+" "+var->get_valor() << endl;
 				}
 
 
@@ -831,9 +1006,9 @@ void genData(Nodo *nodo){
 			Nodo *var = linea->get(0);
 			Nodo *exp = linea->get(1);
 			if( nodo_value.compare("bool") == 0 || nodo_value.compare("int") == 0){
-				codefile << var->get(0)->get_valor()+": \t .quad\t 0"  << endl;		
+				codefile << var->get(0)->get_valor()+": \t dd\t 0"  << endl;		
 			}else{
-				codefile << var->get(0)->get_valor()+": \t .float\t 0.0"  << endl;		
+				codefile << var->get(0)->get_valor()+": \t dq\t 0.0"  << endl;		
 			}
 		}
 	}else{
@@ -878,7 +1053,7 @@ int main(int argc, char* argv[]) {
         Nodo *root = nodos->back();
 
 	//Abrimos el archivo para escribir el codigo generado
-        codefile.open (archivo+".codigo");
+        codefile.open (archivo+".asm");
 
 	//Generamos la marca de seqs los nodos que solo tiene una sequencia son los que "tiene" lineas de codigo
 	transTreeSeqs(root);
@@ -887,13 +1062,26 @@ int main(int argc, char* argv[]) {
 	//Este metodo simplifica el arbol es decir las operaciones que operan entre puras contasntes se simplifican en un solo nodo
 	evalConstants(root);
 	//Genera el codigo .data
-	codefile << "\t.data" << endl;
+	codefile << "\tsection .data" << endl;
+	codefile << "message: db      \"TODO BIEN\", 9" << endl;
+	codefile << "floattemp:\tdq\t 0.0 " << endl;
+
 	genData(root);
 	//Genera el codigo .text
-	codefile << "\t.text" << endl;
-	codefile << "\t.globl _start" << endl;
+	codefile << "\tsection .text" << endl;
+	codefile << "\tglobal _start" << endl;
 	codefile << "_start:" << endl;
 	genCode(root, ts);
+
+	//CODIGO para que imprma todo bien si todo sale bien
+	codefile << "mov rax, 1" << endl;
+	codefile << "mov rdi, 1" << endl;
+	codefile << "mov rsi, message" << endl;
+	codefile << "mov rdx, 13" << endl;
+	codefile << "syscall" << endl;
+	codefile << "mov eax, 60" << endl;
+	codefile << "xor rdi, rdi" << endl;
+	codefile << "syscall" << endl;
 
 	//Cerramos el archivo
 	codefile.close();
