@@ -26,6 +26,213 @@
 
 \begin{document}
 \maketitle
-\textbf{Documentación}\\\\
-Make
+\section{Preliminares}
+Para la realización de este proyecto, hicimos una reducción de nuestra gramática original planteada
+desde el proyecto 1, para generar código exclusivamente de expresiones aritméticas, álgebra booleana y asignaciones de variables. Asimismo, conservamos el operador de secuencialidad para no perder la oportunidad de manejar las variables al menos en el primer alcance.
+\subsection{La gramática reducida}
+Sea $G$ la gramática de nuestro lenguaje de programación \textit{KYC-IP}. Definiremos $G$, como la 4-tupla: $G = (N,T,P,S)$, con $N,T,P$ conjuntos y $S \in N$ el símbolo de la producción inicial.
+A continuación, se muestran los conjuntos que la conforman:\\ \\
+\texttt{ 
+N = \{S, Prog, Prog', Inst, Expr, Bexp, Bterm, Beq, Bcom, Expr', Term, Factor, Bool, Num, Decimal, Entero, Digito, Asig, Asig', Easig, Id, pos, Carac, Letra, Tipo\}
+}\\
+
+\texttt{
+T = \{;, +, -, /, *, =, \_, ==, >, <, >=, <=, and, or, not, (, ), int, float, bool, 0, 1,..., 9, a, ..., z, A, ..., Z\}  \footnote{En la gramática se utiliza ``!'' para representar a | con el propósito de no confundir el símbolo terminal ``|'' con la separación de las ramificaciones en las producciones.}
+}\\
+
+\texttt{
+P = \{
+\begin{addmargin}[2.5em]{0em}
+    S $\to$ Prog\\
+    Prog $\to$ Prog Prog' | Prog' \\
+    Prog' $\to$ Inst; \\
+    Inst $\to$ Expr | Asig\\    
+    Expr $\to$ Bexp \\ 
+    Bexp $\to$ Bexp or Bterm | Bterm \\ 
+    Bterm $\to$ Bterm and Beq | Beq \\ 
+    Beq $\to$ Beq == Bcomp | Beq != Bcomp | Bcomp \\ 
+    Bcomp $\to$ Bcomp < Expr' | Bcomp > Expr' | Bcomp <= Expr' | Bcomp >= Expr' | Expr' \\ 
+    Expr' $\to$ Expr' + Term | Expr' - Term | Term \\
+    Term $\to$ Term * Factor | Term / Factor | Factor \\    
+    Factor $\to$ Id | Num | (Expr) | - Factor | not Factor | Bool \\
+    Bool $\to$ true | false \\
+    Num $\to$ Entero Decimal \\
+    Decimal $\to$ . Entero | $\varepsilon$ \\
+    Entero $\to$ Digito | Digito Entero \\
+    Digito $\to$ 0 | 1 | 2 | ... | 9 \\
+    Asig $\to$  Easig | Asig' \\
+    Asig' $\to$ Tipo Easig \\
+    Easig $\to$ Id = Expr | Id = Fun \\
+    Id  $\to$ Letra Pos | Letra \\
+    Pos  $\to$ Pos Carac | Carac \\
+    Carac $\to$ Letra | \_ | Digito \\
+    Letra $\to$ a | b | ... | z | A | B | ... | Z \\
+    Tipo $\to$ int | float | bool \\
+\end{addmargin}
+\}
+}
+
+\section{Compilación y ejecución del proyecto}
+El código fuente del proyecto, se encuentra dentro del directorio \texttt{src/}. Debe asegurarse
+que tenga esta forma mínima para su correcto funcionamiento:
+\begin{verbatim}
+    src/
+    |-- ejemplo.kyc
+    |-- lexer.lex
+    |-- Makefile
+    |-- nodo.cpp
+    |-- nodo.h
+    |-- tabla.cpp
+    |-- tabla.h
+    |-- visitor.cpp
+    |-- visitor.h
+    |__ parser.y
+
+\end{verbatim}
+
+\subsection{Compilación del proyecto}
+
+En cualquier sistema operativo basado en Unix, con \texttt{g++}, \texttt{flex} y \texttt{bison} preinstalados, basta con ejecutar \textbf{make} en el directorio \texttt{src/} desde línea de comandos.
+
+\begin{verbatim}
+    [user@host src]$ make
+\end{verbatim}
+
+Dicha orden producirá un binario ejecutable de nombre \textit{\textbf{kyc-ip}} listo para recibir código fuente de nuestro lenguaje.\\
+
+En caso de existir un problema para generar dicho ejecutable, recomendamos volver a generar el código de los analizadores sintácticos y volver a intentar construir el ejecutable con las siguientes instrucciones:
+
+\begin{verbatim}
+    [user@host src]$ make flex
+    [user@host src]$ make bison
+    [user@host src]$ make
+\end{verbatim}
+
+
+\subsection{Ejecución del analizador} 
+
+Una vez obtenido el binario, basta:
+\begin{verbatim}
+    [user@host src]$ ./kyc-ip <archivo>
+\end{verbatim}
+Donde \texttt{<archivo>} es el archivo de texto claro con el código fuente correspondiente a nuestro lenguaje de programación.\\
+
+Además hemos incluído una bandera en el ejecutable que permite generar archivos intermedios
+como son el \textit{árbol de sintáxis abstracta} y la \textit{tabla de símbolos}. Para obenterlos
+basta agregar a la orden de ejecución lo siguiente:
+\begin{verbatim}
+    [user@host src]$ ./kyc-ip <archivo> -a
+\end{verbatim}
+\newpage
+\section{Resultado}
+Al término de la ejecución podremos encontrar nuevos archivos dentro de la carpeta de recursos del
+proyecto.
+\begin{verbatim}
+    src/
+    |-- <archivo>.codigo
+    ...
+\end{verbatim}
+Si hemos elegido omitir la bandera de archivos intermedios. En otro caso, además del código ensamblador encontraremos los siguientes archivos.
+\begin{verbatim}
+    src/
+    |-- <archivo>.codigo
+    |-- <archivo>.asa
+    |-- <archivo>.tds
+    ...
+\end{verbatim}
+\subsection{Ejemplo}
+Por ejemplo para la siguiente \textbf{entrada}:
+\begin{verbatim}
+int w = 10 * 10 * 10;
+float f = ( 56.0 / 89.098 );
+bool d = true;
+f = f + 10.0 * (10.0 + 11.0) / 76.7788 - 24.95;
+d = d and d;
+
+
+\end{verbatim}
+Obtendremos el siguiente \textbf{código objeto}:
+\begin{verbatim}
+        .data
+w:       .quad   0
+f:       .float  0.0
+d:       .quad   0
+        .text
+        .globl _start
+_start:
+movq 1000 %r0   #movq S, D D ← S   LOAD
+movq %r0 w      #movq S, D D ← S   SAVE
+movss 0.628521 %xmm0    #movss S, D D ← S   LOAD
+movss %xmm0 f   #movss S, D D ← S   SAVE
+movq 1 %r0      #movq S, D D ← S   LOAD
+movq %r0 d      #movq S, D D ← S   SAVE
+movss f %xmm1   #movss S, D D ← S   LOAD
+addss $2.735130 %xmm1   #addss S, D D ← D + S
+subss $24.95 %xmm1      #subss S, D D ← D - S
+movss %xmm1 f   #movss S, D D ← S   SAVE
+movq 0 %r2      #movq S, D D ← S   LOAD
+movq 0 %r1      #movq S, D D ← S   LOAD
+andq %r1 %r2    #andq S, D D ← D and S
+movq %r2 d      #movq S, D D ← S   SAVE
+
+
+\end{verbatim}
+
+La siguiente \textbf{tabla de símbolos}:
+\begin{verbatim}
+{bool: d, int: w, float: f}
+
+
+\end{verbatim}
+Y el siguiente \textbf{ASA}:
+\begin{verbatim}
+(seq)
+├─›(seq)
+│  ├─›(seq)
+│  │  ├─›(seq)
+│  │  │  ├─›(seq)
+│  │  │  │  └─›(int)
+│  │  │  │     └─›(=)
+│  │  │  │        ├─›(w)
+│  │  │  │        └─›(*)
+│  │  │  │           ├─›(*)
+│  │  │  │           │  ├─›(10)
+│  │  │  │           │  └─›(10)
+│  │  │  │           └─›(10)
+│  │  │  └─›(seq)
+│  │  │     └─›(float)
+│  │  │        └─›(=)
+│  │  │           ├─›(f)
+│  │  │           └─›(/)
+│  │  │              ├─›(56.0)
+│  │  │              └─›(89.098)
+│  │  └─›(seq)
+│  │     └─›(bool)
+│  │        └─›(=)
+│  │           ├─›(d)
+│  │           └─›(true)
+│  └─›(seq)
+│     └─›(=)
+│        ├─›(f)
+│        └─›(-)
+│           ├─›(+)
+│           │  ├─›(f)
+│           │  └─›(/)
+│           │     ├─›(*)
+│           │     │  ├─›(10.0)
+│           │     │  └─›(+)
+│           │     │     ├─›(10.0)
+│           │     │     └─›(11.0)
+│           │     └─›(76.7788)
+│           └─›(24.95)
+└─›(seq)
+   └─›(=)
+      ├─›(d)
+      └─›(and)
+         ├─›(d)
+         └─›(d)
+
+\end{verbatim}
+
+
 \end{document}
